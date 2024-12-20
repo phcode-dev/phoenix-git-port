@@ -780,7 +780,7 @@ define(function (require, exports) {
             if (!stdout) { return false; }
             return _.any(stdout.split("\n"), function (line) {
                 return line[0] !== " " && line[0] !== "?" && // first character marks staged status
-                       line.lastIndexOf(" " + file) === line.length - file.length - 1; // in case another file appeared here?
+                    line.lastIndexOf(" " + file) === line.length - file.length - 1; // in case another file appeared here?
             });
         });
     }
@@ -886,40 +886,40 @@ define(function (require, exports) {
 
     function getCommitCountsFallback() {
         return git(["rev-list", "HEAD", "--not", "--remotes"])
-        .then(function (stdout) {
-            var ahead = stdout ? stdout.split("\n").length : 0;
-            return "-1 " + ahead;
-        })
-        .catch(function (err) {
-            ErrorHandler.logError(err);
-            return "-1 -1";
-        });
+            .then(function (stdout) {
+                var ahead = stdout ? stdout.split("\n").length : 0;
+                return "-1 " + ahead;
+            })
+            .catch(function (err) {
+                ErrorHandler.logError(err);
+                return "-1 -1";
+            });
     }
 
     function getCommitCounts() {
         var remotes = Preferences.get("defaultRemotes") || {};
         var remote = remotes[Preferences.get("currentGitRoot")];
         return getCurrentBranchName()
-        .then(function (branch) {
-            if (!branch || !remote) {
-                return getCommitCountsFallback();
-            }
-            return git(["rev-list", "--left-right", "--count", remote + "/" + branch + "...@{0}", "--"])
-            .catch(function (err) {
-                ErrorHandler.logError(err);
-                return getCommitCountsFallback();
-            })
-            .then(function (stdout) {
-                var matches = /(-?\d+)\s+(-?\d+)/.exec(stdout);
-                return matches ? {
-                    behind: parseInt(matches[1], 10),
-                    ahead: parseInt(matches[2], 10)
-                } : {
-                    behind: -1,
-                    ahead: -1
-                };
+            .then(function (branch) {
+                if (!branch || !remote) {
+                    return getCommitCountsFallback();
+                }
+                return git(["rev-list", "--left-right", "--count", remote + "/" + branch + "...@{0}", "--"])
+                    .catch(function (err) {
+                        ErrorHandler.logError(err);
+                        return getCommitCountsFallback();
+                    })
+                    .then(function (stdout) {
+                        var matches = /(-?\d+)\s+(-?\d+)/.exec(stdout);
+                        return matches ? {
+                            behind: parseInt(matches[1], 10),
+                            ahead: parseInt(matches[2], 10)
+                        } : {
+                            behind: -1,
+                            ahead: -1
+                        };
+                    });
             });
-        });
     }
 
     function getLastCommitMessage() {
@@ -939,7 +939,7 @@ define(function (require, exports) {
             var sep  = "-@-BREAK-HERE-@-",
                 sep2 = "$$#-#$BREAK$$-$#";
             stdout = stdout.replace(sep, sep2)
-                           .replace(/^\t(.*)$/gm, function (a, b) { return b + sep; });
+                .replace(/^\t(.*)$/gm, function (a, b) { return b + sep; });
 
             return stdout.split(sep).reduce(function (arr, lineInfo) {
                 lineInfo = lineInfo.replace(sep2, sep).trimLeft();
@@ -977,8 +977,8 @@ define(function (require, exports) {
     function getGitRoot() {
         var projectRoot = Utils.getProjectRoot();
         return git(["rev-parse", "--show-toplevel"], {
-                cwd: projectRoot
-            })
+            cwd: fs.getTauriPlatformPath(projectRoot)
+        })
             .catch(function (e) {
                 if (ErrorHandler.contains(e, "Not a git repository")) {
                     return null;

@@ -1,9 +1,10 @@
-var fs            = require("fs"),
-    ChildProcess  = require("child_process"),
+const gitNodeConnector = global.createNodeConnector("phcode-git-core", exports);
+
+const GIT_PROGRESS_EVENT = "progress";
+
+let ChildProcess  = require("child_process"),
     crossSpawn    = require('cross-spawn'),
     ProcessUtils  = require("./processUtils"),
-    domainName    = "brackets-git",
-    domainManager = null,
     processMap    = {},
     resolvedPaths = {};
 
@@ -22,20 +23,19 @@ function execute(directory, command, args, opts, callback) {
         command = "\"" + command + "\"";
     }
     // http://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback
-    var toExec = command + " " + args.join(" ");
-    var child = ChildProcess.exec(toExec, {
+    const toExec = command + " " + args.join(" ");
+    processMap[opts.cliId] = ChildProcess.exec(toExec, {
         cwd: directory,
         maxBuffer: 20 * 1024 * 1024
     }, function (err, stdout, stderr) {
         delete processMap[opts.cliId];
         callback(err ? fixEOL(stderr) : undefined, err ? undefined : fixEOL(stdout));
     });
-    processMap[opts.cliId] = child;
 }
 
 // handler with cross-spawn
 function join(arr) {
-    var result, index = 0, length;
+    let result, index = 0, length;
     length = arr.reduce(function (l, b) {
         return l + b.length;
     }, 0);
@@ -49,7 +49,7 @@ function join(arr) {
 
 function spawn(directory, command, args, opts, callback) {
     // https://github.com/creationix/node-git
-    var child = crossSpawn(command, args, {
+    const child = crossSpawn(command, args, {
         cwd: directory
     });
     child.on("error", function (err) {
@@ -58,17 +58,17 @@ function spawn(directory, command, args, opts, callback) {
 
     processMap[opts.cliId] = child;
 
-    var exitCode, stdout = [], stderr = [];
+    let exitCode, stdout = [], stderr = [];
     child.stdout.addListener("data", function (text) {
         stdout[stdout.length] = text;
     });
     child.stderr.addListener("data", function (text) {
         if (opts.watchProgress) {
-            domainManager.emitEvent(domainName, "progress", [
-                opts.cliId,
-                (new Date()).getTime(),
-                fixEOL(text.toString("utf8"))
-            ]);
+            gitNodeConnector.triggerPeer(GIT_PROGRESS_EVENT, {
+                cliId: opts.cliId,
+                time: (new Date()).getTime(),
+                data: fixEOL(text.toString("utf8"))
+            });
         }
         stderr[stderr.length] = text;
     });
@@ -99,129 +99,61 @@ function doIfExists(method, directory, command, args, opts, callback) {
     });
 }
 
-function executeIfExists(directory, command, args, opts, callback) {
-    return doIfExists(execute, directory, command, args, opts, callback);
-}
-
-function spawnIfExists(directory, command, args, opts, callback) {
-    return doIfExists(spawn, directory, command, args, opts, callback);
-}
-
-function kill(cliId, callback) {
-    var process = processMap[cliId];
-    if (!process) {
-        return callback("Couldn't find process to kill with ID:" + cliId);
-    }
-    delete processMap[cliId];
-    ProcessUtils.getChildrenOfPid(process.pid, function (err, children) {
-        // kill also parent process
-        children.push(process.pid);
-        children.forEach(function (pid) {
-            ProcessUtils.killSingleProcess(pid);
+function executeIfExists({directory, command, args, opts}) {
+    return new Promise(function (resolve, reject) {
+        doIfExists(execute, directory, command, args, opts, (err, stdout)=>{
+            if(err){
+                reject(err);
+            } else {
+                resolve(stdout);
+            }
         });
     });
 }
 
-function which(directory, filePath, args, opts, callback) {
-    ProcessUtils.executableExists(filePath, function (err, exists, resolvedPath) {
-        if (exists) {
-            callback(null, resolvedPath);
-        } else {
-            callback("ProcessUtils can't resolve the path requested: " + filePath);
+function spawnIfExists({directory, command, args, opts}) {
+    return new Promise(function (resolve, reject) {
+        doIfExists(spawn, directory, command, args, opts, (err, stdout)=>{
+            if(err){
+                reject(err);
+            } else {
+                resolve(stdout);
+            }
+        });
+    });
+}
+
+function kill(cliId) {
+    return new Promise(function (resolve, reject) {
+        const process = processMap[cliId];
+        if (!process) {
+            reject("Couldn't find process to kill with ID:" + cliId);
         }
+        delete processMap[cliId];
+        resolve(""); // at this point we resolve anyways as we cant do anything after deleting the object
+        ProcessUtils.getChildrenOfPid(process.pid, function (err, children) {
+            // kill also parent process
+            children.push(process.pid);
+            children.forEach(function (pid) {
+                ProcessUtils.killSingleProcess(pid);
+            });
+        });
     });
 }
 
-/**
- * Initializes the domain.
- * @param {DomainManager} DomainManager for the server
- */
-exports.init = function (_domainManager) {
-    domainManager = _domainManager;
-
-    if (!domainManager.hasDomain(domainName)) {
-        domainManager.registerDomain(domainName, {
-            major: 0,
-            minor: 1
+function which({command}) {
+    return new Promise(function (resolve, reject) {
+        ProcessUtils.executableExists(command, function (err, exists, resolvedPath) {
+            if (exists) {
+                resolve(resolvedPath);
+            } else {
+                reject("ProcessUtils can't resolve the path requested: " + command);
+            }
         });
-    } else {
-        throw new Error(domainName +
-            " domain already registered. Close all Brackets instances and start again. " +
-            "This should only happen when updating the extension.");
-    }
+    });
+}
 
-    domainManager.registerCommand(
-        domainName,
-        "execute", // command name
-        executeIfExists, // command handler function
-        true, // this command is async
-        "Runs a command in a shell and buffers the output.",
-        [
-            { name: "directory", type: "string" },
-            { name: "command", type: "string" },
-            { name: "args", type: "array" },
-            { name: "opts", type: "object" }
-        ],
-        [
-            { name: "stdout", type: "string" }
-        ]
-    );
-
-    domainManager.registerCommand(
-        domainName,
-        "spawn", // command name
-        spawnIfExists, // command handler function
-        true, // this command is async
-        "Launches a new process with the given command.",
-        [
-            { name: "directory", type: "string" },
-            { name: "command", type: "string" },
-            { name: "args", type: "array" },
-            { name: "opts", type: "object" }
-        ],
-        [
-            { name: "stdout", type: "string" }
-        ]
-    );
-
-    domainManager.registerCommand(
-        domainName,
-        "kill", // command name
-        kill, // command handler function
-        true, // this command is async
-        "Launches a new process with the given command.",
-        [
-            { name: "commandId", type: "number" }
-        ],
-        [
-            { name: "stdout", type: "string" }
-        ]
-    );
-
-    domainManager.registerCommand(
-        domainName,
-        "which",
-        which,
-        true,
-        "Looks for a given file using which.",
-        [
-            { name: "directory", type: "string" },
-            { name: "filePath", type: "string" },
-            { name: "args", type: "array" },
-            { name: "opts", type: "object" }
-        ],
-        [
-            { name: "path", type: "string" }
-        ]
-    );
-
-    domainManager.registerEvent(
-        domainName,
-        "progress",
-        [
-            { name: "commandId", type: "number" },
-            { name: "time", type: "number" },
-            { name: "message", type: "string" }
-        ]
-    );
-};
+exports.execute = executeIfExists;
+exports.spawn = spawnIfExists;
+exports.kill = kill;
+exports.which = which;

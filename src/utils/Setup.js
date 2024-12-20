@@ -64,7 +64,7 @@ define(function (require, exports) {
 
             pathsToLook.forEach(function (path, index) {
                 Cli.spawnCommand(path, ["--version"], {
-                    cwd: Utils.getExtensionDirectory()
+                    cwd: "./"
                 }).then(function (stdout) {
                     var m = stdout.match(/^git version\s+(.*)$/);
                     if (m) {

@@ -66,17 +66,4 @@ define(function (require, exports, module) {
             }
         });
     };
-
-    exports.getInstalledExtensions = function () {
-        var rv = {};
-        _.each(ExtensionManager.extensions, function (obj, name) {
-            if (obj.installInfo && obj.installInfo.locationType !== "default") {
-                rv[name] = {
-                    name: obj.installInfo.metadata.title,
-                    version: obj.installInfo.metadata.version
-                };
-            }
-        });
-        return rv;
-    };
 });

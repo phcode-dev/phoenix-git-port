@@ -39,8 +39,9 @@ define(function (require, exports, module) {
 
     // returns "C:/Users/Zaggi/AppData/Roaming/Brackets/extensions/user/zaggino.brackets-git/"
     function getExtensionDirectory() {
-        var modulePath = ExtensionUtils.getModulePath(module);
-        return modulePath.slice(0, -1 * "src/".length);
+        throw new Error("api unsupported");
+        // var modulePath = ExtensionUtils.getModulePath(module);
+        // return modulePath.slice(0, -1 * "src/".length);
     }
 
     function formatDiff(diff) {

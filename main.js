@@ -55,10 +55,7 @@ define(function (require, exports, module) {
     if (typeof window === "object") {
         window.bracketsGit = {
             EventEmitter: EventEmitter,
-            Events: Events,
-            getInstalledExtensions: function () {
-                window.console.error("[brackets-git] getInstalledExtensions");
-            }
+            Events: Events
         };
     }
 });

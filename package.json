@@ -1,6 +1,6 @@
 {
-  "name": "zaggino.brackets-git",
-  "title": "Brackets Git",
+  "name": "phcode-git-core",
+  "title": "Phoenix Code Git",
   "version": "0.16.6",
   "engines": {
     "brackets": ">=1.7.0"
@@ -12,17 +12,17 @@
     "version-control",
     "source-control"
   ],
-  "homepage": "https://github.com/zaggino/brackets-git",
-  "bugs": "https://github.com/zaggino/brackets-git/issues",
-  "license": "MIT",
+  "homepage": "https://github.com/phcode-dev/phoenix-git-port",
+  "bugs": "https://github.com/phcode-dev/phoenix-git-port/issues",
+  "license": "GNU AGPL",
   "author": {
-    "name": "Martin Zagora",
+    "name": "originally Martin Zagora, modified by arun@phcode",
     "email": "zaggino@gmail.com",
     "url": "https://github.com/zaggino"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zaggino/brackets-git.git"
+    "url": "https://github.com/phcode-dev/phoenix-git-port.git"
   },
   "scripts": {
     "test": "grunt test"
