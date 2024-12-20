@@ -1,9 +1,22 @@
-# Brackets-Git [![build status](https://travis-ci.org/zaggino/brackets-git.svg?branch=master)](https://travis-ci.org/zaggino/brackets-git)
+# Phoenix-Git [![build status](https://travis-ci.org/zaggino/brackets-git.svg?branch=master)](https://travis-ci.org/zaggino/brackets-git)
 
-Brackets-Git is an extension for [Brackets](http://brackets.io/) editor - it provides Git integration for Brackets.
-It's tested and works on any platform supported by Brackets (Windows, Mac OS X, GNU/Linux).
+This is a temporary repo to port in the brackets-git extension into phoenix code. This is created to track
+all changes made to the original extension and help to understand what all changes were made for future reference.
+This repo will be archives as soon as this extension is merged into phoenix code.
 
-## Installation
+The original extension was written in trypescript, and as phoenix core will be pure JS, we need a js impl. Luckily,
+the extension was originally written in js and only sprinkled ts for code hints to work in older versions of vscode.
+So the ts compiled output was usable as is with comments and structure intact. We copied the compiled extension
+as the base and build from there.
+
+Platform supported: Windows, Mac OS X, GNU/Linux
+
+In browsers, we could use isomorphic git, but we may need to make changes to our fs access backed vfs to add support.
+it also brings in problems as the fs access apis doesnt support changing file modes(Eg. read only, executable flags etc..)
+But we could make it work in read only mode to help browser users to atleast see the changes in ui.
+files fs is supported by isomorphic git, so we could use that in indexed db backed fs paths.
+
+## Old extension readme follows
 
 #### Dependencies:
 To make **Brackets-Git** work you'll need Git installed in your system:
