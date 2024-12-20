@@ -1,4 +1,4 @@
-var ProcessUtils = require("./ProcessUtils");
+const ProcessUtils = require("./processUtils");
 
 /*
 var pid = 5064;

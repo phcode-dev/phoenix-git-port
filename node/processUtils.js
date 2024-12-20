@@ -1,7 +1,7 @@
 var exec  = require("child_process").exec,
     fs    = require("fs"),
     Path  = require("path"),
-    which = require("../thirdparty/which");
+    which = require("which");
 
 var isWin = /^win/.test(process.platform);
 var noop = function () {};
