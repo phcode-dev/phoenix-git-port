@@ -27,18 +27,8 @@
   "scripts": {
     "test": "grunt test"
   },
-  "dependencies": {
-    "cross-spawn": "4.0.0"
-  },
-  "devDependencies": {
-    "grunt": "latest",
-    "grunt-contrib-jshint": "latest",
-    "grunt-jslint": "latest",
-    "grunt-lesslint": "latest",
-    "grunt-jscs": "latest",
-    "grunt-zip": "latest",
-    "grunt-lineending": "latest"
-  },
+  "dependencies": {},
+  "devDependencies": {},
   "i18n": [
     "en",
     "en-gb",
@@ -59,5 +49,10 @@
         "Versionskontrollsystem"
       ]
     }
+  },
+  "nodeConfig": {
+    "nodeIsRequired": false,
+    "main": "node/cli.js",
+    "npmInstall": "node/"
   }
 }
