@@ -7,7 +7,6 @@ define(function (require, exports) {
         Dialogs                 = brackets.getModule("widgets/Dialogs"),
         Mustache                = brackets.getModule("thirdparty/mustache/mustache"),
         Preferences             = require("./Preferences"),
-        ChangelogDialog         = require("../src/ChangelogDialog"),
         Strings                 = require("../strings"),
         Git                     = require("./git/Git"),
         settingsDialogTemplate  = require("text!templates/git-settings-dialog.html");
@@ -93,11 +92,6 @@ define(function (require, exports) {
         $("button[data-button-id='defaults']", $dialog).on("click", function (e) {
             e.stopPropagation();
             setValues(Preferences.getDefaults());
-        });
-
-        $("button[data-button-id='changelog']", $dialog).on("click", function (e) {
-            e.stopPropagation();
-            ChangelogDialog.show();
         });
     }
 

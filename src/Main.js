@@ -15,7 +15,6 @@ define(function (require, exports) {
         ErrorHandler      = require("src/ErrorHandler"),
         Panel             = require("src/Panel"),
         Branch            = require("src/Branch"),
-        ChangelogDialog   = require("src/ChangelogDialog"),
         SettingsDialog    = require("src/SettingsDialog"),
         CloseNotModified  = require("src/CloseNotModified"),
         ExtensionInfo     = require("src/ExtensionInfo"),
@@ -107,22 +106,19 @@ define(function (require, exports) {
 
     function _displayExtensionInfoIfNeeded() {
         return new Promise(function (resolve) {
-            // Display settings panel on first start / changelog dialog on version change
+            // Display settings panel on first start
             ExtensionInfo.get().then(function (packageJson) {
                 // do not display dialogs when running tests
                 if (window.isBracketsTestWindow) {
                     return;
                 }
-                var lastVersion    = Preferences.get("lastVersion"),
+                const lastVersion    = Preferences.get("version"),
                     currentVersion = packageJson.version;
 
                 if (!lastVersion) {
-                    Preferences.persist("lastVersion", "firstStart");
                     SettingsDialog.show();
-                } else if (lastVersion !== currentVersion) {
-                    Preferences.persist("lastVersion", currentVersion);
-                    ChangelogDialog.show();
                 }
+                Preferences.persist("version", currentVersion);
 
                 resolve();
             });
