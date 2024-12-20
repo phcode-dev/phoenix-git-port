@@ -308,12 +308,6 @@ define(function (require, exports, module) {
         return cliHandler("which", cmd);
     }
 
-    function pathExists(path) {
-        return cliHandler("pathExists", path).then(function (response) {
-            return typeof response === "string" ? response === "true" : response;
-        });
-    }
-
     function spawnCommand(cmd, args, opts) {
         return cliHandler("spawn", cmd, args, opts);
     }
@@ -349,7 +343,6 @@ define(function (require, exports, module) {
     // Public API
     exports.cliHandler      = cliHandler;
     exports.which           = which;
-    exports.pathExists      = pathExists;
     exports.executeCommand  = executeCommand;
     exports.spawnCommand    = spawnCommand;
     exports.escapeShellArg  = escapeShellArg;

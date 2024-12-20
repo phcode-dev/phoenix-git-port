@@ -45,7 +45,7 @@ define(function (require, exports, module) {
     // Register command and add it to the menu.
     var SETTINGS_COMMAND_ID = "brackets-git.settings";
     CommandManager.register(Strings.GIT_SETTINGS, SETTINGS_COMMAND_ID, SettingsDialog.show);
-    Menus.getMenu(Menus.AppMenuBar.FILE_MENU).addMenuItem(SETTINGS_COMMAND_ID, "", Menus.AFTER, Commands.FILE_LIVE_FILE_PREVIEW_SETTINGS);
+    Menus.getMenu(Menus.AppMenuBar.FILE_MENU).addMenuItem(SETTINGS_COMMAND_ID, "", Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
 
     AppInit.appReady(function () {
         Main.init();

@@ -132,12 +132,6 @@ function which(directory, filePath, args, opts, callback) {
     });
 }
 
-function pathExists(directory, path, args, opts, callback) {
-    fs.exists(path, function (exists) {
-        callback(null, exists);
-    });
-}
-
 /**
  * Initializes the domain.
  * @param {DomainManager} DomainManager for the server
@@ -218,23 +212,6 @@ exports.init = function (_domainManager) {
         ],
         [
             { name: "path", type: "string" }
-        ]
-    );
-
-    domainManager.registerCommand(
-        domainName,
-        "pathExists",
-        pathExists,
-        true,
-        "Looks if given path exists on the file system",
-        [
-            { name: "directory", type: "string" },
-            { name: "path", type: "string" },
-            { name: "args", type: "array" },
-            { name: "opts", type: "object" }
-        ],
-        [
-            { name: "exists", type: "boolean" }
         ]
     );
 
