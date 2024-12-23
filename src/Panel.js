@@ -1151,7 +1151,6 @@ define(function (require, exports) {
                 }
             })
             .on("click", ".git-pull", EventEmitter.emitFactory(Events.HANDLE_PULL))
-            .on("click", ".git-bug", ErrorHandler.reportBug)
             .on("click", ".git-init", EventEmitter.emitFactory(Events.HANDLE_GIT_INIT))
             .on("click", ".git-clone", EventEmitter.emitFactory(Events.HANDLE_GIT_CLONE))
             .on("click", ".change-remote", EventEmitter.emitFactory(Events.HANDLE_REMOTE_PICK))

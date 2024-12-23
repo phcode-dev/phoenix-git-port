@@ -17,7 +17,6 @@ define(function (require, exports) {
         Branch            = require("src/Branch"),
         SettingsDialog    = require("src/SettingsDialog"),
         CloseNotModified  = require("src/CloseNotModified"),
-        ExtensionInfo     = require("src/ExtensionInfo"),
         Setup             = require("src/utils/Setup"),
         Preferences       = require("src/Preferences"),
         Utils             = require("src/Utils"),
@@ -104,49 +103,23 @@ define(function (require, exports) {
         return _addRemoveItemInGitignore(fileEntry, "remove");
     }
 
-    function _displayExtensionInfoIfNeeded() {
-        return new Promise(function (resolve) {
-            // Display settings panel on first start
-            ExtensionInfo.get().then(function (packageJson) {
-                // do not display dialogs when running tests
-                if (window.isBracketsTestWindow) {
-                    return;
-                }
-                const lastVersion    = Preferences.get("version"),
-                    currentVersion = packageJson.version;
-
-                if (!lastVersion) {
-                    SettingsDialog.show();
-                }
-                Preferences.persist("version", currentVersion);
-
-                resolve();
-            });
-        });
-    }
-
     function init() {
         // Initialize items dependent on HTML DOM
         AppInit.htmlReady(function () {
             $icon.removeClass("loading").removeAttr("title");
 
             // Try to get Git version, if succeeds then Git works
-            Setup.findGit().then(function (version) {
-
-                Strings.GIT_VERSION = version;
-
-                _displayExtensionInfoIfNeeded();
+            Setup.findGit().then(function (_version) {
 
                 initUi();
 
             }).catch(function (err) {
                 $icon.addClass("error").attr("title", Strings.CHECK_GIT_SETTINGS + " - " + err.toString());
 
-                _displayExtensionInfoIfNeeded().then(function () {
-                    var expected = new ExpectedError(err);
-                    expected.detailsUrl = "https://github.com/zaggino/brackets-git#dependencies";
-                    ErrorHandler.showError(expected, Strings.CHECK_GIT_SETTINGS);
-                });
+                var expected = new ExpectedError(err);
+                // todo git: docs url update here
+                expected.detailsUrl = "https://docs.phcode.dev/docs/";
+                ErrorHandler.showError(expected, Strings.CHECK_GIT_SETTINGS);
 
             });
 
