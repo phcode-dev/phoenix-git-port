@@ -143,6 +143,7 @@ define({
     OK:                                 "OK",
     OPERATION_IN_PROGRESS_TITLE:        "Git operation in progress\u2026",
     ORIGIN_BRANCH:                      "Origin branch",
+    ON_BRANCH:                          "On Git branch {0}",
     PANEL_COMMAND:                      "Show Git panel",
     PANEL_SHORTCUT:                     "Toggle panel",
     PASSWORD:                           "Password",

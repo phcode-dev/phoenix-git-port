@@ -337,12 +337,16 @@ define(function (require, exports) {
             }, []);
 
             $dropdown = $(renderList(branches));
+            const $toggle = $("#git-branch-dropdown-toggle");
+            // two margins to account for the preceding project dropdown as well
+            const marginLeft = (parseInt($toggle.css("margin-left"), 10) * 2) || 0;
 
-            var toggleOffset = $gitBranchName.offset();
+            const toggleOffset = $toggle.offset();
+
             $dropdown
                 .css({
-                    left: toggleOffset.left,
-                    top: toggleOffset.top + $gitBranchName.outerHeight()
+                    left: toggleOffset.left - marginLeft + 3,
+                    top: toggleOffset.top + $toggle.outerHeight() - 3
                 })
                 .appendTo($("body"));
 
@@ -454,14 +458,17 @@ define(function (require, exports) {
 
                     EventEmitter.emit(Events.REBASE_MERGE_MODE, mergeInfo.rebaseMode, mergeInfo.mergeMode);
 
-                    var MAX_LEN = 20;
+                    var MAX_LEN = 18;
 
+                    const tooltip = StringUtils.format(Strings.ON_BRANCH, branchName);
+                    const html = `<i class='octicon octicon-git-branch'></i> ${
+                        branchName.length > MAX_LEN ? branchName.substring(0, MAX_LEN) + "\u2026" : branchName
+                    }`;
                     $gitBranchName
-                        .text(branchName.length > MAX_LEN ? branchName.substring(0, MAX_LEN) + "\u2026" : branchName)
-                        .attr("title", branchName.length > MAX_LEN ? branchName : null)
+                        .html(html)
+                        .attr("title", tooltip)
                         .off("click")
                         .on("click", toggleDropdown)
-                        .append($("<span class='dropdown-arrow' />"));
                     Panel.enable();
 
                 }).catch(function (err) {
@@ -485,15 +492,18 @@ define(function (require, exports) {
 
     function init() {
         // Add branch name to project tree
-        $gitBranchName = $("<span id='git-branch'></span>");
-        $("<div id='git-branch-dropdown-toggle' class='btn-alt-quiet'></div>")
-            .append("<i class='octicon octicon-git-branch'></i> ")
-            .append($gitBranchName)
-            .on("click", function () {
-                $gitBranchName.click();
-                return false;
-            })
-            .appendTo($("<div></div>").appendTo("#project-files-header"));
+        const $html = $(`<div id='git-branch-dropdown-toggle' class='btn-alt-quiet'>
+            <span id='git-branch'>
+                <i class='octicon octicon-git-branch'></i>
+            </span>
+            <span class="dropdown-arrow"></span>
+            </div>`);
+        $html.appendTo($("#project-files-header"));
+        $gitBranchName = $("#git-branch");
+        $html.on("click", function () {
+            $gitBranchName.click();
+            return false;
+        });
         refresh();
     }
 

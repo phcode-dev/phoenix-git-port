@@ -38,19 +38,35 @@
 }
 
 /* Branch information */
-#git-branch {
-    /* vertical align center text */
-    height: 21px;
-    line-height: 21px;
-}
 #git-branch-dropdown-toggle {
-    display: inline-block;
-    /* adjust margins to keep position #git-branch position stable after extension is loaded */
-    margin: -3px 0px -2px -6px;
+    display: flex;
+    /* adjust margins to keep position #project-title position stable after extension is loaded */
     overflow: hidden;
-    padding: 0 5px;
     white-space: nowrap;
+    padding: 2px 5px;
+    margin-left: -5px;
+    .dropdown-arrow {
+        display: inline-block;
+        width: 7px;
+        height: 5px;
+        margin-left: 4px;
+        position: relative;
+        top: 7px;
+    }
 }
+
+#git-branch {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1 1 0;
+    .octicon {
+        margin-right: 2px;
+        line-height: unset;
+        font-size: inherit;
+    }
+}
+
 #git-branch-dropdown {
     margin-left: -12px;
     position: absolute;

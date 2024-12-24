@@ -113,7 +113,6 @@ define(function (require, exports, module) {
 
         gitNodeConnector.execPeer(method, {directory: opts.cwd, command: cmd, args: args, opts: domainOpts})
             .catch(function (err) { // jQuery promise - .fail is fine
-                debugger
                 if (!resolved) {
                     err = sanitizeOutput(err);
                     if (debugOn) {
