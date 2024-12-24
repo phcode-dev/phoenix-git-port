@@ -36,7 +36,9 @@ define(function (require, exports) {
                 if (removeOpenFile) {
                     // check if file doesn't have any unsaved changes
                     const doc = DocumentManager.getOpenDocumentForPath(openFile.fullPath);
-                    if (doc && !doc.isDirty) {
+                    // document will not  be present for images, or if the file is in working set but
+                    // no editor is attached yet(eg. session restore on app start)
+                    if (!doc || !doc.isDirty) {
                         CommandManager.execute(Commands.FILE_CLOSE_LIST, {PaneId: MainViewManager.ALL_PANES, fileList: [openFile]});
                     }
                 }
