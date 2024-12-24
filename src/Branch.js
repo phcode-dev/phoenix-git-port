@@ -358,7 +358,7 @@ define(function (require, exports) {
                 $dropdown.css("bottom", "10px");
             }
 
-            PopUpManager.addPopUp($dropdown, detachCloseEvents, true);
+            PopUpManager.addPopUp($dropdown, detachCloseEvents, true, {closeCurrentPopups: true});
             attachCloseEvents();
             handleEvents();
         });
