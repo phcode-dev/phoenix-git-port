@@ -196,7 +196,6 @@ define({
     TITLE_RESET:                        "Do you really wish to reset?",
     TOOLTIP_CHECKOUT_COMMIT:            "Checkout a specific commit",
     TOOLTIP_CLONE:                      "Clone existing repository",
-    TOOLTIP_CLOSE_NOT_MODIFIED:         "Close files not modified in Git [Shift-click to reopen modified files]",
     TOOLTIP_COMMIT:                     "Commit the selected files",
     TOOLTIP_FETCH:                      "Fetch all remotes and refresh counters",
     TOOLTIP_FIND_CONFLICTS:             "Starts a search for Git merge/rebase conflicts in the project",
@@ -234,5 +233,6 @@ define({
     VIEW_AUTHORS_SELECTION:             "View authors of selection",
     VIEW_THIS_FILE:                     "View this file",
     TAG_NAME_PLACEHOLDER:               "Enter tag name here\u2026",
-    TAG_NAME:                           "Tag"
+    TAG_NAME:                           "Tag",
+    CMD_CLOSE_UNMODIFIED:               "Close unchanged in Git"
 });

@@ -15,6 +15,9 @@ define(function (require, exports, module) {
         ExtensionUtils  = brackets.getModule("utils/ExtensionUtils"),
         Menus           = brackets.getModule("command/Menus");
 
+    const GIT_STRING_UNIVERSAL = "Git",
+        GIT_SUB_MENU = "git-submenu";
+
     // Local modules
     var SettingsDialog  = require("src/SettingsDialog"),
         EventEmitter    = require("src/EventEmitter"),
@@ -45,7 +48,11 @@ define(function (require, exports, module) {
     // Register command and add it to the menu.
     var SETTINGS_COMMAND_ID = "brackets-git.settings";
     CommandManager.register(Strings.GIT_SETTINGS, SETTINGS_COMMAND_ID, SettingsDialog.show);
-    Menus.getMenu(Menus.AppMenuBar.FILE_MENU).addMenuItem(SETTINGS_COMMAND_ID, "", Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
+
+    const fileMenu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
+    let subMenu = fileMenu.addSubMenu(GIT_STRING_UNIVERSAL, GIT_SUB_MENU, Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
+    subMenu.addMenuItem(SETTINGS_COMMAND_ID, "");
+    fileMenu.addMenuDivider(Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
 
     AppInit.appReady(function () {
         Main.init();

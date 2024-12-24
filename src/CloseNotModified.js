@@ -4,24 +4,23 @@
 define(function (require, exports) {
     "use strict";
 
-    var DocumentManager = brackets.getModule("document/DocumentManager"),
-        FileSystem      = brackets.getModule("filesystem/FileSystem"),
+    const DocumentManager = brackets.getModule("document/DocumentManager"),
+        Menus           = brackets.getModule("command/Menus"),
+        Commands        = brackets.getModule("command/Commands"),
+        CommandManager  = brackets.getModule("command/CommandManager"),
         MainViewManager = brackets.getModule("view/MainViewManager");
 
-    var Events        = require("src/Events"),
+    const Events      = require("src/Events"),
         EventEmitter  = require("src/EventEmitter"),
         Git           = require("src/git/Git"),
         Preferences   = require("src/Preferences"),
         Strings       = require("strings");
 
-    var $icon = $(null);
+    let closeUnmodifiedCmd, gitEnabled = false;
 
-    function handleCloseNotModified(event) {
-        var reopenModified = false;
-        if (event.shiftKey) {
-            reopenModified = true;
-        }
+    const CMD_CLOSE_UNMODIFIED = "git-close-unmodified-files";
 
+    function handleCloseNotModified() {
         Git.status().then(function (modifiedFiles) {
             var openFiles      = MainViewManager.getWorkingSet(MainViewManager.ALL_PANES),
                 currentGitRoot = Preferences.get("currentGitRoot");
@@ -31,77 +30,47 @@ define(function (require, exports) {
                 modifiedFiles.forEach(function (modifiedFile) {
                     if (currentGitRoot + modifiedFile.file === openFile.fullPath) {
                         removeOpenFile = false;
-                        modifiedFile.isOpen = true;
                     }
                 });
 
                 if (removeOpenFile) {
                     // check if file doesn't have any unsaved changes
-                    var doc = DocumentManager.getOpenDocumentForPath(openFile.fullPath);
-                    if (doc && doc.isDirty) {
-                        removeOpenFile = false;
+                    const doc = DocumentManager.getOpenDocumentForPath(openFile.fullPath);
+                    if (doc && !doc.isDirty) {
+                        CommandManager.execute(Commands.FILE_CLOSE_LIST, {PaneId: MainViewManager.ALL_PANES, fileList: [openFile]})
                     }
                 }
-
-                if (removeOpenFile && !reopenModified) {
-                    MainViewManager._close(MainViewManager.ALL_PANES, openFile);
-                }
             });
-
-            if (reopenModified) {
-                var filesToReopen = modifiedFiles.filter(function (modifiedFile) {
-                    return !modifiedFile.isOpen;
-                });
-                filesToReopen.forEach(function (fileObj) {
-                    var fileEntry = FileSystem.getFileForPath(currentGitRoot + fileObj.file);
-                    MainViewManager.addToWorkingSet(MainViewManager.ACTIVE_PANE, fileEntry);
-                });
-            }
 
             MainViewManager.focusActivePane();
         });
     }
 
-    function updateIconState() {
-        if (MainViewManager.getPaneCount() === 1 &&
-            MainViewManager.getWorkingSetSize(MainViewManager.ACTIVE_PANE) === 0) {
-            $icon.toggleClass("working-set-not-available", true);
-            $icon.toggleClass("working-set-available", false);
-        } else {
-            $icon.toggleClass("working-set-not-available", false);
-            $icon.toggleClass("working-set-available", true);
+    function updateMenuItemState() {
+        if(!closeUnmodifiedCmd){
+            return;
         }
+        closeUnmodifiedCmd.setEnabled(gitEnabled);
     }
 
     function init() {
-        // Add close not modified button near working files list
-        $icon = $("<div/>")
-            .addClass("git-close-not-modified btn-alt-quiet")
-            .attr("title", Strings.TOOLTIP_CLOSE_NOT_MODIFIED)
-            .html("<i class='octicon octicon-remove-close'></i>")
-            .on("click", handleCloseNotModified)
-            .appendTo("#sidebar");
-        updateIconState();
+        closeUnmodifiedCmd       = CommandManager.register(Strings.CMD_CLOSE_UNMODIFIED,
+            CMD_CLOSE_UNMODIFIED, handleCloseNotModified);
+        const fileMenu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
+        fileMenu.addMenuItem(CMD_CLOSE_UNMODIFIED, undefined, Menus.AFTER, Commands.FILE_CLOSE_ALL, {
+            hideWhenCommandDisabled: true
+        });
+        updateMenuItemState();
     }
 
     EventEmitter.on(Events.GIT_ENABLED, function () {
-        $icon.show();
+        gitEnabled = true;
+        updateMenuItemState();
     });
 
     EventEmitter.on(Events.GIT_DISABLED, function () {
-        $icon.hide();
-    });
-
-    MainViewManager.on([
-        "workingSetAdd",
-        "workingSetAddList",
-        "workingSetRemove",
-        "workingSetRemoveList",
-        "workingSetUpdate",
-        "paneCreate",
-        "paneDestroy"
-    ].join(" "), function () {
-        updateIconState();
+        gitEnabled = false;
+        updateMenuItemState();
     });
 
     // Public API
