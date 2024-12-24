@@ -37,7 +37,7 @@ define(function (require, exports) {
                     // check if file doesn't have any unsaved changes
                     const doc = DocumentManager.getOpenDocumentForPath(openFile.fullPath);
                     if (doc && !doc.isDirty) {
-                        CommandManager.execute(Commands.FILE_CLOSE_LIST, {PaneId: MainViewManager.ALL_PANES, fileList: [openFile]})
+                        CommandManager.execute(Commands.FILE_CLOSE_LIST, {PaneId: MainViewManager.ALL_PANES, fileList: [openFile]});
                     }
                 }
             });

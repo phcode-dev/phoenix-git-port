@@ -35,7 +35,6 @@ define(function (require, exports, module) {
         "gotoPrevChangeShortcut": {         "type": "string",            "value": null              },
         "gotoNextChangeShortcut": {         "type": "string",            "value": null              },
         "refreshShortcut": {                "type": "string",            "value": null              },
-        "showTerminalIcon": {               "type": "boolean",           "value": false             },
         // system
         "debugMode": {                      "type": "boolean",           "value": false             },
         "gitTimeout": {                     "type": "number",            "value": 30                },

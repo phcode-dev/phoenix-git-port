@@ -37,7 +37,6 @@ define(function (require, exports, module) {
         "src/utils/Terminal"
     ];
     if (Preferences.get("useGitFtp")) { modules.push("src/ftp/Ftp"); }
-    if (Preferences.get("showTerminalIcon")) { modules.push("src/TerminalIcon"); }
     require(modules);
 
     // Load CSS

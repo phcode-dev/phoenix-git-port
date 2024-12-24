@@ -187,7 +187,6 @@ define({
     SHORTCUTS_HINT:                     "Separate keys with dash, like this: Ctrl-Alt-G<br>You can use the english key identifiers Ctrl, Cmd (Mac), Alt and Shift.",
     SHOWN_DATE_FORMAT:                  "Format of commit dates in history",
     SHOW_BASH_TERMINAL_BUTTON:          "Show Bash/Terminal button in the panel",
-    SHOW_TERMINAL_IN_TOOLBAR:           "Show Terminal icon in toolbar",
     SHOW_UNTRACKED:                     "Show untracked",
     STRIP_WHITESPACE_FROM_COMMITS:      "Strip trailing whitespace from commits",
     TARGET_BRANCH:                      "Target branch",
