@@ -33,8 +33,7 @@ define(function (require, exports, module) {
         "src/History",
         "src/NoRepo",
         "src/ProjectTreeMarks",
-        "src/Remotes",
-        "src/utils/Terminal"
+        "src/Remotes"
     ];
     if (Preferences.get("useGitFtp")) { modules.push("src/ftp/Ftp"); }
     require(modules);

@@ -8,8 +8,7 @@ define(function (require, exports) {
     var Cli         = require("src/Cli"),
         Git         = require("src/git/Git"),
         Preferences = require("src/Preferences"),
-        Promise     = require("bluebird"),
-        Utils       = require("src/Utils");
+        Promise     = require("bluebird");
 
     // Module variables
     var standardGitPathsWin = [

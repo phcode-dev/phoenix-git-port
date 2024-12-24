@@ -54,8 +54,4 @@ define(function (require, exports) {
     exports.REMOTES_REFRESH_PICKER = "remotes.refresh.picker";
     exports.FETCH_STARTED = "remotes.fetch.started";
     exports.FETCH_COMPLETE = "remotes.fetch.complete";
-
-    // utils/Terminal.js
-    exports.TERMINAL_OPEN = "terminal.open";
-    exports.TERMINAL_DISABLE = "terminal.disable";
 });

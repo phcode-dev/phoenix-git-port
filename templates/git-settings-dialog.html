@@ -58,14 +58,6 @@
                 </div>
                 <div>
                     <div>
-                        <label for="git-settings-showBashButton">
-                            <input id="git-settings-showBashButton" type="checkbox" settingsProperty="showBashButton" />
-                            {{SHOW_BASH_TERMINAL_BUTTON}}
-                        </label>
-                    </div>
-                </div>
-                <div>
-                    <div>
                         <label for="git-settings-useCodeInspection">
                             <input id="git-settings-useCodeInspection" type="checkbox" settingsProperty="useCodeInspection" />
                             {{USE_CODE_INSPECTION}}
@@ -173,10 +165,6 @@
                 </div>
                 <div>
                     <div>
-                        <label for="git-settings-bashShortcut">{{LAUNCH_BASH_SHORTCUT}}:</label>
-                        <input id="git-settings-bashShortcut" type="text" settingsProperty="bashShortcut" />
-                    </div>
-                    <div>
                         <label for="git-settings-pushShortcut">{{PUSH_SHORTCUT}}:</label>
                         <input id="git-settings-pushShortcut" type="text" settingsProperty="pushShortcut" />
                     </div>
@@ -212,17 +200,6 @@
                 <div class="row-fluid">
                     <label for="git-settings-gitTimeout">{{DEFAULT_GIT_TIMEOUT}}:</label>
                     <input id="git-settings-gitTimeout" type="number" settingsProperty="gitTimeout" />
-                </div>
-                <div class="row-fluid">
-                    <label for="git-settings-terminalCommand">{{CUSTOM_TERMINAL_COMMAND}}:</label>
-                    <input id="git-settings-terminalCommand" type="text" settingsProperty="terminalCommand" />
-                </div>
-                <div class="row-fluid">
-                    <label for="git-settings-terminalCommandArgs">{{COMMAND_ARGUMENTS}}:</label>
-                    <input id="git-settings-terminalCommandArgs" type="text" settingsProperty="terminalCommandArgs" />
-                </div>
-                <div class="row-fluid">
-                    {{{CUSTOM_TERMINAL_COMMAND_HINT}}}
                 </div>
                 <!-- /gitConfig -->
             </div>

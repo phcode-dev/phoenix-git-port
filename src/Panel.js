@@ -1106,7 +1106,6 @@ define(function (require, exports) {
         // Add panel
         var panelHtml = Mustache.render(gitPanelTemplate, {
             enableAdvancedFeatures: Preferences.get("enableAdvancedFeatures"),
-            showBashButton: Preferences.get("showBashButton"),
             S: Strings
         });
         var $panelHtml = $(panelHtml);
@@ -1170,7 +1169,6 @@ define(function (require, exports) {
             .on("click", ".change-user-email", EventEmitter.emitFactory(Events.GIT_CHANGE_EMAIL))
             .on("click", ".toggle-gerrit-push-ref", EventEmitter.emitFactory(Events.GERRIT_TOGGLE_PUSH_REF))
             .on("click", ".undo-last-commit", undoLastLocalCommit)
-            .on("click", ".git-bash", EventEmitter.emitFactory(Events.TERMINAL_OPEN))
             .on("click", ".tags", function (e) {
                 e.stopPropagation();
                 handleGitTag($(e.target).closest("tr").attr("x-file"));
@@ -1192,7 +1190,6 @@ define(function (require, exports) {
         // Commit current and all shortcuts
         var COMMIT_CURRENT_CMD = "brackets-git.commitCurrent",
             COMMIT_ALL_CMD     = "brackets-git.commitAll",
-            BASH_CMD           = "brackets-git.launchBash",
             PUSH_CMD           = "brackets-git.push",
             PULL_CMD           = "brackets-git.pull",
             GOTO_PREV_CHANGE   = "brackets-git.gotoPrevChange",
@@ -1209,9 +1206,6 @@ define(function (require, exports) {
 
         CommandManager.register(Strings.COMMIT_ALL_SHORTCUT, COMMIT_ALL_CMD, commitAllFiles);
         KeyBindingManager.addBinding(COMMIT_ALL_CMD, Preferences.get("commitAllShortcut"), brackets.platform);
-
-        CommandManager.register(Strings.LAUNCH_BASH_SHORTCUT, BASH_CMD, EventEmitter.emitFactory(Events.TERMINAL_OPEN));
-        KeyBindingManager.addBinding(BASH_CMD, Preferences.get("bashShortcut"), brackets.platform);
 
         CommandManager.register(Strings.PUSH_SHORTCUT, PUSH_CMD, EventEmitter.emitFactory(Events.HANDLE_PUSH));
         KeyBindingManager.addBinding(PUSH_CMD, Preferences.get("pushShortcut"), brackets.platform);
@@ -1343,10 +1337,6 @@ define(function (require, exports) {
 
     EventEmitter.on(Events.HANDLE_GIT_COMMIT, function () {
         handleGitCommit(lastCommitMessage, false, COMMIT_MODE.DEFAULT);
-    });
-
-    EventEmitter.on(Events.TERMINAL_DISABLE, function () {
-        $gitPanel.find(".git-bash").prop("disabled", true).attr("title", Strings.TERMINAL_DISABLED);
     });
 
     exports.init = init;

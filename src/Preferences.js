@@ -17,7 +17,6 @@ define(function (require, exports, module) {
         "useCodeInspection": {              "type": "boolean",           "value": true              },
         "useGitFtp": {                      "type": "boolean",           "value": false             },
         "avatarType": {                     "type": "string",            "value": "AVATAR_COLOR"    },
-        "showBashButton": {                 "type": "boolean",           "value": true              },
         "dateMode": {                       "type": "number",            "value": 1                 },
         "dateFormat": {                     "type": "string",            "value": null              },
         "enableAdvancedFeatures": {         "type": "boolean",           "value": false             },
@@ -29,7 +28,6 @@ define(function (require, exports, module) {
         "panelShortcut": {                  "type": "string",            "value": "Ctrl-Alt-G"      },
         "commitCurrentShortcut": {          "type": "string",            "value": null              },
         "commitAllShortcut": {              "type": "string",            "value": null              },
-        "bashShortcut": {                   "type": "string",            "value": null              },
         "pushShortcut": {                   "type": "string",            "value": null              },
         "pullShortcut": {                   "type": "string",            "value": null              },
         "gotoPrevChangeShortcut": {         "type": "string",            "value": null              },
@@ -38,9 +36,7 @@ define(function (require, exports, module) {
         // system
         "debugMode": {                      "type": "boolean",           "value": false             },
         "gitTimeout": {                     "type": "number",            "value": 30                },
-        "gitPath": {                        "type": "string",            "value": ""                },
-        "terminalCommand": {                "type": "string",            "value": ""                },
-        "terminalCommandArgs": {            "type": "string",            "value": ""                }
+        "gitPath": {                        "type": "string",            "value": ""                }
     };
 
     var prefs = PreferencesManager.getExtensionPrefs(prefix);
