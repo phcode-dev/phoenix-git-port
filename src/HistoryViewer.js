@@ -1,12 +1,12 @@
 define(function (require, exports) {
     "use strict";
 
-    var _               = brackets.getModule("thirdparty/lodash"),
+    const _               = brackets.getModule("thirdparty/lodash"),
         FileUtils       = brackets.getModule("file/FileUtils"),
-        Mustache        = brackets.getModule("thirdparty/mustache/mustache");
+        Mustache        = brackets.getModule("thirdparty/mustache/mustache"),
+        marked          = brackets.getModule('thirdparty/marked.min').marked;
 
-    var marked        = require("marked"),
-        ErrorHandler  = require("src/ErrorHandler"),
+    const ErrorHandler  = require("src/ErrorHandler"),
         Events        = require("src/Events"),
         EventEmitter  = require("src/EventEmitter"),
         Git           = require("src/git/Git"),
