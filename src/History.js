@@ -28,7 +28,7 @@ define(function (require) {
         avatarType        = Preferences.get("avatarType"),
         lastDocumentSeen  = null;
 
-    if (avatarType === "PICTURE" || avatarType === "IDENTICON") {
+    if (avatarType === "PICTURE") {
         var md5;
         require(["md5"], function (_md5) {
             md5 = _md5;
@@ -112,7 +112,6 @@ define(function (require) {
                 var templateData = {
                     commits: commits,
                     usePicture: avatarType === "PICTURE",
-                    useIdenticon: avatarType === "IDENTICON",
                     useBwAvatar: avatarType === "AVATAR_BW",
                     useColoredAvatar: avatarType === "AVATAR_COLOR",
                     Strings: Strings
@@ -167,7 +166,6 @@ define(function (require) {
                         var templateData = {
                             commits: commits,
                             usePicture: avatarType === "PICTURE",
-                            useIdenticon: avatarType === "IDENTICON",
                             useBwAvatar: avatarType === "AVATAR_BW",
                             useColoredAvatar: avatarType === "AVATAR_COLOR",
                             Strings: Strings
@@ -205,7 +203,7 @@ define(function (require) {
                 commit.cssAvatar = generateCssAvatar(commit.author, commit.email);
                 commit.avatarLetter = commit.author.substring(0, 1);
             }
-            if (avatarType === "PICTURE" || avatarType === "IDENTICON") {
+            if (avatarType === "PICTURE") {
                 commit.emailHash = generateMd5(commit.email);
             }
 

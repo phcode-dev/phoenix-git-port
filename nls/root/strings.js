@@ -126,7 +126,6 @@ define({
     HIDE_UNTRACKED:                     "Hide untracked",
     HISTORY:                            "History",
     HISTORY_COMMIT_BY:                  "by",
-    IDENTICON:                          "Identicon (www.gravatar.com)",
     INIT_GITFTP_SCOPE:                  "Initialize Git-FTP remote",
     INIT_GITFTP_SCOPE_NAME:             "Initialize Git-FTP remote \"{0}\"?",
     LINES:                              "Lines",

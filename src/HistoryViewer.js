@@ -197,7 +197,6 @@ define(function (require, exports) {
             commit: commit,
             bodyMarkdown: bodyMarkdown,
             usePicture: avatarType === "PICTURE",
-            useIdenticon: avatarType === "IDENTICON",
             useBwAvatar: avatarType === "AVATAR_BW",
             useColoredAvatar: avatarType === "AVATAR_COLOR",
             Strings: Strings,

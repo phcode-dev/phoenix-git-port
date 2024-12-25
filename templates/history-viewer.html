@@ -9,7 +9,6 @@
                     {{#useBwAvatar}}<span class="avatar-bw text" style="{{commit.cssAvatar}}">{{commit.avatarLetter}}</span>{{/useBwAvatar}}
                     {{#useColoredAvatar}}<span class="text" style="{{commit.cssAvatar}}">{{commit.avatarLetter}}</span>{{/useColoredAvatar}}
                     {{#usePicture}}<img src="http://gravatar.com/avatar/{{commit.emailHash}}?size=30px&default=identicon">{{/usePicture}}
-                    {{#useIdenticon}}<img src="http://gravatar.com/avatar/{{commit.emailHash}}?size=30px&default=identicon&f=y">{{/useIdenticon}}
                 </div>
                 <span class="commit-author-name">{{commit.author}}</span>
                 <span class="commit-author-email">&lt;{{commit.email}}&gt;</span>
