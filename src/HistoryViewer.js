@@ -196,7 +196,6 @@ define(function (require, exports) {
         $viewer.append(Mustache.render(historyViewerTemplate, {
             commit: commit,
             bodyMarkdown: bodyMarkdown,
-            usePicture: avatarType === "PICTURE",
             useBwAvatar: avatarType === "AVATAR_BW",
             useColoredAvatar: avatarType === "AVATAR_COLOR",
             Strings: Strings,

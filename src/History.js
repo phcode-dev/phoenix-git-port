@@ -28,13 +28,6 @@ define(function (require) {
         avatarType        = Preferences.get("avatarType"),
         lastDocumentSeen  = null;
 
-    if (avatarType === "PICTURE") {
-        var md5;
-        require(["md5"], function (_md5) {
-            md5 = _md5;
-        });
-    }
-
     // Implementation
 
     function initVariables() {
@@ -91,10 +84,6 @@ define(function (require) {
         return author + email;
     });
 
-    var generateMd5 = _.memoize(function (string) {
-        return md5(string);
-    });
-
     // Render history list the first time
     function renderHistory(file) {
         // clear cache
@@ -111,7 +100,6 @@ define(function (require) {
 
                 var templateData = {
                     commits: commits,
-                    usePicture: avatarType === "PICTURE",
                     useBwAvatar: avatarType === "AVATAR_BW",
                     useColoredAvatar: avatarType === "AVATAR_COLOR",
                     Strings: Strings
@@ -165,7 +153,6 @@ define(function (require) {
 
                         var templateData = {
                             commits: commits,
-                            usePicture: avatarType === "PICTURE",
                             useBwAvatar: avatarType === "AVATAR_BW",
                             useColoredAvatar: avatarType === "AVATAR_COLOR",
                             Strings: Strings
@@ -202,9 +189,6 @@ define(function (require) {
             if (avatarType === "AVATAR_COLOR" || avatarType === "AVATAR_BW") {
                 commit.cssAvatar = generateCssAvatar(commit.author, commit.email);
                 commit.avatarLetter = commit.author.substring(0, 1);
-            }
-            if (avatarType === "PICTURE") {
-                commit.emailHash = generateMd5(commit.email);
             }
 
             // FUTURE: convert date modes to sensible constant strings

@@ -8,7 +8,6 @@
                 <div class="commit-author-avatar">
                     {{#useBwAvatar}}<span class="avatar-bw text" style="{{commit.cssAvatar}}">{{commit.avatarLetter}}</span>{{/useBwAvatar}}
                     {{#useColoredAvatar}}<span class="text" style="{{commit.cssAvatar}}">{{commit.avatarLetter}}</span>{{/useColoredAvatar}}
-                    {{#usePicture}}<img src="http://gravatar.com/avatar/{{commit.emailHash}}?size=30px&default=identicon">{{/usePicture}}
                 </div>
                 <span class="commit-author-name">{{commit.author}}</span>
                 <span class="commit-author-email">&lt;{{commit.email}}&gt;</span>
