@@ -468,7 +468,7 @@ define(function (require, exports) {
                         .html(html)
                         .attr("title", tooltip)
                         .off("click")
-                        .on("click", toggleDropdown)
+                        .on("click", toggleDropdown);
                     Panel.enable();
 
                 }).catch(function (err) {
