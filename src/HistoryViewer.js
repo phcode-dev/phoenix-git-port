@@ -17,8 +17,7 @@ define(function (require, exports) {
     var historyViewerTemplate       = require("text!templates/history-viewer.html"),
         historyViewerFilesTemplate  = require("text!templates/history-viewer-files.html");
 
-    var avatarType             = Preferences.get("avatarType"),
-        enableAdvancedFeatures = Preferences.get("enableAdvancedFeatures"),
+    let enableAdvancedFeatures = Preferences.get("enableAdvancedFeatures"),
         useDifftool            = false,
         isShown                = false,
         commit                 = null,
@@ -196,7 +195,6 @@ define(function (require, exports) {
         $viewer.append(Mustache.render(historyViewerTemplate, {
             commit: commit,
             bodyMarkdown: bodyMarkdown,
-            useColoredAvatar: avatarType === "AVATAR_COLOR",
             Strings: Strings,
             enableAdvancedFeatures: enableAdvancedFeatures
         }));

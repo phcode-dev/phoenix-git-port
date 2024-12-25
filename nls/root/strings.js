@@ -44,7 +44,6 @@ define({
     CLONE_REPOSITORY:                   "Clone repository",
     CODE_INSPECTION_PROBLEMS:           "Code inspection problems:",
     COLLAPSE_ALL:                       "Collapse all",
-    COLORED_AVATAR:                     "Colored avatar",
     COMMIT:                             "Commit",
     COMMIT_ALL_SHORTCUT:                "Commit all files",
     COMMIT_CURRENT_SHORTCUT:            "Commit current file",

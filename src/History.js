@@ -21,11 +21,10 @@ define(function (require) {
         gitPanelHistoryCommitsTemplate = require("text!templates/git-panel-history-commits.html");
 
     // Module variables
-    var $gitPanel         = $(null),
+    let $gitPanel         = $(null),
         $tableContainer   = $(null),
         $historyList      = $(null),
         commitCache       = [],
-        avatarType        = Preferences.get("avatarType"),
         lastDocumentSeen  = null;
 
     // Implementation
@@ -100,7 +99,6 @@ define(function (require) {
 
                 var templateData = {
                     commits: commits,
-                    useColoredAvatar: avatarType === "AVATAR_COLOR",
                     Strings: Strings
                 };
 
@@ -152,7 +150,6 @@ define(function (require) {
 
                         var templateData = {
                             commits: commits,
-                            useColoredAvatar: avatarType === "AVATAR_COLOR",
                             Strings: Strings
                         };
                         var commitsHtml = Mustache.render(gitPanelHistoryCommitsTemplate, templateData);
@@ -183,11 +180,8 @@ define(function (require) {
 
         _.forEach(commits, function (commit) {
 
-            // Get color for AVATAR_COLOR
-            if (avatarType === "AVATAR_COLOR") {
-                commit.cssAvatar = generateCssAvatar(commit.author, commit.email);
-                commit.avatarLetter = commit.author.substring(0, 1);
-            }
+            commit.cssAvatar = generateCssAvatar(commit.author, commit.email);
+            commit.avatarLetter = commit.author.substring(0, 1);
 
             // FUTURE: convert date modes to sensible constant strings
             if (mode === 4) {
