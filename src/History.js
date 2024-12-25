@@ -100,7 +100,6 @@ define(function (require) {
 
                 var templateData = {
                     commits: commits,
-                    useBwAvatar: avatarType === "AVATAR_BW",
                     useColoredAvatar: avatarType === "AVATAR_COLOR",
                     Strings: Strings
                 };
@@ -153,7 +152,6 @@ define(function (require) {
 
                         var templateData = {
                             commits: commits,
-                            useBwAvatar: avatarType === "AVATAR_BW",
                             useColoredAvatar: avatarType === "AVATAR_COLOR",
                             Strings: Strings
                         };
@@ -185,8 +183,8 @@ define(function (require) {
 
         _.forEach(commits, function (commit) {
 
-            // Get color for AVATAR_BW and AVATAR_COLOR
-            if (avatarType === "AVATAR_COLOR" || avatarType === "AVATAR_BW") {
+            // Get color for AVATAR_COLOR
+            if (avatarType === "AVATAR_COLOR") {
                 commit.cssAvatar = generateCssAvatar(commit.author, commit.email);
                 commit.avatarLetter = commit.author.substring(0, 1);
             }

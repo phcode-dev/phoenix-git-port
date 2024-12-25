@@ -13,7 +13,6 @@ define({
     AVATAR_TYPE:                        "Avatar type",
     BASH_NOT_AVAILABLE:                 "Bash is not available or properly configured",
     BASIC_CONFIGURATION:                "Basic configuration",
-    BLACK_WHITE_AVATAR:                 "Black and white avatar",
     BRACKETS_GIT_ERROR:                 "Git encountered an error\u2026",
     BRANCH_NAME:                        "Branch name",
     BUTTON_CANCEL:                      "Cancel",
