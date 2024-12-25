@@ -173,11 +173,19 @@ define(function (require) {
             commit.avatarLetter = commit.author.substring(0, 1);
 
             const dateTime = new Date(commit.date);
-            commit.date = {
-                title: LocalizationUtils.getFormattedDateTime(dateTime),
-                shown: LocalizationUtils.dateTimeFromNowFriendly(dateTime)
-            };
-            commit.hasTag = (commit.tags) ? true : false;
+            if (isNaN(dateTime.getTime())) {
+                // we got invalid date, use the original date itself
+                commit.date = {
+                    title: commit.date,
+                    shown: commit.date
+                };
+            } else {
+                commit.date = {
+                    title: LocalizationUtils.getFormattedDateTime(dateTime),
+                    shown: LocalizationUtils.dateTimeFromNowFriendly(dateTime)
+                };
+            }
+            commit.hasTag = !!commit.tags;
         });
 
         return commits;

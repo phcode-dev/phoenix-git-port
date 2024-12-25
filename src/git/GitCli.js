@@ -502,14 +502,14 @@ define(function (require, exports) {
                 "%h",  // abbreviated commit hash
                 "%H",  // commit hash
                 "%an", // author name
-                "%ai", // author date, ISO 8601 format
+                "%aI", // author date, ISO 8601 format
                 "%ae", // author email
                 "%s",  // subject
                 "%b",  // body
                 "%d"   // tags
             ].join(separator) + newline;
 
-        var args = ["log", "-100"];
+        var args = ["log", "-100", "--date=iso"];
         if (skipCommits) { args.push("--skip=" + skipCommits); }
         args.push("--format=" + format, branch, "--");
 
