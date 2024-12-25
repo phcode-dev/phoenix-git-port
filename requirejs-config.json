@@ -2,12 +2,7 @@
     "paths": {
         "bluebird": "./thirdparty/bluebird",
         "eventemitter2": "./thirdparty/eventemitter2",
-        "moment": "./thirdparty/moment",
         "URI": "./thirdparty/URI"
     },
-    "config": {
-        "moment": {
-            "noGlobal": true
-        }
-    }
+    "config": {}
 }

@@ -4,11 +4,11 @@ define(function (require) {
     var _ = brackets.getModule("thirdparty/lodash"),
         DocumentManager = brackets.getModule("document/DocumentManager"),
         FileUtils = brackets.getModule("file/FileUtils"),
+        LocalizationUtils = brackets.getModule("utils/LocalizationUtils"),
         Mustache = brackets.getModule("thirdparty/mustache/mustache");
 
     // Local modules
-    var moment = require("moment"),
-        Strings = require("strings"),
+    const Strings = require("strings"),
         ErrorHandler = require("src/ErrorHandler"),
         Events = require("src/Events"),
         EventEmitter = require("src/EventEmitter"),
@@ -167,68 +167,16 @@ define(function (require) {
     }
 
     function addAdditionalCommitInfo(commits) {
-        var mode        = Preferences.get("dateMode"),
-            format      = Strings.DATE_FORMAT,
-            // now         = moment(),
-            // yesterday   = moment().subtract("d", 1).startOf("d"),
-            ownFormat   = Preferences.get("dateFormat") || Strings.DATE_FORMAT;
-
-        if (mode === 2 && format.indexOf(" ")) {
-            // only date part
-            format = format.substring(0, format.indexOf(" "));
-        }
-
         _.forEach(commits, function (commit) {
 
             commit.cssAvatar = generateCssAvatar(commit.author, commit.email);
             commit.avatarLetter = commit.author.substring(0, 1);
 
-            // FUTURE: convert date modes to sensible constant strings
-            if (mode === 4) {
-                // mode 4: Original Git date
-                commit.date = {
-                    shown: commit.date
-                };
-                return;
-            }
-
-            var date = moment(commit.date);
+            const dateTime = new Date(commit.date);
             commit.date = {
-                title: ""
+                title: LocalizationUtils.getFormattedDateTime(dateTime),
+                shown: LocalizationUtils.dateTimeFromNowFriendly(dateTime)
             };
-            switch (mode) {
-                // mode 0 (default): formatted with Strings.DATE_FORMAT
-                default:
-                case 0:
-                    commit.date.shown = date.format(format);
-                    break;
-                // mode 1: always relative
-                case 1:
-                    commit.date.shown = date.fromNow();
-                    commit.date.title = date.format(format);
-                    break;
-                // mode 2: intelligent relative/formatted
-                case 2:
-                    var relative = date.fromNow(),
-                        formatted = date.format(format);
-                    commit.date.shown = relative + " (" + formatted + ")";
-                    commit.date.title = date.format(Strings.DATE_FORMAT);
-                    /*
-                    if (date.diff(yesterday) > 0) {
-                        commit.date.shown = moment.duration(Math.max(date.diff(now), -24 * 60 * 60 * 1000), "ms").humanize(true);
-                        commit.date.title = date.format(format);
-                    } else {
-                        commit.date.shown = date.format(format);
-                    }
-                    */
-                    break;
-                // mode 3: formatted with own format (as pref)
-                case 3:
-                    commit.date.shown = date.format(ownFormat);
-                    commit.date.title = date.format(format);
-                    break;
-                /* mode 4 (Original Git date) is handled above */
-            }
             commit.hasTag = (commit.tags) ? true : false;
         });
 

@@ -28,7 +28,6 @@ define(function (require, exports) {
                 $this.val(values[property]);
             }
         });
-        $("#git-settings-dateFormat-container", $dialog).toggle(values.dateMode === 3);
     }
 
     function collectValues() {
@@ -83,10 +82,6 @@ define(function (require, exports) {
             $("#git-settings-addEndlineToTheEndOfFile,#git-settings-removeByteOrderMark,#git-settings-normalizeLineEndings", $dialog)
                 .prop("checked", on)
                 .prop("disabled", !on);
-        });
-
-        $("#git-settings-dateMode", $dialog).on("change", function () {
-            $("#git-settings-dateFormat-container", $dialog).toggle($("option:selected", this).prop("value") === "3");
         });
 
         $("button[data-button-id='defaults']", $dialog).on("click", function (e) {

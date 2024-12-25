@@ -3,8 +3,7 @@
 define(function (require, exports) {
     "use strict";
 
-    var moment             = require("moment"),
-        Promise            = require("bluebird"),
+    const Promise          = require("bluebird"),
         _                  = brackets.getModule("thirdparty/lodash"),
         CodeInspection     = brackets.getModule("language/CodeInspection"),
         CommandManager     = brackets.getModule("command/CommandManager"),
@@ -1221,9 +1220,6 @@ define(function (require, exports) {
 
         CommandManager.register(Strings.REFRESH_GIT, REFRESH_GIT, EventEmitter.emitFactory(Events.REFRESH_ALL));
         KeyBindingManager.addBinding(REFRESH_GIT, Preferences.get("refreshShortcut"), brackets.platform);
-
-        // Init moment - use the correct language
-        moment.lang(brackets.getLocale());
 
         // Show gitPanel when appropriate
         if (Preferences.get("panelEnabled")) {
