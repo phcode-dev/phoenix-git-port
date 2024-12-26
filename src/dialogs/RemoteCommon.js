@@ -8,8 +8,7 @@ define(function (require, exports) {
     // Local modules
     var ErrorHandler    = require("src/ErrorHandler"),
         Git             = require("src/git/Git"),
-        ProgressDialog  = require("src/dialogs/Progress"),
-        URI             = require("URI");
+        ProgressDialog  = require("src/dialogs/Progress");
 
     // Implementation
 
@@ -20,9 +19,9 @@ define(function (require, exports) {
                 return branch.remote === config.remote;
             });
 
-            var template = "{{#branches}}<option value='{{name}}' remote='{{remote}}' " +
+            const template = "{{#branches}}<option value='{{name}}' remote='{{remote}}' " +
                 "{{#currentBranch}}selected{{/currentBranch}}>{{name}}</option>{{/branches}}";
-            var html = Mustache.render(template, { branches: branches });
+            const html = Mustache.render(template, { branches: branches });
             $dialog.find(".branchSelect").html(html);
         }).catch(function (err) {
             ErrorHandler.showError(err, "Getting branch list failed");
@@ -37,9 +36,9 @@ define(function (require, exports) {
                 config.remoteUrl = remoteUrl;
 
                 if (remoteUrl.match(/^https?:/)) {
-                    var uri = new URI(remoteUrl);
-                    config.remoteUsername = uri.username();
-                    config.remotePassword = uri.password();
+                    const url = new URL(remoteUrl);
+                    config.remoteUsername = url.username;
+                    config.remotePassword = url.password;
                 } else {
                     // disable the inputs
                     config._usernamePasswordDisabled = true;
@@ -57,14 +56,14 @@ define(function (require, exports) {
     };
 
     exports.attachCommonEvents = function (config, $dialog) {
-        var handleRadioChange = function () {
-            var val = $dialog.find("input[name='action']:checked").val();
+        const handleRadioChange = function () {
+            const val = $dialog.find("input[name='action']:checked").val();
             $dialog.find(".only-from-selected").toggle(val === "PULL_FROM_SELECTED" || val === "PUSH_TO_SELECTED");
         };
         $dialog.on("change", "input[name='action']", handleRadioChange);
         handleRadioChange();
 
-        var trackingBranchRemote = null;
+        let trackingBranchRemote = null;
         if (config.currentTrackingBranch) {
             trackingBranchRemote = config.currentTrackingBranch.substring(0, config.currentTrackingBranch.indexOf("/"));
         }
@@ -96,7 +95,7 @@ define(function (require, exports) {
     };
 
     exports.collectValues = function (config, $dialog) {
-        var action = $dialog.find("input[name='action']:checked").val();
+        const action = $dialog.find("input[name='action']:checked").val();
         if (action === "PULL_FROM_CURRENT" || action === "PUSH_TO_CURRENT") {
 
             if (config.currentTrackingBranch) {
@@ -118,12 +117,12 @@ define(function (require, exports) {
         config.remotePassword = $dialog.find("input[name='password']").val();
 
         // new url that has to be set for merging
-        var remoteUrlNew;
+        let remoteUrlNew;
         if (config.remoteUrl.match(/^https?:/)) {
-            var uri = new URI(config.remoteUrl);
-            uri.username(config.remoteUsername);
-            uri.password(config.remotePassword);
-            remoteUrlNew = uri.toString();
+            const url = new URL(config.remoteUrl);
+            url.username = config.remoteUsername;
+            url.password = config.remotePassword;
+            remoteUrlNew = url.toString();
         }
 
         // assign remoteUrlNew only if it's different from the original url
@@ -132,7 +131,7 @@ define(function (require, exports) {
         }
 
         // old url that has to be put back after merging
-        var saveToUrl = $dialog.find("input[name='saveToUrl']").is(":checked");
+        const saveToUrl = $dialog.find("input[name='saveToUrl']").is(":checked");
         // assign restore branch only if remoteUrlNew has some value
         if (config.remoteUrlNew && !saveToUrl) {
             config.remoteUrlRestore = config.remoteUrl;

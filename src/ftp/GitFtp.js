@@ -5,8 +5,7 @@ define(function (require, exports) {
 
     // Local modules
     var GitCli        = require("src/git/GitCli"),
-        Promise       = require("bluebird"),
-        URI           = require("URI");
+        Promise       = require("bluebird");
 
     // Module variables
     var git = GitCli._git;
@@ -44,13 +43,13 @@ define(function (require, exports) {
     }
 
     function addScope(scope, url) {
-        var uri = new URI(url),
-            username = uri.username(),
-            password = uri.password();
+        const urlObj = new URL(url),
+            username = urlObj.username,
+            password = urlObj.password;
 
-        uri.username("");
-        uri.password("");
-        url = uri.toString();
+        urlObj.username = "";
+        urlObj.password = "";
+        url = urlObj.toString();
 
         var scopeArgs    = ["config", "--add", "git-ftp." + scope + ".url", url],
             usernameArgs = ["config", "--add", "git-ftp." + scope + ".user", username],
