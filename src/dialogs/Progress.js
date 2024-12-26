@@ -111,10 +111,10 @@ define(function (require, exports) {
                 if (!visible) {
                     resolve();
                 } else {
-                    setTimeout(check, 0);
+                    setTimeout(check, 20);
                 }
             }
-            setTimeout(check, 0);
+            setTimeout(check, 20);
         });
     }
 
