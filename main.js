@@ -8,23 +8,16 @@
 define(function (require, exports, module) {
 
     // Brackets modules
-    var _               = brackets.getModule("thirdparty/lodash"),
+    const _               = brackets.getModule("thirdparty/lodash"),
         AppInit         = brackets.getModule("utils/AppInit"),
-        CommandManager  = brackets.getModule("command/CommandManager"),
-        Commands        = brackets.getModule("command/Commands"),
-        ExtensionUtils  = brackets.getModule("utils/ExtensionUtils"),
-        Menus           = brackets.getModule("command/Menus");
-
-    const GIT_STRING_UNIVERSAL = "Git",
-        GIT_SUB_MENU = "git-submenu";
+        ExtensionUtils  = brackets.getModule("utils/ExtensionUtils");
 
     // Local modules
-    var SettingsDialog  = require("src/SettingsDialog"),
-        EventEmitter    = require("src/EventEmitter"),
+    require("src/SettingsDialog");
+    const EventEmitter    = require("src/EventEmitter"),
         Events          = require("src/Events"),
         Main            = require("src/Main"),
-        Preferences     = require("src/Preferences"),
-        Strings         = require("strings");
+        Preferences     = require("src/Preferences");
 
     // Load extension modules that are not included by core
     var modules = [
@@ -42,15 +35,6 @@ define(function (require, exports, module) {
     ExtensionUtils.loadStyleSheet(module, "styles/brackets-git.less");
     ExtensionUtils.loadStyleSheet(module, "styles/fonts/octicon.less");
     if (Preferences.get("useGitFtp")) { ExtensionUtils.loadStyleSheet(module, "src/ftp/styles/ftp.less"); }
-
-    // Register command and add it to the menu.
-    var SETTINGS_COMMAND_ID = "brackets-git.settings";
-    CommandManager.register(Strings.GIT_SETTINGS, SETTINGS_COMMAND_ID, SettingsDialog.show);
-
-    const fileMenu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
-    let subMenu = fileMenu.addSubMenu(GIT_STRING_UNIVERSAL, GIT_SUB_MENU, Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
-    subMenu.addMenuItem(SETTINGS_COMMAND_ID, "");
-    fileMenu.addMenuDivider(Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
 
     AppInit.appReady(function () {
         Main.init();

@@ -14,11 +14,10 @@ define(function (require, exports) {
         EventEmitter  = require("src/EventEmitter"),
         Git           = require("src/git/Git"),
         Preferences   = require("src/Preferences"),
+        Constants     = require("src/Constants"),
         Strings       = require("strings");
 
     let closeUnmodifiedCmd, gitEnabled = false;
-
-    const CMD_CLOSE_UNMODIFIED = "git-close-unmodified-files";
 
     function handleCloseNotModified() {
         Git.status().then(function (modifiedFiles) {
@@ -48,7 +47,7 @@ define(function (require, exports) {
         });
     }
 
-    function updateMenuItemState() {
+    function updateEnabledState() {
         if(!closeUnmodifiedCmd){
             return;
         }
@@ -57,22 +56,18 @@ define(function (require, exports) {
 
     function init() {
         closeUnmodifiedCmd       = CommandManager.register(Strings.CMD_CLOSE_UNMODIFIED,
-            CMD_CLOSE_UNMODIFIED, handleCloseNotModified);
-        const fileMenu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
-        fileMenu.addMenuItem(CMD_CLOSE_UNMODIFIED, undefined, Menus.AFTER, Commands.FILE_CLOSE_ALL, {
-            hideWhenCommandDisabled: true
-        });
-        updateMenuItemState();
+            Constants.CLOSE_UNMODIFIED, handleCloseNotModified);
+        updateEnabledState();
     }
 
     EventEmitter.on(Events.GIT_ENABLED, function () {
         gitEnabled = true;
-        updateMenuItemState();
+        updateEnabledState();
     });
 
     EventEmitter.on(Events.GIT_DISABLED, function () {
         gitEnabled = false;
-        updateMenuItemState();
+        updateEnabledState();
     });
 
     // Public API

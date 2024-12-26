@@ -1,14 +1,15 @@
 define(function (require, exports) {
     "use strict";
 
-    var _                 = brackets.getModule("thirdparty/lodash"),
-        AppInit           = brackets.getModule("utils/AppInit"),
+    const _                 = brackets.getModule("thirdparty/lodash"),
         CommandManager    = brackets.getModule("command/CommandManager"),
+        Commands          = brackets.getModule("command/Commands"),
         Menus             = brackets.getModule("command/Menus"),
         FileSystem        = brackets.getModule("filesystem/FileSystem"),
         ProjectManager    = brackets.getModule("project/ProjectManager");
 
-    var ExpectedError     = require("src/ExpectedError"),
+    const Constants       = require("src/Constants"),
+        ExpectedError     = require("src/ExpectedError"),
         Events            = require("src/Events"),
         EventEmitter      = require("src/EventEmitter"),
         Strings           = require("strings"),
@@ -19,8 +20,7 @@ define(function (require, exports) {
         CloseNotModified  = require("src/CloseNotModified"),
         Setup             = require("src/utils/Setup"),
         Preferences       = require("src/Preferences"),
-        Utils             = require("src/Utils"),
-        Promise           = require("bluebird");
+        Utils             = require("src/Utils");
 
     var CMD_ADD_TO_IGNORE      = "git.addToIgnore",
         CMD_REMOVE_FROM_IGNORE = "git.removeFromIgnore",
@@ -103,37 +103,46 @@ define(function (require, exports) {
         return _addRemoveItemInGitignore(fileEntry, "remove");
     }
 
+    function initGitMenu() {
+        // Register command and add it to the menu.
+        const fileMenu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
+        let gitSubMenu = fileMenu.addSubMenu(Constants.GIT_STRING_UNIVERSAL,
+            Constants.GIT_SUB_MENU, Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
+        fileMenu.addMenuDivider(Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
+        gitSubMenu.addMenuItem(Constants.CLOSE_UNMODIFIED);
+        gitSubMenu.addMenuDivider();
+        gitSubMenu.addMenuItem(Constants.SETTINGS_COMMAND_ID);
+    }
+
     function init() {
-        // Initialize items dependent on HTML DOM
-        AppInit.htmlReady(function () {
-            $icon.removeClass("loading").removeAttr("title");
+        $icon.removeClass("loading").removeAttr("title");
+        CommandManager.register(Strings.GIT_SETTINGS, Constants.SETTINGS_COMMAND_ID, SettingsDialog.show);
+        // Try to get Git version, if succeeds then Git works
+        Setup.findGit().then(function (_version) {
 
-            // Try to get Git version, if succeeds then Git works
-            Setup.findGit().then(function (_version) {
+            initUi();
+            initGitMenu();
 
-                initUi();
+        }).catch(function (err) {
+            $icon.addClass("error").attr("title", Strings.CHECK_GIT_SETTINGS + " - " + err.toString());
 
-            }).catch(function (err) {
-                $icon.addClass("error").attr("title", Strings.CHECK_GIT_SETTINGS + " - " + err.toString());
+            var expected = new ExpectedError(err);
+            // todo git: docs url update here
+            expected.detailsUrl = "https://docs.phcode.dev/docs/";
+            ErrorHandler.showError(expected, Strings.CHECK_GIT_SETTINGS);
 
-                var expected = new ExpectedError(err);
-                // todo git: docs url update here
-                expected.detailsUrl = "https://docs.phcode.dev/docs/";
-                ErrorHandler.showError(expected, Strings.CHECK_GIT_SETTINGS);
-
-            });
-
-            // register commands for project tree / working files
-            CommandManager.register(Strings.ADD_TO_GITIGNORE, CMD_ADD_TO_IGNORE, addItemToGitingore);
-            CommandManager.register(Strings.REMOVE_FROM_GITIGNORE, CMD_REMOVE_FROM_IGNORE, removeItemFromGitingore);
-
-            // create context menu for git panel
-            var panelCmenu = Menus.registerContextMenu("git-panel-context-menu");
-            CommandManager.register(Strings.ADD_TO_GITIGNORE, CMD_ADD_TO_IGNORE + "2", addItemToGitingoreFromPanel);
-            CommandManager.register(Strings.REMOVE_FROM_GITIGNORE, CMD_REMOVE_FROM_IGNORE + "2", removeItemFromGitingoreFromPanel);
-            panelCmenu.addMenuItem(CMD_ADD_TO_IGNORE + "2");
-            panelCmenu.addMenuItem(CMD_REMOVE_FROM_IGNORE + "2");
         });
+
+        // register commands for project tree / working files
+        CommandManager.register(Strings.ADD_TO_GITIGNORE, CMD_ADD_TO_IGNORE, addItemToGitingore);
+        CommandManager.register(Strings.REMOVE_FROM_GITIGNORE, CMD_REMOVE_FROM_IGNORE, removeItemFromGitingore);
+
+        // create context menu for git panel
+        const panelCmenu = Menus.registerContextMenu("git-panel-context-menu");
+        CommandManager.register(Strings.ADD_TO_GITIGNORE, CMD_ADD_TO_IGNORE + "2", addItemToGitingoreFromPanel);
+        CommandManager.register(Strings.REMOVE_FROM_GITIGNORE, CMD_REMOVE_FROM_IGNORE + "2", removeItemFromGitingoreFromPanel);
+        panelCmenu.addMenuItem(CMD_ADD_TO_IGNORE + "2");
+        panelCmenu.addMenuItem(CMD_REMOVE_FROM_IGNORE + "2");
     }
 
     var _toggleMenuEntriesState = false,
