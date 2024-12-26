@@ -193,7 +193,7 @@ define(function (require, exports) {
     function renderViewerContent(files, selectedFile) {
         var bodyMarkdown = marked(commit.body, { gfm: true, breaks: true });
 
-        $viewer.append(Mustache.render(historyViewerTemplate, {
+        $viewer.html(Mustache.render(historyViewerTemplate, {
             commit: commit,
             bodyMarkdown: bodyMarkdown,
             Strings: Strings,
@@ -264,15 +264,17 @@ define(function (require, exports) {
 
     function render() {
         if ($viewer) {
-            remove();
+            // Reset the viewer listeners
+            $viewer.off("click");
+            $viewer.find(".body").off("scroll");
+        } else {
+            // Create the viewer if it doesn't exist
+            $viewer = $("<div>").addClass("git spinner large spin");
+            $viewer.appendTo($editorHolder);
         }
-
-        $viewer = $("<div>").addClass("git spinner large spin");
 
         currentPage = 0;
         loadMoreFiles();
-
-        return $viewer.appendTo($editorHolder);
     }
 
     var initialize = _.once(function () {
@@ -286,10 +288,11 @@ define(function (require, exports) {
         if(isShown && commitHash === currentlyViewedCommit) {
             // the history view already showing the current commit, the user intent is to close
             remove();
-            return;
+            return false;
         }
         // a new history is to be shown
-        return show(commitInfo, doc, options);
+        show(commitInfo, doc, options);
+        return true;
     }
 
     function show(commitInfo, doc, options) {

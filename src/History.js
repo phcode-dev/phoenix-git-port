@@ -42,11 +42,16 @@ define(function (require) {
                 loadMoreHistory();
             })
             .on("click.history", ".history-commit", function () {
-                var hash = $(this).attr("x-hash");
+                const $tr = $(this);
+                var hash = $tr.attr("x-hash");
                 var commit = _.find(commitCache, function (commit) { return commit.hash === hash; });
-                HistoryViewer.toggle(commit, getCurrentDocument(), {
+                const historyShown = HistoryViewer.toggle(commit, getCurrentDocument(), {
                     isInitial: $(this).attr("x-initial-commit") === "true"
                 });
+                $tr.parent().find("tr.selected").removeClass("selected")
+                if(historyShown){
+                    $tr.addClass("selected");
+                }
             });
     }
 
