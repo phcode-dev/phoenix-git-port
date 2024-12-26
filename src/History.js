@@ -44,7 +44,7 @@ define(function (require) {
             .on("click.history", ".history-commit", function () {
                 var hash = $(this).attr("x-hash");
                 var commit = _.find(commitCache, function (commit) { return commit.hash === hash; });
-                HistoryViewer.show(commit, getCurrentDocument(), {
+                HistoryViewer.toggle(commit, getCurrentDocument(), {
                     isInitial: $(this).attr("x-initial-commit") === "true"
                 });
             });

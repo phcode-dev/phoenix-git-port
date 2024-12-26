@@ -21,6 +21,7 @@ define(function (require, exports) {
         useDifftool            = false,
         isShown                = false,
         commit                 = null,
+        currentlyViewedCommit  = null,
         isInitial              = null,
         $viewer                = null,
         $editorHolder          = null;
@@ -280,20 +281,33 @@ define(function (require, exports) {
         });
     });
 
+    function toggle(commitInfo, doc, options) {
+        const commitHash = commitInfo.hash;
+        if(isShown && commitHash === currentlyViewedCommit) {
+            // the history view already showing the current commit, the user intent is to close
+            remove();
+            return;
+        }
+        // a new history is to be shown
+        return show(commitInfo, doc, options);
+    }
+
     function show(commitInfo, doc, options) {
         initialize();
 
-        isShown   = true;
         commit    = commitInfo;
         isInitial = options.isInitial;
 
         $editorHolder = $("#editor-holder");
         render();
+        currentlyViewedCommit = commitInfo.hash;
+        isShown   = true;
     }
 
     function onRemove() {
         isShown = false;
         $viewer = null;
+        currentlyViewedCommit = null;
         // detach events that were added by this viewer to another element than one added to $editorHolder
     }
 
@@ -313,6 +327,7 @@ define(function (require, exports) {
     }
 
     // Public API
+    exports.toggle = toggle;
     exports.show = show;
     exports.hide = hide;
     exports.isVisible = isVisible;
