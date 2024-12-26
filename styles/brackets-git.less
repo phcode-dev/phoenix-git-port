@@ -2,17 +2,26 @@
 @import "common.less";
 @import "mixins.less";
 @import "code-mirror.less";
-@import "editor-holder.less";
 @import "history.less";
 @import "commit-diff.less";
-@import "dialogs/progress.less";
-@import "dialogs/diff-dialog.less";
-@import "dialogs/error-dialog.less";
-@import "dialogs/pull-dialog.less";
+@import "dialogs-all.less";
 @import "brackets/brackets_core_ui_variables.less";
 
 @baseZindex: 100;
 @gutterWidth: 0.65em; // using ems so that it'll be scalable on cmd +/-
+
+#editor-holder {
+    .git.spinner {
+        display: none;
+        z-index: 1000;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        &.spin {
+            display: block;
+        }
+    }
+}
 
 /* Project tree */
 .jstree-brackets, .open-files-container {

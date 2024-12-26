@@ -2,12 +2,11 @@ define(function (require, exports) {
     "use strict";
 
     // Brackets modules
-    var _ = brackets.getModule("thirdparty/lodash"),
-        Dialogs = brackets.getModule("widgets/Dialogs"),
+    const Dialogs = brackets.getModule("widgets/Dialogs"),
         Mustache = brackets.getModule("thirdparty/mustache/mustache");
 
     // Local modules
-    var Promise = require("bluebird"),
+    const Promise = require("bluebird"),
         Strings = require("strings");
 
     // Templates
@@ -112,10 +111,10 @@ define(function (require, exports) {
                 if (!visible) {
                     resolve();
                 } else {
-                    _.defer(check);
+                    setTimeout(check, 0);
                 }
             }
-            _.defer(check);
+            setTimeout(check, 0);
         });
     }
 
