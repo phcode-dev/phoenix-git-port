@@ -28,13 +28,11 @@ define(function (require, exports, module) {
         "src/ProjectTreeMarks",
         "src/Remotes"
     ];
-    if (Preferences.get("useGitFtp")) { modules.push("src/ftp/Ftp"); }
     require(modules);
 
     // Load CSS
     ExtensionUtils.loadStyleSheet(module, "styles/brackets-git.less");
     ExtensionUtils.loadStyleSheet(module, "styles/fonts/octicon.less");
-    if (Preferences.get("useGitFtp")) { ExtensionUtils.loadStyleSheet(module, "src/ftp/styles/ftp.less"); }
 
     AppInit.appReady(function () {
         Main.init();
