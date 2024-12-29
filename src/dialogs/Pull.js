@@ -16,7 +16,7 @@ define(function (require, exports) {
         credentialsTemplate = require("text!src/dialogs/templates/credentials-template.html");
 
     // Implementation
-    function _attachEvents($dialog) {
+    function _attachEvents($dialog, pullConfig) {
         RemoteCommon.attachCommonEvents(pullConfig, $dialog);
 
         // load last used
@@ -41,7 +41,7 @@ define(function (require, exports) {
             dialog = Dialogs.showModalDialogUsingTemplate(compiledTemplate),
             $dialog = dialog.getElement();
 
-        _attachEvents($dialog);
+        _attachEvents($dialog, pullConfig);
 
         dialog.done(function (buttonId) {
             if (buttonId === "ok") {

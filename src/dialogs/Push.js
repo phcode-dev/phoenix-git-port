@@ -15,7 +15,7 @@ define(function (require, exports) {
         credentialsTemplate = require("text!src/dialogs/templates/credentials-template.html");
 
     // Implementation
-    function _attachEvents($dialog) {
+    function _attachEvents($dialog, pushConfig) {
         RemoteCommon.attachCommonEvents(pushConfig, $dialog);
 
         // select default - we don't want to remember forced or delete branch as default
@@ -40,7 +40,7 @@ define(function (require, exports) {
             dialog = Dialogs.showModalDialogUsingTemplate(compiledTemplate),
             $dialog = dialog.getElement();
 
-        _attachEvents($dialog);
+        _attachEvents($dialog, pushConfig);
 
         dialog.done(function (buttonId) {
             if (buttonId === "ok") {
