@@ -27,7 +27,8 @@ define(function (require) {
         var gitIgnorePath = Preferences.get("currentGitRoot") + ".gitignore";
         return Utils.pathExists(gitIgnorePath).then(function (exists) {
             if (!exists) {
-                return ProgressPromise.fromDeferred(FileUtils.writeText(FileSystem.getFileForPath(gitIgnorePath), gitignoreTemplate));
+                return jsPromise(
+                    FileUtils.writeText(FileSystem.getFileForPath(gitIgnorePath), gitignoreTemplate));
             }
         });
     }
@@ -44,7 +45,7 @@ define(function (require) {
                 throw new ExpectedError("Folder " + Utils.getProjectRoot() + " is not writable!");
             }
             return Git.init().catch(function (err) {
-                return new ProgressPromise((resolve, reject)=>{
+                return new Promise((resolve, reject)=>{
                     if (ErrorHandler.contains(err, "Please tell me who you are")) {
                         EventEmitter.emit(Events.GIT_CHANGE_USERNAME, null, function () {
                             EventEmitter.emit(Events.GIT_CHANGE_EMAIL, null, function () {
@@ -72,7 +73,7 @@ define(function (require) {
 
     // This checks if the project root is empty (to let Git clone repositories)
     function isProjectRootEmpty() {
-        return new ProgressPromise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
             ProjectManager.getProjectRoot().getContents(function (err, entries) {
                 if (err) {
                     return reject(err);
@@ -89,7 +90,7 @@ define(function (require) {
         isProjectRootEmpty().then(function (isEmpty) {
             if (isEmpty) {
                 CloneDialog.show().then(function (cloneConfig) {
-                    var q = ProgressPromise.resolve();
+                    var q = Promise.resolve();
                     // put username and password into remote url
                     var remoteUrl = cloneConfig.remoteUrl;
                     if (cloneConfig.remoteUrlNew) {

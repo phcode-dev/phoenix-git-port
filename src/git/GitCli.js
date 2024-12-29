@@ -111,7 +111,7 @@ define(function (require, exports) {
     }
 
     function git(args, opts) {
-        return new ProgressPromise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             _gitQueue.push([resolve, reject, args || [], opts || {}]);
             setTimeout(_processQueue);
         });
@@ -584,10 +584,10 @@ define(function (require, exports) {
             args.push("-m", message);
             return git(args);
         } else {
-            return new ProgressPromise(function (resolve, reject) {
+            return new Promise(function (resolve, reject) {
                 // FUTURE: maybe use git commit --file=-
                 var fileEntry = FileSystem.getFileForPath(Preferences.get("currentGitRoot") + ".bracketsGitTemp");
-                ProgressPromise.fromDeferred(FileUtils.writeText(fileEntry, message))
+                jsPromise(FileUtils.writeText(fileEntry, message))
                     .then(function () {
                         args.push("-F", ".bracketsGitTemp");
                         return git(args);
@@ -1006,7 +1006,7 @@ define(function (require, exports) {
 
                     Utils.consoleDebug("Checking path for .git: " + path);
 
-                    return new ProgressPromise(function (resolve) {
+                    return new Promise(function (resolve) {
 
                         // keep .git away from file tree for now
                         // this branch of code will not run for intel xdk

@@ -42,7 +42,7 @@ define(function (require, exports) {
     }
 
     function show() {
-        return new ProgressPromise((resolve, reject)=>{
+        return new Promise((resolve, reject)=>{
             const templateArgs = {
                 modeLabel: Strings.CLONE_REPOSITORY,
                 Strings: Strings

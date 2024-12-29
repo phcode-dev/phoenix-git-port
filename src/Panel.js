@@ -66,10 +66,10 @@ define(function (require, exports) {
         } catch (e) {
             ErrorHandler.logError("CodeInspection.inspectFile failed to execute for file " + fullPath);
             ErrorHandler.logError(e);
-            codeInspectionPromise = ProgressPromise.reject(e);
+            codeInspectionPromise = Promise.reject(e);
         }
 
-        return ProgressPromise.fromDeferred(codeInspectionPromise);
+        return jsPromise(codeInspectionPromise);
     }
 
     function _makeDialogBig($dialog) {
@@ -306,7 +306,7 @@ define(function (require, exports) {
             }
         }).catch(function (err) {
             if (ErrorHandler.contains(err, "Please tell me who you are")) {
-                return new ProgressPromise((resolve)=>{
+                return new Promise((resolve)=>{
                     EventEmitter.emit(Events.GIT_CHANGE_USERNAME, null, function () {
                         EventEmitter.emit(Events.GIT_CHANGE_EMAIL, null, function () {
                             resolve();
@@ -475,7 +475,7 @@ define(function (require, exports) {
                         ErrorHandler.showError(err, "Could not resolve file");
                         return;
                     }
-                    ProgressPromise.fromDeferred(ProjectManager.deleteItem(fileEntry))
+                    jsPromise(ProjectManager.deleteItem(fileEntry))
                         .then(function () {
                             refresh();
                         })
@@ -897,7 +897,7 @@ define(function (require, exports) {
 
     function commitCurrentFile() {
         // do not return anything here, core expects jquery promise
-        ProgressPromise.fromDeferred(CommandManager.execute("file.save"))
+        jsPromise(CommandManager.execute("file.save"))
             .then(function () {
                 return Git.resetIndex();
             })
@@ -908,7 +908,7 @@ define(function (require, exports) {
 
     function commitAllFiles() {
         // do not return anything here, core expects jquery promise
-        ProgressPromise.fromDeferred(CommandManager.execute("file.saveAll"))
+        jsPromise(CommandManager.execute("file.saveAll"))
             .then(function () {
                 return Git.resetIndex();
             })

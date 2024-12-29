@@ -20,7 +20,7 @@ define(function (require) {
     }
 
     function loadIgnoreContents() {
-        return new ProgressPromise((resolve)=>{
+        return new Promise((resolve)=>{
             let gitRoot = Preferences.get("currentGitRoot"),
                 excludeContents,
                 gitignoreContents;

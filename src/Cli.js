@@ -69,7 +69,7 @@ define(function (require, exports, module) {
     }
 
     function cliHandler(method, cmd, args, opts, retry) {
-        const cliPromise = new ProgressPromise((resolve, reject)=>{
+        const cliPromise = new Promise((resolve, reject)=>{
             const cliId     = getNextCliId();
             args = args || [];
             opts = opts || {};

@@ -55,7 +55,7 @@ define(function (require, exports) {
     }
 
     function show(pullConfig) {
-        return new ProgressPromise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             pullConfig.pull = true;
             RemoteCommon.collectInfo(pullConfig).then(()=>{
                 _show(pullConfig, resolve, reject);

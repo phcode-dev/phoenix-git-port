@@ -490,7 +490,7 @@ define(function (require, exports, module) {
     }
 
     function stripWhitespaceFromFiles(gitStatusResults, stageChanges, progressTracker) {
-        return new ProgressPromise((resolve, reject)=>{
+        return new Promise((resolve, reject)=>{
             const startTime = (new Date()).getTime();
             let queue = Promise.resolve();
 

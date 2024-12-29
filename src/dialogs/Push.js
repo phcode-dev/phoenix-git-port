@@ -53,7 +53,7 @@ define(function (require, exports) {
     }
 
     function show(pushConfig) {
-        return new ProgressPromise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             pushConfig.push = true;
             RemoteCommon.collectInfo(pushConfig).then(()=>{
                 _show(pushConfig, resolve, reject);

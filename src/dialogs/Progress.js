@@ -42,7 +42,7 @@ define(function (require, exports) {
         const title = showOpts.title;
         const options = showOpts.options || {};
 
-        return new ProgressPromise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
 
             lines = [];
             $textarea = null;
@@ -107,7 +107,7 @@ define(function (require, exports) {
     }
 
     function waitForClose() {
-        return new ProgressPromise(function (resolve) {
+        return new Promise(function (resolve) {
             function check() {
                 var visible = $("#git-progress-dialog").is(":visible");
                 if (!visible) {

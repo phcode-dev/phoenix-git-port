@@ -23,7 +23,7 @@ define(function (require, exports) {
 
     // Implementation
     function findGit() {
-        return new ProgressPromise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
 
             // TODO: do this in two steps - first check user config and then check all
             var pathsToLook = [Preferences.get("gitPath"), "git"].concat(brackets.platform === "win" ? standardGitPathsWin : standardGitPathsNonWin);
