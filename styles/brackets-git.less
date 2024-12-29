@@ -319,18 +319,19 @@
     .git-file-history:active,
     .git-history-toggle:active,
     .btn.active:active {
-        background-color: @bc-bg-highlight !important;
+        background-color: @bc-bg-highlight-selected !important;
 
         .dark & {
-            background-color: @dark-bc-bg-highlight !important;
+            background-color: @dark-bc-bg-highlight-selected !important;
         }
     }
 
     .btn.active:not([disabled]) {
+        background-color: @bc-bg-highlight-selected;
         color: @bc-text-link;
 
         .dark & {
-            background-color: @dark-bc-bg-highlight;
+            background-color: @dark-bc-bg-highlight-selected;
             color: @dark-bc-text-alt;
         }
     }
