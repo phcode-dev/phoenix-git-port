@@ -8,8 +8,7 @@ define(function (require) {
     var EventEmitter      = require("src/EventEmitter"),
         Events            = require("src/Events"),
         Git               = require("src/git/Git"),
-        Preferences       = require("src/Preferences"),
-        Promise           = require("bluebird");
+        Preferences       = require("src/Preferences");
 
     var ignoreEntries = [],
         newPaths      = [],
@@ -21,26 +20,26 @@ define(function (require) {
     }
 
     function loadIgnoreContents() {
-        var defer = Promise.defer(),
-            gitRoot = Preferences.get("currentGitRoot"),
-            excludeContents,
-            gitignoreContents;
+        return new ProgressPromise((resolve)=>{
+            let gitRoot = Preferences.get("currentGitRoot"),
+                excludeContents,
+                gitignoreContents;
 
-        var finish = _.after(2, function () {
-            defer.resolve(excludeContents + "\n" + gitignoreContents);
+            const finish = _.after(2, function () {
+                resolve(excludeContents + "\n" + gitignoreContents);
+            });
+
+            FileSystem.getFileForPath(gitRoot + ".git/info/exclude").read(function (err, content) {
+                excludeContents = err ? "" : content;
+                finish();
+            });
+
+            FileSystem.getFileForPath(gitRoot + ".gitignore").read(function (err, content) {
+                gitignoreContents = err ? "" : content;
+                finish();
+            });
+
         });
-
-        FileSystem.getFileForPath(gitRoot + ".git/info/exclude").read(function (err, content) {
-            excludeContents = err ? "" : content;
-            finish();
-        });
-
-        FileSystem.getFileForPath(gitRoot + ".gitignore").read(function (err, content) {
-            gitignoreContents = err ? "" : content;
-            finish();
-        });
-
-        return defer.promise;
     }
 
     function refreshIgnoreEntries() {

@@ -20,7 +20,6 @@ define(function (require, exports, module) {
         EventEmitter    = require("src/EventEmitter"),
         Git             = require("src/git/Git"),
         Preferences     = require("src/Preferences"),
-        Promise         = require("bluebird"),
         Strings         = require("strings");
 
     // Module variables
@@ -281,7 +280,7 @@ define(function (require, exports, module) {
             }
 
             // try writing some text into the temp file
-            Promise.cast(FileUtils.writeText(fileEntry, ""))
+            jsPromise(FileUtils.writeText(fileEntry, ""))
                 .then(function () {
                     finish(true);
                 })
@@ -365,7 +364,7 @@ define(function (require, exports, module) {
      *      file's new content. Errors are logged but no UI is shown.
      */
     function reloadDoc(doc) {
-        return Promise.cast(FileUtils.readAsText(doc.file))
+        return jsPromise(FileUtils.readAsText(doc.file))
             .then(function (text) {
                 doc.refreshText(text, new Date());
             })
@@ -393,7 +392,7 @@ define(function (require, exports, module) {
                 }
                 // clean the file
                 var fileEntry = FileSystem.getFileForPath(fullPath);
-                return Promise.cast(FileUtils.readAsText(fileEntry))
+                return jsPromise(FileUtils.readAsText(fileEntry))
                     .catch(function (err) {
                         ErrorHandler.logError(err + " on FileUtils.readAsText for " + fileEntry.fullPath);
                         return null;
@@ -440,7 +439,7 @@ define(function (require, exports, module) {
                         }
 
                         text = lines.join("\n");
-                        return Promise.cast(FileUtils.writeText(fileEntry, text))
+                        return jsPromise(FileUtils.writeText(fileEntry, text))
                             .catch(function (err) {
                                 ErrorHandler.logError("Wasn't able to clean whitespace from file: " + fullPath);
                                 resolve();
@@ -491,53 +490,52 @@ define(function (require, exports, module) {
     }
 
     function stripWhitespaceFromFiles(gitStatusResults, stageChanges) {
-        var notificationDefer = Promise.defer(),
-            startTime = (new Date()).getTime(),
-            queue = Promise.resolve();
+        return new ProgressPromise((resolve, reject, progress)=>{
+            const startTime = (new Date()).getTime();
+            let queue = Promise.resolve();
 
-        gitStatusResults.forEach(function (fileObj) {
-            var isDeleted = fileObj.status.indexOf(Git.FILE_STATUS.DELETED) !== -1;
+            gitStatusResults.forEach(function (fileObj) {
+                var isDeleted = fileObj.status.indexOf(Git.FILE_STATUS.DELETED) !== -1;
 
-            // strip whitespace if the file was not deleted
-            if (!isDeleted) {
-                // strip whitespace only for recognized languages so binary files won't get corrupted
-                var langId = LanguageManager.getLanguageForPath(fileObj.file).getId();
-                if (["unknown", "binary", "image", "markdown", "audio"].indexOf(langId) === -1) {
+                // strip whitespace if the file was not deleted
+                if (!isDeleted) {
+                    // strip whitespace only for recognized languages so binary files won't get corrupted
+                    var langId = LanguageManager.getLanguageForPath(fileObj.file).getId();
+                    if (["unknown", "binary", "image", "markdown", "audio"].indexOf(langId) === -1) {
 
-                    queue = queue.then(function () {
-                        var clearWholeFile = fileObj.status.indexOf(Git.FILE_STATUS.UNTRACKED) !== -1 ||
-                                             fileObj.status.indexOf(Git.FILE_STATUS.RENAMED) !== -1;
+                        queue = queue.then(function () {
+                            var clearWholeFile = fileObj.status.indexOf(Git.FILE_STATUS.UNTRACKED) !== -1 ||
+                                fileObj.status.indexOf(Git.FILE_STATUS.RENAMED) !== -1;
 
-                        var t = (new Date()).getTime() - startTime;
-                        notificationDefer.progress(t + "ms - " + Strings.CLEAN_FILE_START + ": " + fileObj.file);
+                            var t = (new Date()).getTime() - startTime;
+                            progress(t + "ms - " + Strings.CLEAN_FILE_START + ": " + fileObj.file);
 
-                        return stripWhitespaceFromFile(fileObj.file, clearWholeFile).then(function () {
-                            // stage the files again to include stripWhitespace changes
-                            var notifyProgress = function () {
-                                var t = (new Date()).getTime() - startTime;
-                                notificationDefer.progress(t + "ms - " + Strings.CLEAN_FILE_END + ": " + fileObj.file);
-                            };
-                            if (stageChanges) {
-                                return Git.stage(fileObj.file).then(notifyProgress);
-                            } else {
-                                notifyProgress();
-                            }
+                            return stripWhitespaceFromFile(fileObj.file, clearWholeFile).then(function () {
+                                // stage the files again to include stripWhitespace changes
+                                var notifyProgress = function () {
+                                    var t = (new Date()).getTime() - startTime;
+                                    progress(t + "ms - " + Strings.CLEAN_FILE_END + ": " + fileObj.file);
+                                };
+                                if (stageChanges) {
+                                    return Git.stage(fileObj.file).then(notifyProgress);
+                                } else {
+                                    notifyProgress();
+                                }
+                            });
                         });
-                    });
 
+                    }
                 }
-            }
-        });
-
-        queue
-            .then(function () {
-                notificationDefer.resolve();
-            })
-            .catch(function () {
-                notificationDefer.reject();
             });
 
-        return notificationDefer.promise;
+            queue
+                .then(function () {
+                    resolve();
+                })
+                .catch(function () {
+                    reject();
+                });
+        });
     }
 
     function openEditorForFile(file, relative) {

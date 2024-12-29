@@ -2,22 +2,17 @@ define(function (require, exports) {
     "use strict";
 
     // Brackets modules
-    var Dialogs = brackets.getModule("widgets/Dialogs"),
+    const Dialogs = brackets.getModule("widgets/Dialogs"),
         Mustache = brackets.getModule("thirdparty/mustache/mustache");
 
     // Local modules
-    var Promise         = require("bluebird"),
-        RemoteCommon    = require("src/dialogs/RemoteCommon"),
+    const RemoteCommon    = require("src/dialogs/RemoteCommon"),
         Strings         = require("strings");
 
     // Templates
-    var template            = require("text!src/dialogs/templates/push-dialog.html"),
+    const template            = require("text!src/dialogs/templates/push-dialog.html"),
         remotesTemplate     = require("text!src/dialogs/templates/remotes-template.html"),
         credentialsTemplate = require("text!src/dialogs/templates/credentials-template.html");
-
-    // Module variables
-    var defer,
-        pushConfig;
 
     // Implementation
     function _attachEvents($dialog) {
@@ -30,15 +25,15 @@ define(function (require, exports) {
             .prop("checked", true);
     }
 
-    function _show() {
-        var templateArgs = {
+    function _show(pushConfig, resolve, reject) {
+        const templateArgs = {
             config: pushConfig,
             mode: "PUSH_TO",
             modeLabel: Strings.PUSH_TO,
             Strings: Strings
         };
 
-        var compiledTemplate = Mustache.render(template, templateArgs, {
+        const compiledTemplate = Mustache.render(template, templateArgs, {
                 credentials: credentialsTemplate,
                 remotes: remotesTemplate
             }),
@@ -50,19 +45,20 @@ define(function (require, exports) {
         dialog.done(function (buttonId) {
             if (buttonId === "ok") {
                 RemoteCommon.collectValues(pushConfig, $dialog);
-                defer.resolve(pushConfig);
+                resolve(pushConfig);
             } else {
-                defer.reject();
+                reject();
             }
         });
     }
 
-    function show(_pushConfig) {
-        defer = Promise.defer();
-        pushConfig = _pushConfig;
-        pushConfig.push = true;
-        RemoteCommon.collectInfo(pushConfig).then(_show);
-        return defer.promise;
+    function show(pushConfig) {
+        return new ProgressPromise((resolve, reject) => {
+            pushConfig.push = true;
+            RemoteCommon.collectInfo(pushConfig).then(()=>{
+                _show(pushConfig, resolve, reject);
+            });
+        });
     }
 
     exports.show = show;

@@ -2,21 +2,19 @@ define(function (require, exports) {
     "use strict";
 
     // Brackets modules
-    var Dialogs = brackets.getModule("widgets/Dialogs"),
+    const Dialogs = brackets.getModule("widgets/Dialogs"),
         Mustache = brackets.getModule("thirdparty/mustache/mustache");
 
     // Local modules
-    var Promise         = require("bluebird"),
-        RemoteCommon    = require("src/dialogs/RemoteCommon"),
+    const RemoteCommon    = require("src/dialogs/RemoteCommon"),
         Strings         = require("strings");
 
     // Templates
-    var template            = require("text!src/dialogs/templates/clone-dialog.html"),
+    const template            = require("text!src/dialogs/templates/clone-dialog.html"),
         credentialsTemplate = require("text!src/dialogs/templates/credentials-template.html");
 
     // Module variables
-    var defer,
-        $cloneInput;
+    let $cloneInput;
 
     // Implementation
     function _attachEvents($dialog) {
@@ -44,36 +42,35 @@ define(function (require, exports) {
     }
 
     function show() {
-        defer = Promise.defer();
+        return new ProgressPromise((resolve, reject)=>{
+            const templateArgs = {
+                modeLabel: Strings.CLONE_REPOSITORY,
+                Strings: Strings
+            };
 
-        var templateArgs = {
-            modeLabel: Strings.CLONE_REPOSITORY,
-            Strings: Strings
-        };
+            var compiledTemplate = Mustache.render(template, templateArgs, {
+                    credentials: credentialsTemplate
+                }),
+                dialog = Dialogs.showModalDialogUsingTemplate(compiledTemplate),
+                $dialog = dialog.getElement();
 
-        var compiledTemplate = Mustache.render(template, templateArgs, {
-            credentials: credentialsTemplate
-        }),
-        dialog = Dialogs.showModalDialogUsingTemplate(compiledTemplate),
-        $dialog = dialog.getElement();
+            $cloneInput = $dialog.find("#git-clone-url");
 
-        $cloneInput = $dialog.find("#git-clone-url");
+            _attachEvents($dialog);
 
-        _attachEvents($dialog);
+            dialog.done(function (buttonId) {
+                if (buttonId === "ok") {
+                    var cloneConfig = {};
+                    cloneConfig.remote = "origin";
+                    cloneConfig.remoteUrl = $cloneInput.val();
+                    RemoteCommon.collectValues(cloneConfig, $dialog);
+                    resolve(cloneConfig);
+                } else {
+                    reject();
+                }
+            });
 
-        dialog.done(function (buttonId) {
-            if (buttonId === "ok") {
-                var cloneConfig = {};
-                cloneConfig.remote = "origin";
-                cloneConfig.remoteUrl = $cloneInput.val();
-                RemoteCommon.collectValues(cloneConfig, $dialog);
-                defer.resolve(cloneConfig);
-            } else {
-                defer.reject();
-            }
         });
-
-        return defer.promise;
     }
 
     exports.show = show;

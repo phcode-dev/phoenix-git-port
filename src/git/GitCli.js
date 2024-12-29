@@ -9,13 +9,12 @@
 define(function (require, exports) {
 
     // Brackets modules
-    var _           = brackets.getModule("thirdparty/lodash"),
+    const _           = brackets.getModule("thirdparty/lodash"),
         FileSystem  = brackets.getModule("filesystem/FileSystem"),
         FileUtils   = brackets.getModule("file/FileUtils");
 
     // Local modules
-    var Promise       = require("bluebird"),
-        Cli           = require("src/Cli"),
+    const Cli           = require("src/Cli"),
         ErrorHandler  = require("src/ErrorHandler"),
         Events        = require("src/Events"),
         EventEmitter  = require("src/EventEmitter"),
@@ -89,23 +88,25 @@ define(function (require, exports) {
             return;
         }
         // get item from queue
-        var item  = _gitQueue.shift(),
-            defer = item[0],
-            args  = item[1],
-            opts  = item[2];
+        const item  = _gitQueue.shift(),
+            resolve = item[0],
+            reject = item[1],
+            progress = item[2],
+            args  = item[3],
+            opts  = item[4];
         // execute git command in a queue so no two commands are running at the same time
         if (opts.nonblocking !== true) { _gitQueueBusy = true; }
         Cli.spawnCommand(getGitPath(), args, opts)
             .progressed(function () {
-                defer.progress.apply(defer, arguments);
+                progress(...arguments);
             })
             .then(function (r) {
-                defer.resolve(r);
+                resolve(r);
             })
             .catch(function (e) {
-                var call = "call: git " + args.join(" ");
+                const call = "call: git " + args.join(" ");
                 e.stack = [call, e.stack].join("\n");
-                defer.reject(e);
+                reject(e);
             })
             .finally(function () {
                 if (opts.nonblocking !== true) { _gitQueueBusy = false; }
@@ -114,10 +115,10 @@ define(function (require, exports) {
     }
 
     function git(args, opts) {
-        var rv = Promise.defer();
-        _gitQueue.push([rv, args || [], opts || {}]);
-        _processQueue();
-        return rv.promise;
+        return new ProgressPromise((resolve, reject, progress) => {
+            _gitQueue.push([resolve, reject, progress, args || [], opts || {}]);
+            _processQueue();
+        });
     }
 
     /*
@@ -583,10 +584,10 @@ define(function (require, exports) {
             args.push("-m", message);
             return git(args);
         } else {
-            return new Promise(function (resolve, reject) {
+            return new ProgressPromise(function (resolve, reject) {
                 // FUTURE: maybe use git commit --file=-
                 var fileEntry = FileSystem.getFileForPath(Preferences.get("currentGitRoot") + ".bracketsGitTemp");
-                Promise.cast(FileUtils.writeText(fileEntry, message))
+                ProgressPromise.fromDeferred(FileUtils.writeText(fileEntry, message))
                     .then(function () {
                         args.push("-F", ".bracketsGitTemp");
                         return git(args);
@@ -1005,7 +1006,7 @@ define(function (require, exports) {
 
                     Utils.consoleDebug("Checking path for .git: " + path);
 
-                    return new Promise(function (resolve) {
+                    return new ProgressPromise(function (resolve) {
 
                         // keep .git away from file tree for now
                         // this branch of code will not run for intel xdk

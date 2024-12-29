@@ -2,8 +2,7 @@ define(function (require, exports, module) {
 
     const NodeConnector = brackets.getModule('NodeConnector');
 
-    var Promise       = require("bluebird"),
-        ErrorHandler  = require("src/ErrorHandler"),
+    const ErrorHandler  = require("src/ErrorHandler"),
         Preferences   = require("src/Preferences"),
         Utils         = require("src/Utils");
 
@@ -20,7 +19,7 @@ define(function (require, exports, module) {
     let gitNodeConnector = NodeConnector.createNodeConnector("phcode-git-core", exports);
     gitNodeConnector.on(GIT_PROGRESS_EVENT, (_event, evtData) => {
         const deferred = deferredMap[evtData.cliId];
-        if (deferred && !deferred.isResolved()) {
+        if (deferred && !deferred.isResolved) {
             deferred.progress(evtData.data);
         } else {
             ErrorHandler.logError("Progress sent for a non-existing process(" + evtData.cliId + "): " + evtData);
@@ -69,158 +68,160 @@ define(function (require, exports, module) {
     }
 
     function cliHandler(method, cmd, args, opts, retry) {
-        var cliId     = getNextCliId(),
-            deferred  = Promise.defer();
+        const cliPromise = new ProgressPromise((resolve, reject, progress)=>{
+            const cliId     = getNextCliId();
+            const savedDefer = {resolve, reject, progress};
 
-        deferredMap[cliId] = deferred;
-        args = args || [];
-        opts = opts || {};
+            deferredMap[cliId] = savedDefer;
+            args = args || [];
+            opts = opts || {};
 
-        var watchProgress = args.indexOf("--progress") !== -1;
+            const watchProgress = args.indexOf("--progress") !== -1;
+            const startTime = (new Date()).getTime();
 
-        // it is possible to set a custom working directory in options
-        // otherwise the current project root is used to execute commands
-        if (!opts.cwd) {
-            opts.cwd = fs.getTauriPlatformPath(Preferences.get("currentGitRoot") || Utils.getProjectRoot());
-        }
+            // it is possible to set a custom working directory in options
+            // otherwise the current project root is used to execute commands
+            if (!opts.cwd) {
+                opts.cwd = fs.getTauriPlatformPath(Preferences.get("currentGitRoot") || Utils.getProjectRoot());
+            }
 
-        // convert paths like c:/foo/bar to c:\foo\bar on windows
-        opts.cwd = normalizePathForOs(opts.cwd);
+            // convert paths like c:/foo/bar to c:\foo\bar on windows
+            opts.cwd = normalizePathForOs(opts.cwd);
 
-        // log all cli communication into console when debug mode is on
-        if (debugOn) {
-            var startTime = (new Date()).getTime();
-            Utils.consoleDebug("cmd-" + method + (watchProgress ? "-watch" : "") + ": " +
-                opts.cwd + " -> " +
-                cmd + " " + args.join(" "));
-        }
-
-        var resolved      = false,
-            timeoutLength = opts.timeout ? (opts.timeout * 1000) : gitTimeout;
-
-        var domainOpts = {
-            cliId: cliId,
-            watchProgress: watchProgress
-        };
-
-        var debugInfo = {
-            startTime: startTime
-        };
-
-        if (watchProgress) {
-            deferred.progress("Running command: git " + args.join(" "));
-        }
-
-        gitNodeConnector.execPeer(method, {directory: opts.cwd, command: cmd, args: args, opts: domainOpts})
-            .catch(function (err) { // jQuery promise - .fail is fine
-                if (!resolved) {
-                    err = sanitizeOutput(err);
-                    if (debugOn) {
-                        logDebug(domainOpts, debugInfo, method, "fail", err);
-                    }
-                    delete deferredMap[cliId];
-
-                    err = ErrorHandler.toError(err);
-
-                    // spawn ENOENT error
-                    var invalidCwdErr = "spawn ENOENT";
-                    if (err.stack && err.stack.indexOf(invalidCwdErr)) {
-                        err.message = err.message.replace(invalidCwdErr, invalidCwdErr + " (" + opts.cwd + ")");
-                        err.stack = err.stack.replace(invalidCwdErr, invalidCwdErr + " (" + opts.cwd + ")");
-                    }
-
-                    // socket was closed so we should try this once again (if not already retrying)
-                    if (err.stack && err.stack.indexOf("WebSocket.self._ws.onclose") !== -1 && !retry) {
-                        cliHandler(method, cmd, args, opts, true)
-                            .then(function (response) {
-                                deferred.resolve(response);
-                            })
-                            .catch(function (err) {
-                                deferred.reject(err);
-                            });
-                        return;
-                    }
-
-                    deferred.reject(err);
-                }
-            })
-            .then(function (out) {
-                if (!resolved) {
-                    out = sanitizeOutput(out);
-                    if (debugOn) {
-                        logDebug(domainOpts, debugInfo, method, "out", out);
-                    }
-                    delete deferredMap[cliId];
-                    deferred.resolve(out);
-                }
-            })
-            .finally(function () {
-                resolved = true;
-            });
-
-        function timeoutPromise() {
+            // log all cli communication into console when debug mode is on
             if (debugOn) {
-                logDebug(domainOpts, debugInfo, method, "timeout");
-            }
-            var err = new Error("cmd-" + method + "-timeout: " + cmd + " " + args.join(" "));
-            if (!opts.timeoutExpected) {
-                ErrorHandler.logError(err);
+                Utils.consoleDebug("cmd-" + method + (watchProgress ? "-watch" : "") + ": " +
+                    opts.cwd + " -> " +
+                    cmd + " " + args.join(" "));
             }
 
-            // process still lives and we need to kill it
-            gitNodeConnector.execPeer("kill", domainOpts.cliId)
+            let resolved      = false,
+                timeoutLength = opts.timeout ? (opts.timeout * 1000) : gitTimeout;
+
+            const domainOpts = {
+                cliId: cliId,
+                watchProgress: watchProgress
+            };
+
+            const debugInfo = {
+                startTime: startTime
+            };
+
+            if (watchProgress) {
+                progress("Running command: git " + args.join(" "));
+            }
+
+            gitNodeConnector.execPeer(method, {directory: opts.cwd, command: cmd, args: args, opts: domainOpts})
                 .catch(function (err) {
-                    ErrorHandler.logError(err);
-                });
-
-            delete deferredMap[cliId];
-            deferred.reject(ErrorHandler.toError(err));
-            resolved = true;
-        }
-
-        var lastProgressTime = 0;
-        function timeoutCall() {
-            setTimeout(function () {
-                if (!resolved) {
-                    if (domainOpts.watchProgress) {
-                        // we are watching the promise progress in the domain
-                        // so we should check if the last message was sent in more than timeout time
-                        var currentTime = (new Date()).getTime();
-                        var diff = currentTime - lastProgressTime;
-                        if (diff > timeoutLength) {
-                            if (debugOn) {
-                                Utils.consoleDebug("cmd(" + cliId + ") - last progress message was sent " + diff + "ms ago - timeout");
-                            }
-                            timeoutPromise();
-                        } else {
-                            if (debugOn) {
-                                Utils.consoleDebug("cmd(" + cliId + ") - last progress message was sent " + diff + "ms ago - delay");
-                            }
-                            timeoutCall();
+                    if (!resolved) {
+                        err = sanitizeOutput(err);
+                        if (debugOn) {
+                            logDebug(domainOpts, debugInfo, method, "fail", err);
                         }
-                    } else {
-                        // we don't have any custom handler, so just kill the promise here
-                        // note that command WILL keep running in the background
-                        // so even when timeout occurs, operation might finish after it
-                        timeoutPromise();
+                        delete deferredMap[cliId];
+
+                        err = ErrorHandler.toError(err);
+
+                        // spawn ENOENT error
+                        var invalidCwdErr = "spawn ENOENT";
+                        if (err.stack && err.stack.indexOf(invalidCwdErr)) {
+                            err.message = err.message.replace(invalidCwdErr, invalidCwdErr + " (" + opts.cwd + ")");
+                            err.stack = err.stack.replace(invalidCwdErr, invalidCwdErr + " (" + opts.cwd + ")");
+                        }
+
+                        // socket was closed so we should try this once again (if not already retrying)
+                        if (err.stack && err.stack.indexOf("WebSocket.self._ws.onclose") !== -1 && !retry) {
+                            cliHandler(method, cmd, args, opts, true)
+                                .then(function (response) {
+                                    savedDefer.isResolved = true;
+                                    resolve(response);
+                                })
+                                .catch(function (err) {
+                                    reject(err);
+                                });
+                            return;
+                        }
+
+                        reject(err);
                     }
-                }
-            }, timeoutLength);
-        }
-
-        // when opts.timeout === false then never timeout the process
-        if (opts.timeout !== false) {
-            // if we are watching for progress events, mark the time when last progress was made
-            if (domainOpts.watchProgress) {
-                deferred.promise.progressed(function () {
-                    lastProgressTime = (new Date()).getTime();
+                })
+                .then(function (out) {
+                    if (!resolved) {
+                        out = sanitizeOutput(out);
+                        if (debugOn) {
+                            logDebug(domainOpts, debugInfo, method, "out", out);
+                        }
+                        delete deferredMap[cliId];
+                        resolve(out);
+                    }
+                })
+                .finally(function () {
+                    resolved = true;
                 });
-            }
-            // call the method which will timeout the promise after a certain period of time
-            timeoutCall();
-        }
 
-        return deferred.promise;
+            function timeoutPromise() {
+                if (debugOn) {
+                    logDebug(domainOpts, debugInfo, method, "timeout");
+                }
+                var err = new Error("cmd-" + method + "-timeout: " + cmd + " " + args.join(" "));
+                if (!opts.timeoutExpected) {
+                    ErrorHandler.logError(err);
+                }
+
+                // process still lives and we need to kill it
+                gitNodeConnector.execPeer("kill", domainOpts.cliId)
+                    .catch(function (err) {
+                        ErrorHandler.logError(err);
+                    });
+
+                delete deferredMap[cliId];
+                reject(ErrorHandler.toError(err));
+                resolved = true;
+            }
+
+            var lastProgressTime = 0;
+            function timeoutCall() {
+                setTimeout(function () {
+                    if (!resolved) {
+                        if (domainOpts.watchProgress) {
+                            // we are watching the promise progress
+                            // so we should check if the last message was sent in more than timeout time
+                            const currentTime = (new Date()).getTime();
+                            const diff = currentTime - lastProgressTime;
+                            if (diff > timeoutLength) {
+                                if (debugOn) {
+                                    Utils.consoleDebug("cmd(" + cliId + ") - last progress message was sent " + diff + "ms ago - timeout");
+                                }
+                                timeoutPromise();
+                            } else {
+                                if (debugOn) {
+                                    Utils.consoleDebug("cmd(" + cliId + ") - last progress message was sent " + diff + "ms ago - delay");
+                                }
+                                timeoutCall();
+                            }
+                        } else {
+                            // we don't have any custom handler, so just kill the promise here
+                            // note that command WILL keep running in the background
+                            // so even when timeout occurs, operation might finish after it
+                            timeoutPromise();
+                        }
+                    }
+                }, timeoutLength);
+            }
+
+            // when opts.timeout === false then never timeout the process
+            if (opts.timeout !== false) {
+                // if we are watching for progress events, mark the time when last progress was made
+                if (domainOpts.watchProgress) {
+                    cliPromise.progressed(function () {
+                        lastProgressTime = (new Date()).getTime();
+                    });
+                }
+                // call the method which will timeout the promise after a certain period of time
+                timeoutCall();
+            }
+        });
+        return cliPromise;
     }
 
     function which(cmd) {
@@ -231,39 +232,8 @@ define(function (require, exports, module) {
         return cliHandler("spawn", cmd, args, opts);
     }
 
-    function executeCommand(cmd, args, opts) {
-        return cliHandler("execute", cmd, args, opts);
-    }
-
-    // this is to be used together with executeCommand
-    // spawnCommand does the escaping automatically
-    function escapeShellArg(str) {
-        if (typeof str !== "string") {
-            throw new Error("escapeShellArg argument is not a string: " + typeof str);
-        }
-        if (str.length === 0) {
-            return str;
-        }
-        if (brackets.platform !== "win") {
-            // http://steve-parker.org/sh/escape.shtml
-            str = str.replace(/["$`\\]/g, function (m) {
-                return "\\" + m;
-            });
-            return "\"" + str + "\"";
-        } else {
-            // http://stackoverflow.com/questions/7760545/cmd-escape-double-quotes-in-parameter
-            str = str.replace(/"/g, function () {
-                return "\"\"\"";
-            });
-            return "\"" + str + "\"";
-        }
-    }
-
     // Public API
     exports.cliHandler      = cliHandler;
     exports.which           = which;
-    exports.executeCommand  = executeCommand;
     exports.spawnCommand    = spawnCommand;
-    exports.escapeShellArg  = escapeShellArg;
-
 });

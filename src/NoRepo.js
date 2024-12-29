@@ -1,13 +1,12 @@
 define(function (require) {
 
     // Brackets modules
-    var FileSystem      = brackets.getModule("filesystem/FileSystem"),
+    const FileSystem      = brackets.getModule("filesystem/FileSystem"),
         FileUtils       = brackets.getModule("file/FileUtils"),
         ProjectManager  = brackets.getModule("project/ProjectManager");
 
     // Local modules
-    var Promise         = require("bluebird"),
-        ErrorHandler    = require("src/ErrorHandler"),
+    const ErrorHandler    = require("src/ErrorHandler"),
         Events          = require("src/Events"),
         EventEmitter    = require("src/EventEmitter"),
         ExpectedError   = require("src/ExpectedError"),
@@ -28,12 +27,12 @@ define(function (require) {
         var gitIgnorePath = Preferences.get("currentGitRoot") + ".gitignore";
         return Utils.pathExists(gitIgnorePath).then(function (exists) {
             if (!exists) {
-                return Promise.cast(FileUtils.writeText(FileSystem.getFileForPath(gitIgnorePath), gitignoreTemplate));
+                return ProgressPromise.fromDeferred(FileUtils.writeText(FileSystem.getFileForPath(gitIgnorePath), gitignoreTemplate));
             }
         });
     }
 
-    function stageGitIgnore(msg) {
+    function stageGitIgnore() {
         return createGitIgnore().then(function () {
             return Git.stage(".gitignore");
         });
@@ -45,23 +44,22 @@ define(function (require) {
                 throw new ExpectedError("Folder " + Utils.getProjectRoot() + " is not writable!");
             }
             return Git.init().catch(function (err) {
-
-                if (ErrorHandler.contains(err, "Please tell me who you are")) {
-                    var defer = Promise.defer();
-                    EventEmitter.emit(Events.GIT_CHANGE_USERNAME, null, function () {
-                        EventEmitter.emit(Events.GIT_CHANGE_EMAIL, null, function () {
-                            Git.init().then(function (result) {
-                                defer.resolve(result);
-                            }).catch(function (err) {
-                                defer.reject(err);
+                return new ProgressPromise((resolve, reject)=>{
+                    if (ErrorHandler.contains(err, "Please tell me who you are")) {
+                        EventEmitter.emit(Events.GIT_CHANGE_USERNAME, null, function () {
+                            EventEmitter.emit(Events.GIT_CHANGE_EMAIL, null, function () {
+                                Git.init().then(function (result) {
+                                    resolve(result);
+                                }).catch(function (err) {
+                                    reject(err);
+                                });
                             });
                         });
-                    });
-                    return defer.promise;
-                }
+                        return;
+                    }
 
-                throw err;
-
+                    reject(err);
+                });
             });
         }).then(function () {
             return stageGitIgnore("Initial staging");
@@ -74,7 +72,7 @@ define(function (require) {
 
     // This checks if the project root is empty (to let Git clone repositories)
     function isProjectRootEmpty() {
-        return new Promise(function (resolve, reject) {
+        return new ProgressPromise(function (resolve, reject) {
             ProjectManager.getProjectRoot().getContents(function (err, entries) {
                 if (err) {
                     return reject(err);
@@ -91,7 +89,7 @@ define(function (require) {
         isProjectRootEmpty().then(function (isEmpty) {
             if (isEmpty) {
                 CloneDialog.show().then(function (cloneConfig) {
-                    var q = Promise.resolve();
+                    var q = ProgressPromise.resolve();
                     // put username and password into remote url
                     var remoteUrl = cloneConfig.remoteUrl;
                     if (cloneConfig.remoteUrlNew) {

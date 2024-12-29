@@ -3,8 +3,7 @@
 define(function (require, exports) {
     "use strict";
 
-    const Promise          = require("bluebird"),
-        _                  = brackets.getModule("thirdparty/lodash"),
+    const _                  = brackets.getModule("thirdparty/lodash"),
         CodeInspection     = brackets.getModule("language/CodeInspection"),
         CommandManager     = brackets.getModule("command/CommandManager"),
         Commands           = brackets.getModule("command/Commands"),
@@ -67,10 +66,10 @@ define(function (require, exports) {
         } catch (e) {
             ErrorHandler.logError("CodeInspection.inspectFile failed to execute for file " + fullPath);
             ErrorHandler.logError(e);
-            codeInspectionPromise = Promise.reject(e);
+            codeInspectionPromise = ProgressPromise.reject(e);
         }
 
-        return Promise.cast(codeInspectionPromise);
+        return ProgressPromise.fromDeferred(codeInspectionPromise);
     }
 
     function _makeDialogBig($dialog) {
@@ -307,13 +306,13 @@ define(function (require, exports) {
             }
         }).catch(function (err) {
             if (ErrorHandler.contains(err, "Please tell me who you are")) {
-                var defer = Promise.defer();
-                EventEmitter.emit(Events.GIT_CHANGE_USERNAME, null, function () {
-                    EventEmitter.emit(Events.GIT_CHANGE_EMAIL, null, function () {
-                        defer.resolve();
+                return new ProgressPromise((resolve)=>{
+                    EventEmitter.emit(Events.GIT_CHANGE_USERNAME, null, function () {
+                        EventEmitter.emit(Events.GIT_CHANGE_EMAIL, null, function () {
+                            resolve();
+                        });
                     });
                 });
-                return defer.promise;
             }
 
             ErrorHandler.showError(err, "Git Commit failed");
@@ -476,7 +475,7 @@ define(function (require, exports) {
                         ErrorHandler.showError(err, "Could not resolve file");
                         return;
                     }
-                    Promise.cast(ProjectManager.deleteItem(fileEntry))
+                    ProgressPromise.fromDeferred(ProjectManager.deleteItem(fileEntry))
                         .then(function () {
                             refresh();
                         })
@@ -890,7 +889,7 @@ define(function (require, exports) {
 
     function commitCurrentFile() {
         // do not return anything here, core expects jquery promise
-        Promise.cast(CommandManager.execute("file.save"))
+        ProgressPromise.fromDeferred(CommandManager.execute("file.save"))
             .then(function () {
                 return Git.resetIndex();
             })
@@ -901,7 +900,7 @@ define(function (require, exports) {
 
     function commitAllFiles() {
         // do not return anything here, core expects jquery promise
-        Promise.cast(CommandManager.execute("file.saveAll"))
+        ProgressPromise.fromDeferred(CommandManager.execute("file.saveAll"))
             .then(function () {
                 return Git.resetIndex();
             })

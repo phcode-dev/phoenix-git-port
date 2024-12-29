@@ -1,8 +1,8 @@
 define(function (require, exports) {
     "use strict";
 
-    const _               = brackets.getModule("thirdparty/lodash"),
-        FileUtils       = brackets.getModule("file/FileUtils"),
+    const _             = brackets.getModule("thirdparty/lodash"),
+        LanguageManager = brackets.getModule("language/LanguageManager"),
         Mustache        = brackets.getModule("thirdparty/mustache/mustache"),
         marked          = brackets.getModule('thirdparty/marked.min').marked;
 
@@ -239,7 +239,7 @@ define(function (require, exports) {
             files = files.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE);
 
             var list = files.map(function (file) {
-                var fileExtension = FileUtils.getSmartFileExtension(file),
+                var fileExtension = LanguageManager.getCompoundFileExtension(file),
                     i = file.lastIndexOf("." + fileExtension),
                     fileName = file.substring(0, fileExtension && i >= 0 ? i : file.length);
                 return {
@@ -278,7 +278,7 @@ define(function (require, exports) {
     }
 
     var initialize = _.once(function () {
-        Git.getConfig("diff.tool").done(function (config) {
+        Git.getConfig("diff.tool").then(function (config) {
             useDifftool = !!config;
         });
     });

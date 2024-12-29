@@ -1,6 +1,5 @@
 {
     "paths": {
-        "bluebird": "./thirdparty/bluebird",
         "eventemitter2": "./thirdparty/eventemitter2"
     },
     "config": {}

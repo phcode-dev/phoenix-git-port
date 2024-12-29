@@ -6,8 +6,7 @@ define(function (require, exports) {
         Mustache = brackets.getModule("thirdparty/mustache/mustache");
 
     // Local modules
-    const Promise = require("bluebird"),
-        Strings = require("strings");
+    const Strings = require("strings");
 
     // Templates
     var template = require("text!src/dialogs/templates/progress-dialog.html");
@@ -43,7 +42,7 @@ define(function (require, exports) {
 
         options = options || {};
 
-        return new Promise(function (resolve, reject) {
+        return new ProgressPromise(function (resolve, reject) {
 
             lines = [];
             $textarea = null;
@@ -105,7 +104,7 @@ define(function (require, exports) {
     }
 
     function waitForClose() {
-        return new Promise(function (resolve) {
+        return new ProgressPromise(function (resolve) {
             function check() {
                 var visible = $("#git-progress-dialog").is(":visible");
                 if (!visible) {

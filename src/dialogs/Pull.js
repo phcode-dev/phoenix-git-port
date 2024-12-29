@@ -7,7 +7,6 @@ define(function (require, exports) {
 
     // Local modules
     var Preferences     = require("src/Preferences"),
-        Promise         = require("bluebird"),
         RemoteCommon    = require("src/dialogs/RemoteCommon"),
         Strings         = require("strings");
 
@@ -15,10 +14,6 @@ define(function (require, exports) {
     var template            = require("text!src/dialogs/templates/pull-dialog.html"),
         remotesTemplate     = require("text!src/dialogs/templates/remotes-template.html"),
         credentialsTemplate = require("text!src/dialogs/templates/credentials-template.html");
-
-    // Module variables
-    var defer,
-        pullConfig;
 
     // Implementation
     function _attachEvents($dialog) {
@@ -31,15 +26,15 @@ define(function (require, exports) {
             .prop("checked", true);
     }
 
-    function _show() {
-        var templateArgs = {
+    function _show(pullConfig, resolve, reject) {
+        const templateArgs = {
             config: pullConfig,
             mode: "PULL_FROM",
             modeLabel: Strings.PULL_FROM,
             Strings: Strings
         };
 
-        var compiledTemplate = Mustache.render(template, templateArgs, {
+        const compiledTemplate = Mustache.render(template, templateArgs, {
                 credentials: credentialsTemplate,
                 remotes: remotesTemplate
             }),
@@ -52,19 +47,20 @@ define(function (require, exports) {
             if (buttonId === "ok") {
                 RemoteCommon.collectValues(pullConfig, $dialog);
                 Preferences.set("pull.strategy", pullConfig.strategy);
-                defer.resolve(pullConfig);
+                resolve(pullConfig);
             } else {
-                defer.reject();
+                reject();
             }
         });
     }
 
-    function show(_pullConfig) {
-        defer = Promise.defer();
-        pullConfig = _pullConfig;
-        pullConfig.pull = true;
-        RemoteCommon.collectInfo(pullConfig).then(_show);
-        return defer.promise;
+    function show(pullConfig) {
+        return new ProgressPromise((resolve, reject) => {
+            pullConfig.pull = true;
+            RemoteCommon.collectInfo(pullConfig).then(()=>{
+                _show(pullConfig, resolve, reject);
+            });
+        });
     }
 
     exports.show = show;

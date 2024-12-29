@@ -15,7 +15,6 @@ define(function (require) {
         Git             = require("src/git/Git"),
         Preferences     = require("src/Preferences"),
         ProgressDialog  = require("src/dialogs/Progress"),
-        Promise         = require("bluebird"),
         PullDialog      = require("src/dialogs/Pull"),
         PushDialog      = require("src/dialogs/Push"),
         Strings         = require("strings"),
@@ -139,7 +138,7 @@ define(function (require) {
                     return [name, url];
                 });
             })
-            .spread(function (name, url) {
+            .then(function ([name, url]) {
                 return Git.createRemote(name, url).then(function () {
                     return refreshRemotesPicker();
                 });

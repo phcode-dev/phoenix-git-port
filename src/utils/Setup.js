@@ -7,8 +7,7 @@ define(function (require, exports) {
     // Local modules
     var Cli         = require("src/Cli"),
         Git         = require("src/git/Git"),
-        Preferences = require("src/Preferences"),
-        Promise     = require("bluebird");
+        Preferences = require("src/Preferences");
 
     // Module variables
     var standardGitPathsWin = [
@@ -24,7 +23,7 @@ define(function (require, exports) {
 
     // Implementation
     function findGit() {
-        return new Promise(function (resolve, reject) {
+        return new ProgressPromise(function (resolve, reject) {
 
             // TODO: do this in two steps - first check user config and then check all
             var pathsToLook = [Preferences.get("gitPath"), "git"].concat(brackets.platform === "win" ? standardGitPathsWin : standardGitPathsNonWin);

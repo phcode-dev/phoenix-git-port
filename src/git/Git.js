@@ -6,8 +6,7 @@
 define(function (require, exports) {
 
     // Local modules
-    var Preferences = require("src/Preferences"),
-        Promise     = require("bluebird"),
+    const Preferences = require("src/Preferences"),
         GitCli      = require("src/git/GitCli"),
         Utils       = require("src/Utils");
 
@@ -95,7 +94,7 @@ define(function (require, exports) {
 
         return Promise.all(baseCheck.map(function (fileName) {
             return Utils.loadPathContent(gitFolder + fileName);
-        })).spread(function (mergeMode, rebaseMode) {
+        })).then(function ([mergeMode, rebaseMode]) {
             var obj = {
                 mergeMode: mergeMode !== null,
                 rebaseMode: rebaseMode !== null
@@ -104,7 +103,7 @@ define(function (require, exports) {
 
                 return Promise.all(mergeCheck.map(function (fileName) {
                     return Utils.loadPathContent(gitFolder + fileName);
-                })).spread(function (head, msg) {
+                })).then(function ([head, msg]) {
 
                     if (head) {
                         obj.mergeHead = head.trim();
@@ -125,7 +124,7 @@ define(function (require, exports) {
 
                 return Promise.all(rebaseCheck.map(function (fileName) {
                     return Utils.loadPathContent(gitFolder + fileName);
-                })).spread(function (next, last, head) {
+                })).then(function ([next, last, head]) {
 
                     if (next) { obj.rebaseNext = next.trim(); }
                     if (last) { obj.rebaseLast = last.trim(); }
