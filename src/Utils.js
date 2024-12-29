@@ -489,8 +489,8 @@ define(function (require, exports, module) {
         });
     }
 
-    function stripWhitespaceFromFiles(gitStatusResults, stageChanges) {
-        return new ProgressPromise((resolve, reject, progress)=>{
+    function stripWhitespaceFromFiles(gitStatusResults, stageChanges, progressTracker) {
+        return new ProgressPromise((resolve, reject)=>{
             const startTime = (new Date()).getTime();
             let queue = Promise.resolve();
 
@@ -508,13 +508,15 @@ define(function (require, exports, module) {
                                 fileObj.status.indexOf(Git.FILE_STATUS.RENAMED) !== -1;
 
                             var t = (new Date()).getTime() - startTime;
-                            progress(t + "ms - " + Strings.CLEAN_FILE_START + ": " + fileObj.file);
+                            progressTracker.trigger(Events.GIT_PROGRESS_EVENT,
+                                t + "ms - " + Strings.CLEAN_FILE_START + ": " + fileObj.file);
 
                             return stripWhitespaceFromFile(fileObj.file, clearWholeFile).then(function () {
                                 // stage the files again to include stripWhitespace changes
                                 var notifyProgress = function () {
                                     var t = (new Date()).getTime() - startTime;
-                                    progress(t + "ms - " + Strings.CLEAN_FILE_END + ": " + fileObj.file);
+                                    progressTracker.trigger(Events.GIT_PROGRESS_EVENT,
+                                        t + "ms - " + Strings.CLEAN_FILE_END + ": " + fileObj.file);
                                 };
                                 if (stageChanges) {
                                     return Git.stage(fileObj.file).then(notifyProgress);

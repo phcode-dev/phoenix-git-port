@@ -218,6 +218,8 @@ define(function (require) {
                 q = q.then(function () {
                     var op;
 
+                    // todo git wire tracker, also note that the tracker events are buffered and shown
+                    const tracker = ProgressDialog.newProgressTracker();
                     if (pushConfig.pushToNew) {
                         op = Git.pushToNewUpstream(pushConfig.remote, pushConfig.branch);
                     } else if (pushConfig.strategy === "DEFAULT") {
@@ -227,7 +229,7 @@ define(function (require) {
                     } else if (pushConfig.strategy === "DELETE_BRANCH") {
                         op = Git.deleteRemoteBranch(pushConfig.remote, pushConfig.branch);
                     }
-                    return ProgressDialog.show(op)
+                    return ProgressDialog.show(op, tracker)
                         .then(function (result) {
                             return ProgressDialog.waitForClose().then(function () {
                                 showPushResult(result);
@@ -280,7 +282,8 @@ define(function (require) {
                 // do the pull itself (we are not using pull command)
                 q = q.then(function () {
                     // fetch the remote first
-                    return ProgressDialog.show(Git.fetchRemote(pullConfig.remote))
+                    const tracker = ProgressDialog.newProgressTracker();
+                    return ProgressDialog.show(Git.fetchRemote(pullConfig.remote, tracker), tracker)
                         .then(function () {
                             if (pullConfig.strategy === "DEFAULT") {
                                 return Git.mergeRemote(pullConfig.remote, pullConfig.branch);
@@ -320,36 +323,20 @@ define(function (require) {
             });
     }
 
-    function handleFetch(silent) {
+    function handleFetch() {
 
         // Tell the rest of the plugin that the fetch has started
         EventEmitter.emit(Events.FETCH_STARTED);
 
-        var q;
-
-        if (!silent) {
-
-            // If it's not a silent fetch show a progress window
-            q = ProgressDialog.show(Git.fetchAllRemotes())
+        const tracker = ProgressDialog.newProgressTracker();
+        return ProgressDialog.show(Git.fetchAllRemotes(tracker), tracker)
             .catch(function (err) {
                 ErrorHandler.showError(err);
             })
-            .then(ProgressDialog.waitForClose);
-
-        } else {
-
-            // Else fetch in the background
-            q = Git.fetchAllRemotes()
-            .catch(function (err) {
-                ErrorHandler.logError(err);
+            .then(ProgressDialog.waitForClose)
+            .finally(function () {
+                EventEmitter.emit(Events.FETCH_COMPLETE);
             });
-
-        }
-
-        // Tell the rest of the plugin that the fetch has completed
-        return q.finally(function () {
-            EventEmitter.emit(Events.FETCH_COMPLETE);
-        });
     }
 
     // Event subscriptions

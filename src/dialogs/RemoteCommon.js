@@ -80,7 +80,8 @@ define(function (require, exports) {
         }
 
         $dialog.on("click", ".fetchBranches", function () {
-            ProgressDialog.show(Git.fetchRemote(config.remote))
+            const tracker = ProgressDialog.newProgressTracker();
+            ProgressDialog.show(Git.fetchRemote(config.remote, tracker), tracker)
                 .then(function () {
                     fillBranches(config, $dialog);
                 }).catch(function (err) {

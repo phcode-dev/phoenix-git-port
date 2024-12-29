@@ -204,7 +204,8 @@ define(function (require, exports) {
                 _reloadBranchSelect($select, branches);
                 dialog.getElement().find(".fetchBranches").on("click", function () {
                     var $this = $(this);
-                    ProgressDialog.show(Git.fetchAllRemotes())
+                    const tracker = ProgressDialog.newProgressTracker();
+                    ProgressDialog.show(Git.fetchAllRemotes(tracker), tracker)
                         .then(function () {
                             return Git.getAllBranches().then(function (branches) {
                                 $this.prop("disabled", true).attr("title", "Already fetched");

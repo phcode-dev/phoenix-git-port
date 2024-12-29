@@ -4,6 +4,7 @@ define(function (require, exports, module) {
 
     const ErrorHandler  = require("src/ErrorHandler"),
         Preferences   = require("src/Preferences"),
+        Events        = require("src/Events"),
         Utils         = require("src/Utils");
 
     let debugOn           = Preferences.get("debugMode"),
@@ -14,15 +15,15 @@ define(function (require, exports, module) {
     // Constants
     var MAX_COUNTER_VALUE = 4294967295; // 2^32 - 1
 
-    const GIT_PROGRESS_EVENT = "progress";
-
     let gitNodeConnector = NodeConnector.createNodeConnector("phcode-git-core", exports);
-    gitNodeConnector.on(GIT_PROGRESS_EVENT, (_event, evtData) => {
+    gitNodeConnector.on(Events.GIT_PROGRESS_EVENT, (_event, evtData) => {
         const deferred = deferredMap[evtData.cliId];
-        if (deferred && !deferred.isResolved) {
-            deferred.progress(evtData.data);
-        } else {
+        if(!deferred){
             ErrorHandler.logError("Progress sent for a non-existing process(" + evtData.cliId + "): " + evtData);
+            return;
+        }
+        if (!deferred.isResolved && deferred.progressTracker) {
+            deferred.progressTracker.trigger(Events.GIT_PROGRESS_EVENT, evtData.data);
         }
     });
 
@@ -68,13 +69,14 @@ define(function (require, exports, module) {
     }
 
     function cliHandler(method, cmd, args, opts, retry) {
-        const cliPromise = new ProgressPromise((resolve, reject, progress)=>{
+        const cliPromise = new ProgressPromise((resolve, reject)=>{
             const cliId     = getNextCliId();
-            const savedDefer = {resolve, reject, progress};
-
-            deferredMap[cliId] = savedDefer;
             args = args || [];
             opts = opts || {};
+            const progressTracker = opts.progressTracker;
+
+            const savedDefer = {resolve, reject, progressTracker};
+            deferredMap[cliId] = savedDefer;
 
             const watchProgress = args.indexOf("--progress") !== -1;
             const startTime = (new Date()).getTime();
@@ -107,8 +109,9 @@ define(function (require, exports, module) {
                 startTime: startTime
             };
 
-            if (watchProgress) {
-                progress("Running command: git " + args.join(" "));
+            if (watchProgress && progressTracker) {
+                progressTracker.trigger(Events.GIT_PROGRESS_EVENT,
+                    "Running command: git " + args.join(" "));
             }
 
             gitNodeConnector.execPeer(method, {directory: opts.cwd, command: cmd, args: args, opts: domainOpts})
@@ -156,6 +159,7 @@ define(function (require, exports, module) {
                     }
                 })
                 .finally(function () {
+                    progressTracker && progressTracker.off(`${Events.GIT_PROGRESS_EVENT}.${cliId}`);
                     resolved = true;
                 });
 
@@ -177,6 +181,7 @@ define(function (require, exports, module) {
                 delete deferredMap[cliId];
                 reject(ErrorHandler.toError(err));
                 resolved = true;
+                progressTracker && progressTracker.off(`${Events.GIT_PROGRESS_EVENT}.${cliId}`);
             }
 
             var lastProgressTime = 0;
@@ -212,8 +217,9 @@ define(function (require, exports, module) {
             // when opts.timeout === false then never timeout the process
             if (opts.timeout !== false) {
                 // if we are watching for progress events, mark the time when last progress was made
-                if (domainOpts.watchProgress) {
-                    cliPromise.progressed(function () {
+                if (domainOpts.watchProgress && progressTracker) {
+                    progressTracker.off(`${Events.GIT_PROGRESS_EVENT}.${cliId}`);
+                    progressTracker.on(`${Events.GIT_PROGRESS_EVENT}.${cliId}`, function () {
                         lastProgressTime = (new Date()).getTime();
                     });
                 }

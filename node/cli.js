@@ -1,6 +1,6 @@
 const gitNodeConnector = global.createNodeConnector("phcode-git-core", exports);
 
-const GIT_PROGRESS_EVENT = "progress";
+const GIT_PROGRESS_EVENT = "git_progress";
 
 let ChildProcess  = require("child_process"),
     crossSpawn    = require('cross-spawn'),

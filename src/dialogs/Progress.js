@@ -6,7 +6,8 @@ define(function (require, exports) {
         Mustache = brackets.getModule("thirdparty/mustache/mustache");
 
     // Local modules
-    const Strings = require("strings");
+    const Strings = require("strings"),
+        Events        = require("src/Events");
 
     // Templates
     var template = require("text!src/dialogs/templates/progress-dialog.html");
@@ -21,7 +22,7 @@ define(function (require, exports) {
     }
 
     function onProgress(str) {
-        if (typeof str !== "undefined") {
+        if (typeof str === "string") {
             addLine(str);
         }
         if ($textarea) {
@@ -30,17 +31,16 @@ define(function (require, exports) {
         }
     }
 
-    function show(promise, title, options) {
-        if (!promise || !promise.finally || !promise.progressed) {
-            throw new Error("Invalid argument for progress dialog!");
+    function show(promise, progressTracker, showOpts = {}) {
+        if (!promise || !promise.finally) {
+            throw new Error("Invalid promise argument for progress dialog!");
+        }
+        if(!progressTracker) {
+            throw new Error("Invalid progressTracker argument for progress dialog!");
         }
 
-        if (typeof title === "object") {
-            options = title;
-            title = false;
-        }
-
-        options = options || {};
+        const title = showOpts.title;
+        const options = showOpts.options || {};
 
         return new ProgressPromise(function (resolve, reject) {
 
@@ -64,7 +64,7 @@ define(function (require, exports) {
                 dialog = Dialogs.showModalDialogUsingTemplate(compiledTemplate);
 
                 $textarea = dialog.getElement().find("textarea");
-                onProgress(undefined);
+                onProgress();
             }
 
             function finish() {
@@ -87,9 +87,12 @@ define(function (require, exports) {
                 }, options.preDelay * 1000);
             }
 
-            promise.progressed(function (string) {
-                onProgress(string);
-            }).finally(function () {
+            progressTracker.off(`${Events.GIT_PROGRESS_EVENT}.progressDlg`);
+            progressTracker.on(`${Events.GIT_PROGRESS_EVENT}.progressDlg`, (_evt, data)=>{
+                onProgress(data);
+            });
+            promise.finally(function () {
+                progressTracker.off(`${Events.GIT_PROGRESS_EVENT}.progressDlg`);
                 onProgress("Finished!");
                 if (!options.postDelay || !dialog) {
                     finish();
@@ -117,7 +120,14 @@ define(function (require, exports) {
         });
     }
 
+    function newProgressTracker() {
+        const tracker = {};
+        EventDispatcher.makeEventDispatcher(tracker);
+        return tracker;
+    }
+
     exports.show = show;
+    exports.newProgressTracker = newProgressTracker;
     exports.waitForClose = waitForClose;
 
 });

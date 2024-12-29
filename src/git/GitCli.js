@@ -91,15 +91,11 @@ define(function (require, exports) {
         const item  = _gitQueue.shift(),
             resolve = item[0],
             reject = item[1],
-            progress = item[2],
-            args  = item[3],
-            opts  = item[4];
+            args  = item[2],
+            opts  = item[3];
         // execute git command in a queue so no two commands are running at the same time
         if (opts.nonblocking !== true) { _gitQueueBusy = true; }
         Cli.spawnCommand(getGitPath(), args, opts)
-            .progressed(function () {
-                progress(...arguments);
-            })
             .then(function (r) {
                 resolve(r);
             })
@@ -115,9 +111,9 @@ define(function (require, exports) {
     }
 
     function git(args, opts) {
-        return new ProgressPromise((resolve, reject, progress) => {
-            _gitQueue.push([resolve, reject, progress, args || [], opts || {}]);
-            _processQueue();
+        return new ProgressPromise((resolve, reject) => {
+            _gitQueue.push([resolve, reject, args || [], opts || {}]);
+            setTimeout(_processQueue);
         });
     }
 
@@ -132,25 +128,26 @@ define(function (require, exports) {
         --set-upstream If specified branch does not exist yet or if --force has been given, acts exactly like --track
     */
 
-    function setUpstreamBranch(remoteName, remoteBranch) {
+    function setUpstreamBranch(remoteName, remoteBranch, progressTracker) {
         if (!remoteName) { throw new TypeError("remoteName argument is missing!"); }
         if (!remoteBranch) { throw new TypeError("remoteBranch argument is missing!"); }
-        return git(["branch", "--no-color", "-u", remoteName + "/" + remoteBranch]);
+        return git(["branch", "--no-color", "-u", remoteName + "/" + remoteBranch],
+            {progressTracker});
     }
 
-    function branchDelete(branchName) {
-        return git(["branch", "--no-color", "-d", branchName]);
+    function branchDelete(branchName, progressTracker) {
+        return git(["branch", "--no-color", "-d", branchName], {progressTracker});
     }
 
-    function forceBranchDelete(branchName) {
-        return git(["branch", "--no-color", "-D", branchName]);
+    function forceBranchDelete(branchName, progressTracker) {
+        return git(["branch", "--no-color", "-D", branchName], {progressTracker});
     }
 
-    function getBranches(moreArgs) {
+    function getBranches(moreArgs, progressTracker) {
         var args = ["branch", "--no-color"];
         if (moreArgs) { args = args.concat(moreArgs); }
 
-        return git(args).then(function (stdout) {
+        return git(args, {progressTracker}).then(function (stdout) {
             if (!stdout) { return []; }
             return stdout.split("\n").reduce(function (arr, l) {
                 var name = l.trim(),
@@ -192,8 +189,8 @@ define(function (require, exports) {
         });
     }
 
-    function getAllBranches() {
-        return getBranches(["-a"]);
+    function getAllBranches(progressTracker) {
+        return getBranches(["-a"], progressTracker);
     }
 
     /*
@@ -213,14 +210,16 @@ define(function (require, exports) {
         throw err;
     }
 
-    function fetchRemote(remote) {
+    function fetchRemote(remote, progressTracker) {
         return git(["fetch", "--progress", remote], {
+            progressTracker,
             timeout: false // never timeout this
         }).catch(repositoryNotFoundHandler);
     }
 
-    function fetchAllRemotes() {
+    function fetchAllRemotes(progressTracker) {
         return git(["fetch", "--progress", "--all"], {
+            progressTracker,
             timeout: false // never timeout this
         }).catch(repositoryNotFoundHandler);
     }
@@ -556,8 +555,9 @@ define(function (require, exports) {
         return git(["init"]);
     }
 
-    function clone(remoteGitUrl, destinationFolder) {
+    function clone(remoteGitUrl, destinationFolder, progressTracker) {
         return git(["clone", remoteGitUrl, destinationFolder, "--progress"], {
+            progressTracker,
             timeout: false // never timeout this
         });
     }

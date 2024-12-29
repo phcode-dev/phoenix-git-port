@@ -488,9 +488,12 @@ define(function (require, exports) {
     }
 
     function _getStagedDiff(commitMode, files) {
-        return ProgressDialog.show(_getStagedDiffForCommitMode(commitMode, files),
-                                   Strings.GETTING_STAGED_DIFF_PROGRESS,
-                                   { preDelay: 3, postDelay: 1 })
+        const tracker = ProgressDialog.newProgressTracker();
+        // todo git wire tracker
+        return ProgressDialog.show(_getStagedDiffForCommitMode(commitMode, files), tracker, {
+            title: Strings.GETTING_STAGED_DIFF_PROGRESS,
+            options: { preDelay: 3, postDelay: 1 }
+        })
         .catch(function (err) {
             if (ErrorHandler.contains(err, "cleanup")) {
                 return false; // will display list of staged files instead
@@ -704,9 +707,14 @@ define(function (require, exports) {
 
         if (stripWhitespace) {
             queue = queue.then(function () {
-                return ProgressDialog.show(Utils.stripWhitespaceFromFiles(files, commitMode === COMMIT_MODE.DEFAULT),
-                                           Strings.CLEANING_WHITESPACE_PROGRESS,
-                                           { preDelay: 3, postDelay: 1 });
+                const tracker = ProgressDialog.newProgressTracker();
+                return ProgressDialog.show(
+                    Utils.stripWhitespaceFromFiles(files, commitMode === COMMIT_MODE.DEFAULT, tracker),
+                    tracker, {
+                        title: Strings.CLEANING_WHITESPACE_PROGRESS,
+                        options: { preDelay: 3, postDelay: 1 }
+                    }
+                );
             });
         }
 
