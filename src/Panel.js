@@ -1009,7 +1009,7 @@ define(function (require, exports) {
                 e.stopPropagation();
                 handleGitDelete($(e.target).closest("tr").attr("x-file"));
             })
-            .on("click", ".modified-file", function (e) {
+            .on("mousedown", ".modified-file", function (e) {
                 var $this = $(e.currentTarget);
                 if ($this.attr("x-status") === Git.FILE_STATUS.DELETED) {
                     return;
