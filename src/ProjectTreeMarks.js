@@ -157,7 +157,7 @@ define(function (require) {
     }
 
     // this will refresh ignore entries when .gitignore is modified
-    EventEmitter.on(Events.BRACKETS_FILE_CHANGED, function (evt, file) {
+    EventEmitter.on(Events.BRACKETS_FILE_CHANGED, function (file) {
         if (file.fullPath === Preferences.get("currentGitRoot") + ".gitignore") {
             refreshIgnoreEntries().finally(function () {
                 refreshOpenFiles();

@@ -508,7 +508,7 @@ define(function (require, exports) {
         refresh();
     }
 
-    EventEmitter.on(Events.BRACKETS_FILE_CHANGED, function (evt, file) {
+    EventEmitter.on(Events.BRACKETS_FILE_CHANGED, function (file) {
         if (file.fullPath === _getHeadFilePath()) {
             checkBranch();
         }

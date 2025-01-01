@@ -35,21 +35,21 @@ define(function (require) {
 
             }
 
-            EventEmitter.emit(Events.BRACKETS_FILE_CHANGED, evt, file);
+            EventEmitter.emit(Events.BRACKETS_FILE_CHANGED, file);
         }
     });
 
     DocumentManager.on("documentSaved", function (evt, doc) {
         // we care only for files in current project
         if (doc.file.fullPath.indexOf(Preferences.get("currentGitRoot")) === 0) {
-            EventEmitter.emit(Events.BRACKETS_DOCUMENT_SAVED, evt, doc);
+            EventEmitter.emit(Events.BRACKETS_DOCUMENT_SAVED, doc);
         }
     });
 
     MainViewManager.on("currentFileChange", function (evt, currentDocument, previousDocument) {
         currentDocument = currentDocument || DocumentManager.getCurrentDocument();
         if (!HistoryViewer.isVisible()) {
-            EventEmitter.emit(Events.BRACKETS_CURRENT_DOCUMENT_CHANGE, evt, currentDocument, previousDocument);
+            EventEmitter.emit(Events.BRACKETS_CURRENT_DOCUMENT_CHANGE, currentDocument, previousDocument);
         } else {
             HistoryViewer.hide();
         }

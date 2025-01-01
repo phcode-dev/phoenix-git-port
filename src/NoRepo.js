@@ -47,8 +47,8 @@ define(function (require) {
             return Git.init().catch(function (err) {
                 return new Promise((resolve, reject)=>{
                     if (ErrorHandler.contains(err, "Please tell me who you are")) {
-                        EventEmitter.emit(Events.GIT_CHANGE_USERNAME, null, function () {
-                            EventEmitter.emit(Events.GIT_CHANGE_EMAIL, null, function () {
+                        EventEmitter.emit(Events.GIT_CHANGE_USERNAME, function () {
+                            EventEmitter.emit(Events.GIT_CHANGE_EMAIL, function () {
                                 Git.init().then(function (result) {
                                     resolve(result);
                                 }).catch(function (err) {

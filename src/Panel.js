@@ -307,8 +307,8 @@ define(function (require, exports) {
         }).catch(function (err) {
             if (ErrorHandler.contains(err, "Please tell me who you are")) {
                 return new Promise((resolve)=>{
-                    EventEmitter.emit(Events.GIT_CHANGE_USERNAME, null, function () {
-                        EventEmitter.emit(Events.GIT_CHANGE_EMAIL, null, function () {
+                    EventEmitter.emit(Events.GIT_CHANGE_USERNAME, function () {
+                        EventEmitter.emit(Events.GIT_CHANGE_EMAIL, function () {
                             resolve();
                         });
                     });
@@ -1028,7 +1028,7 @@ define(function (require, exports) {
 
     }
 
-    EventEmitter.on(Events.GIT_CHANGE_USERNAME, function (event, callback) {
+    EventEmitter.on(Events.GIT_CHANGE_USERNAME, function (callback) {
         return Git.getConfig("user.name").then(function (currentUserName) {
             return Utils.askQuestion(Strings.CHANGE_USER_NAME, Strings.ENTER_NEW_USER_NAME, { defaultValue: currentUserName })
                 .then(function (userName) {
@@ -1046,7 +1046,7 @@ define(function (require, exports) {
         });
     });
 
-    EventEmitter.on(Events.GIT_CHANGE_EMAIL, function (event, callback) {
+    EventEmitter.on(Events.GIT_CHANGE_EMAIL, function (callback) {
         return Git.getConfig("user.email").then(function (currentUserEmail) {
             return Utils.askQuestion(Strings.CHANGE_USER_EMAIL, Strings.ENTER_NEW_USER_EMAIL, { defaultValue: currentUserEmail })
                 .then(function (userEmail) {
@@ -1064,7 +1064,7 @@ define(function (require, exports) {
         });
     });
 
-    EventEmitter.on(Events.GERRIT_TOGGLE_PUSH_REF, function (event, callback) {
+    EventEmitter.on(Events.GERRIT_TOGGLE_PUSH_REF, function (callback) {
         // update preference and emit so the menu item updates
         return Git.getConfig("gerrit.pushref").then(function (strEnabled) {
             var toggledValue = strEnabled !== "true";
@@ -1311,7 +1311,7 @@ define(function (require, exports) {
         refresh();
     });
 
-    EventEmitter.on(Events.BRACKETS_FILE_CHANGED, function (event, fileSystemEntry) {
+    EventEmitter.on(Events.BRACKETS_FILE_CHANGED, function (fileSystemEntry) {
         // files are added or deleted from the directory
         if (fileSystemEntry.isDirectory) {
             refresh();

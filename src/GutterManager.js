@@ -384,7 +384,7 @@ define(function (require, exports) {
         // calling this with an empty array will remove gutters from all editor instances
         prepareGutters([]);
     });
-    EventEmitter.on(Events.BRACKETS_CURRENT_DOCUMENT_CHANGE, function (evt, file) {
+    EventEmitter.on(Events.BRACKETS_CURRENT_DOCUMENT_CHANGE, function (file) {
         // file will be null when switching to an empty pane
         if (!file) { return; }
 
@@ -402,7 +402,7 @@ define(function (require, exports) {
     EventEmitter.on(Events.GIT_COMMITED, function () {
         refresh();
     });
-    EventEmitter.on(Events.BRACKETS_FILE_CHANGED, function (evt, file) {
+    EventEmitter.on(Events.BRACKETS_FILE_CHANGED, function (file) {
         var alreadyOpened = _.filter(editorsWithGutters, function (editor) {
             return editor.document.file.fullPath === file.fullPath;
         }).length > 0;

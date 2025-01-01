@@ -48,12 +48,8 @@ define(function (require, exports, module) {
         if (!eventName) {
             throw new Error("no event has been passed to get the emittor!");
         }
-
-        var self = this,
-            args = _.toArray(arguments);
-
         return function () {
-            self.emit.apply(self, _.union(args, arguments));
+            emInstance.emit(eventName, ...arguments);
         };
     };
 
