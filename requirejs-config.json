@@ -1,6 +1,4 @@
 {
-    "paths": {
-        "eventemitter2": "./thirdparty/eventemitter2"
-    },
+    "paths": {},
     "config": {}
 }
