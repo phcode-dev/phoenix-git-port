@@ -44,9 +44,9 @@ define(function (require, exports, module) {
         };
     }
 
-    emInstance.emitFactory = function (eventName) {
+    emInstance.getEmitter = function (eventName) {
         if (!eventName) {
-            throw new Error("no event has been passed to the factory!");
+            throw new Error("no event has been passed to get the emittor!");
         }
 
         var self = this,

@@ -1136,8 +1136,8 @@ define(function (require, exports) {
                     });
                 }
             })
-            .on("click", ".git-refresh", EventEmitter.emitFactory(Events.REFRESH_ALL))
-            .on("click", ".git-commit", EventEmitter.emitFactory(Events.HANDLE_GIT_COMMIT))
+            .on("click", ".git-refresh", EventEmitter.getEmitter(Events.REFRESH_ALL))
+            .on("click", ".git-commit", EventEmitter.getEmitter(Events.HANDLE_GIT_COMMIT))
             .on("click", ".git-rebase-continue", function (e) { handleRebase("continue", e); })
             .on("click", ".git-rebase-skip", function (e) { handleRebase("skip", e); })
             .on("click", ".git-rebase-abort", function (e) { handleRebase("abort", e); })
@@ -1149,21 +1149,21 @@ define(function (require, exports) {
             .on("click", ".git-toggle-untracked", handleToggleUntracked)
             .on("click", ".authors-selection", handleAuthorsSelection)
             .on("click", ".authors-file", handleAuthorsFile)
-            .on("click", ".git-file-history", EventEmitter.emitFactory(Events.HISTORY_SHOW_FILE))
-            .on("click", ".git-history-toggle", EventEmitter.emitFactory(Events.HISTORY_SHOW_GLOBAL))
-            .on("click", ".git-fetch", EventEmitter.emitFactory(Events.HANDLE_FETCH))
+            .on("click", ".git-file-history", EventEmitter.getEmitter(Events.HISTORY_SHOW_FILE))
+            .on("click", ".git-history-toggle", EventEmitter.getEmitter(Events.HISTORY_SHOW_GLOBAL))
+            .on("click", ".git-fetch", EventEmitter.getEmitter(Events.HANDLE_FETCH))
             .on("click", ".git-push", function () {
                 var typeOfRemote = $(this).attr("x-selected-remote-type");
                 if (typeOfRemote === "git") {
                     EventEmitter.emit(Events.HANDLE_PUSH);
                 }
             })
-            .on("click", ".git-pull", EventEmitter.emitFactory(Events.HANDLE_PULL))
-            .on("click", ".git-init", EventEmitter.emitFactory(Events.HANDLE_GIT_INIT))
-            .on("click", ".git-clone", EventEmitter.emitFactory(Events.HANDLE_GIT_CLONE))
-            .on("click", ".change-remote", EventEmitter.emitFactory(Events.HANDLE_REMOTE_PICK))
-            .on("click", ".remove-remote", EventEmitter.emitFactory(Events.HANDLE_REMOTE_DELETE))
-            .on("click", ".git-remote-new", EventEmitter.emitFactory(Events.HANDLE_REMOTE_CREATE))
+            .on("click", ".git-pull", EventEmitter.getEmitter(Events.HANDLE_PULL))
+            .on("click", ".git-init", EventEmitter.getEmitter(Events.HANDLE_GIT_INIT))
+            .on("click", ".git-clone", EventEmitter.getEmitter(Events.HANDLE_GIT_CLONE))
+            .on("click", ".change-remote", EventEmitter.getEmitter(Events.HANDLE_REMOTE_PICK))
+            .on("click", ".remove-remote", EventEmitter.getEmitter(Events.HANDLE_REMOTE_DELETE))
+            .on("click", ".git-remote-new", EventEmitter.getEmitter(Events.HANDLE_REMOTE_CREATE))
             .on("click", ".git-settings", SettingsDialog.show)
             .on("contextmenu", "tr", function (e) {
                 var $this = $(this);
@@ -1174,9 +1174,9 @@ define(function (require, exports) {
                     Menus.getContextMenu("git-panel-context-menu").open(e);
                 }, 1);
             })
-            .on("click", ".change-user-name", EventEmitter.emitFactory(Events.GIT_CHANGE_USERNAME))
-            .on("click", ".change-user-email", EventEmitter.emitFactory(Events.GIT_CHANGE_EMAIL))
-            .on("click", ".toggle-gerrit-push-ref", EventEmitter.emitFactory(Events.GERRIT_TOGGLE_PUSH_REF))
+            .on("click", ".change-user-name", EventEmitter.getEmitter(Events.GIT_CHANGE_USERNAME))
+            .on("click", ".change-user-email", EventEmitter.getEmitter(Events.GIT_CHANGE_EMAIL))
+            .on("click", ".toggle-gerrit-push-ref", EventEmitter.getEmitter(Events.GERRIT_TOGGLE_PUSH_REF))
             .on("click", ".undo-last-commit", undoLastLocalCommit)
             .on("click", ".tags", function (e) {
                 e.stopPropagation();
@@ -1216,10 +1216,10 @@ define(function (require, exports) {
         CommandManager.register(Strings.COMMIT_ALL_SHORTCUT, COMMIT_ALL_CMD, commitAllFiles);
         KeyBindingManager.addBinding(COMMIT_ALL_CMD, Preferences.get("commitAllShortcut"), brackets.platform);
 
-        CommandManager.register(Strings.PUSH_SHORTCUT, PUSH_CMD, EventEmitter.emitFactory(Events.HANDLE_PUSH));
+        CommandManager.register(Strings.PUSH_SHORTCUT, PUSH_CMD, EventEmitter.getEmitter(Events.HANDLE_PUSH));
         KeyBindingManager.addBinding(PUSH_CMD, Preferences.get("pushShortcut"), brackets.platform);
 
-        CommandManager.register(Strings.PULL_SHORTCUT, PULL_CMD, EventEmitter.emitFactory(Events.HANDLE_PULL));
+        CommandManager.register(Strings.PULL_SHORTCUT, PULL_CMD, EventEmitter.getEmitter(Events.HANDLE_PULL));
         KeyBindingManager.addBinding(PULL_CMD, Preferences.get("pullShortcut"), brackets.platform);
 
         CommandManager.register(Strings.GOTO_PREVIOUS_GIT_CHANGE, GOTO_PREV_CHANGE, GutterManager.goToPrev);
@@ -1228,7 +1228,7 @@ define(function (require, exports) {
         CommandManager.register(Strings.GOTO_NEXT_GIT_CHANGE, GOTO_NEXT_CHANGE, GutterManager.goToNext);
         KeyBindingManager.addBinding(GOTO_NEXT_CHANGE, Preferences.get("gotoNextChangeShortcut"), brackets.platform);
 
-        CommandManager.register(Strings.REFRESH_GIT, REFRESH_GIT, EventEmitter.emitFactory(Events.REFRESH_ALL));
+        CommandManager.register(Strings.REFRESH_GIT, REFRESH_GIT, EventEmitter.getEmitter(Events.REFRESH_ALL));
         KeyBindingManager.addBinding(REFRESH_GIT, Preferences.get("refreshShortcut"), brackets.platform);
 
         // Show gitPanel when appropriate
