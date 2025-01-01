@@ -432,7 +432,7 @@ define(function (require, exports) {
             var tagname = $dialog.find("input.commit-message").val();
             Git.setTagName(tagname).then(function () {
                 refresh();
-                EventEmitter.emit(Events.HISTORY_SHOW, "GLOBAL");
+                EventEmitter.emit(Events.HISTORY_SHOW_GLOBAL);
             }).catch(function (err) {
                 ErrorHandler.showError(err, "Create tag failed");
             });
@@ -642,6 +642,9 @@ define(function (require, exports) {
     }
 
     function handleGitCommit(prefilledMessage, isMerge, commitMode) {
+        if(Utils.isLoading($gitPanel.find(".git-commit"))){
+            return;
+        }
 
         var stripWhitespace = Preferences.get("stripWhitespaceFromCommits");
         var codeInspectionEnabled = Preferences.get("useCodeInspection");
@@ -1146,8 +1149,8 @@ define(function (require, exports) {
             .on("click", ".git-toggle-untracked", handleToggleUntracked)
             .on("click", ".authors-selection", handleAuthorsSelection)
             .on("click", ".authors-file", handleAuthorsFile)
-            .on("click", ".git-file-history", EventEmitter.emitFactory(Events.HISTORY_SHOW, "FILE"))
-            .on("click", ".git-history-toggle", EventEmitter.emitFactory(Events.HISTORY_SHOW, "GLOBAL"))
+            .on("click", ".git-file-history", EventEmitter.emitFactory(Events.HISTORY_SHOW_FILE))
+            .on("click", ".git-history-toggle", EventEmitter.emitFactory(Events.HISTORY_SHOW_GLOBAL))
             .on("click", ".git-fetch", EventEmitter.emitFactory(Events.HANDLE_FETCH))
             .on("click", ".git-push", function () {
                 var typeOfRemote = $(this).attr("x-selected-remote-type");

@@ -292,8 +292,11 @@ define(function (require) {
         $historyList.remove();
         $historyList = $();
     });
-    EventEmitter.on(Events.HISTORY_SHOW, function (mode) {
-        handleToggleHistory(mode === "FILE" ? "FILE" : "GLOBAL");
+    EventEmitter.on(Events.HISTORY_SHOW_FILE, function () {
+        handleToggleHistory("FILE");
+    });
+    EventEmitter.on(Events.HISTORY_SHOW_GLOBAL, function () {
+        handleToggleHistory("GLOBAL");
     });
     EventEmitter.on(Events.BRACKETS_CURRENT_DOCUMENT_CHANGE, function () {
         handleFileChange();

@@ -43,7 +43,8 @@ define(function (require, exports) {
     exports.HANDLE_REMOTE_DELETE = "handle.remote.delete";
     exports.HANDLE_REMOTE_CREATE = "handle.remote.create";
     exports.HANDLE_FTP_PUSH = "handle.ftp.push";
-    exports.HISTORY_SHOW = "history.show";
+    exports.HISTORY_SHOW_FILE = "history.showFile";
+    exports.HISTORY_SHOW_GLOBAL = "history.showGlobal";
     exports.REFRESH_COUNTERS = "refresh.counters";
 
     // Git results

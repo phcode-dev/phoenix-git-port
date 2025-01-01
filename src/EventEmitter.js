@@ -50,18 +50,9 @@ define(function (require, exports, module) {
         }
 
         var self = this,
-            args = _.toArray(arguments),
-            lastClick = 0;
+            args = _.toArray(arguments);
 
         return function () {
-
-            // prevent doubleclicks with 500ms timeout
-            var now = new Date().valueOf();
-            if (now - lastClick < 500) {
-                return;
-            }
-            lastClick = now;
-
             self.emit.apply(self, _.union(args, arguments));
         };
     };

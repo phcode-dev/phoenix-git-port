@@ -326,6 +326,10 @@ define(function (require, exports, module) {
         });
     }
 
+    function isLoading($btn) {
+        return $btn.hasClass("btn-loading");
+    }
+
     function setLoading($btn) {
         $btn.prop("disabled", true).addClass("btn-loading");
     }
@@ -569,6 +573,7 @@ define(function (require, exports, module) {
     exports.loadPathContent             = loadPathContent;
     exports.setLoading                  = setLoading;
     exports.unsetLoading                = unsetLoading;
+    exports.isLoading                   = isLoading;
     exports.consoleLog                  = consoleLog;
     exports.consoleDebug                = consoleDebug;
     exports.encodeSensitiveInformation  = encodeSensitiveInformation;
