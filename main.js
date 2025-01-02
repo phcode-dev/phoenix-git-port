@@ -40,7 +40,7 @@ define(function (require, exports, module) {
 
     // export API's for other extensions
     if (typeof window === "object") {
-        window.bracketsGit = {
+        window.phoenixGitEvents = {
             EventEmitter: EventEmitter,
             Events: Events
         };
