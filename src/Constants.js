@@ -22,7 +22,15 @@ define(function (require, exports) {
     exports.GIT_STRING_UNIVERSAL = "Git";
     exports.GIT_SUB_MENU = "git-submenu";
 
+    // Menus
+    exports.GIT_PANEL_CHANGES_CMENU = "git-panel-changes-cmenu";
+    exports.GIT_PANEL_HISTORY_CMENU = "git-panel-history-cmenu";
+
     // commands
     exports.SETTINGS_COMMAND_ID = "brackets-git.settings";
     exports.CLOSE_UNMODIFIED = "git-close-unmodified-files";
+    exports.CMD_GIT_CHECKOUT = "git-checkout";
+    exports.CMD_GIT_RESET_HARD = "git-reset-hard";
+    exports.CMD_GIT_RESET_SOFT = "git-reset-soft";
+    exports.CMD_GIT_RESET_MIXED = "git-reset-mixed";
 });

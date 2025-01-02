@@ -213,6 +213,7 @@ define(function (require, exports, module) {
                 stringInput: !options.booleanResponse && !options.password,
                 passwordInput: options.password,
                 defaultValue: options.defaultValue,
+                customOkBtn: options.customOkBtn,
                 Strings: Strings
             });
 

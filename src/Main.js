@@ -13,6 +13,7 @@ define(function (require, exports) {
         Events            = require("src/Events"),
         EventEmitter      = require("src/EventEmitter"),
         Strings           = require("strings"),
+        StringUtils             = brackets.getModule("utils/StringUtils"),
         ErrorHandler      = require("src/ErrorHandler"),
         Panel             = require("src/Panel"),
         Branch            = require("src/Branch"),
@@ -103,6 +104,60 @@ define(function (require, exports) {
         return _addRemoveItemInGitignore(fileEntry, "remove");
     }
 
+    function _refreshCallback() {
+        EventEmitter.emit(Events.REFRESH_ALL);
+    }
+
+    function checkoutCommit(commitHash) {
+        const commitDetail = Panel.getSelectedHistoryCommit() || {};
+        commitHash = commitHash || commitDetail.hash;
+        const commitDetailStr = commitDetail.subject || "";
+        if(!commitHash){
+            console.error(`Cannot do Git checkout as commit hash is ${commitHash}`);
+            return;
+        }
+        const displayStr = StringUtils.format(Strings.CHECKOUT_COMMIT_DETAIL, commitDetailStr, commitHash);
+        Utils.askQuestion(Strings.TITLE_CHECKOUT,
+            displayStr + "<br><br>" + Strings.DIALOG_CHECKOUT,
+            { booleanResponse: true, noescape: true, customOkBtn: Strings.CHECKOUT_COMMIT })
+            .then(function (response) {
+                if (response === true) {
+                    return Git.checkout(commitHash).then(_refreshCallback);
+                }
+            });
+    }
+
+    function _resetOperation(operation, commitHash, message) {
+        const commitDetail = Panel.getSelectedHistoryCommit() || {};
+        commitHash = commitHash || commitDetail.hash;
+        const commitDetailStr = commitDetail.subject || "";
+        if(!commitHash){
+            console.error(`Cannot do Git Reset ${operation} as commit hash is ${commitHash}`);
+            return;
+        }
+        const displayStr = `git reset ${operation} ${commitHash}`+ " <br>" + commitDetailStr;
+        Utils.askQuestion(Strings.TITLE_RESET,
+            message + "<br><br>" + displayStr,
+            { booleanResponse: true, noescape: true })
+            .then(function (response) {
+                if (response === true) {
+                    return Git.reset(operation, commitHash).then(_refreshCallback);
+                }
+            });
+    }
+
+    function resetHard(commitHash) {
+        return _resetOperation("--hard", commitHash, Strings.DIALOG_RESET_HARD);
+    }
+
+    function resetMixed(commitHash) {
+        return _resetOperation("--mixed", commitHash, Strings.DIALOG_RESET_MIXED);
+    }
+
+    function resetSoft(commitHash) {
+        return _resetOperation("--soft", commitHash, Strings.DIALOG_RESET_SOFT);
+    }
+
     function initGitMenu() {
         // Register command and add it to the menu.
         const fileMenu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
@@ -112,6 +167,22 @@ define(function (require, exports) {
         gitSubMenu.addMenuItem(Constants.CLOSE_UNMODIFIED);
         gitSubMenu.addMenuDivider();
         gitSubMenu.addMenuItem(Constants.SETTINGS_COMMAND_ID);
+
+        // register commands for project tree / working files
+        CommandManager.register(Strings.ADD_TO_GITIGNORE, CMD_ADD_TO_IGNORE, addItemToGitingore);
+        CommandManager.register(Strings.REMOVE_FROM_GITIGNORE, CMD_REMOVE_FROM_IGNORE, removeItemFromGitingore);
+
+        // create context menu for git panel
+        const panelCmenu = Menus.registerContextMenu(Constants.GIT_PANEL_CHANGES_CMENU);
+        CommandManager.register(Strings.ADD_TO_GITIGNORE, CMD_ADD_TO_IGNORE + "2", addItemToGitingoreFromPanel);
+        CommandManager.register(Strings.REMOVE_FROM_GITIGNORE, CMD_REMOVE_FROM_IGNORE + "2", removeItemFromGitingoreFromPanel);
+        panelCmenu.addMenuItem(CMD_ADD_TO_IGNORE + "2");
+        panelCmenu.addMenuItem(CMD_REMOVE_FROM_IGNORE + "2");
+
+        // create context menu for git history
+        const historyCmenu = Menus.registerContextMenu(Constants.GIT_PANEL_HISTORY_CMENU);
+        CommandManager.register(Strings.CHECKOUT_COMMIT, Constants.CMD_GIT_CHECKOUT, checkoutCommit);
+        historyCmenu.addMenuItem(Constants.CMD_GIT_CHECKOUT);
     }
 
     function init() {
@@ -132,17 +203,6 @@ define(function (require, exports) {
             ErrorHandler.showError(expected, Strings.CHECK_GIT_SETTINGS);
 
         });
-
-        // register commands for project tree / working files
-        CommandManager.register(Strings.ADD_TO_GITIGNORE, CMD_ADD_TO_IGNORE, addItemToGitingore);
-        CommandManager.register(Strings.REMOVE_FROM_GITIGNORE, CMD_REMOVE_FROM_IGNORE, removeItemFromGitingore);
-
-        // create context menu for git panel
-        const panelCmenu = Menus.registerContextMenu("git-panel-context-menu");
-        CommandManager.register(Strings.ADD_TO_GITIGNORE, CMD_ADD_TO_IGNORE + "2", addItemToGitingoreFromPanel);
-        CommandManager.register(Strings.REMOVE_FROM_GITIGNORE, CMD_REMOVE_FROM_IGNORE + "2", removeItemFromGitingoreFromPanel);
-        panelCmenu.addMenuItem(CMD_ADD_TO_IGNORE + "2");
-        panelCmenu.addMenuItem(CMD_REMOVE_FROM_IGNORE + "2");
     }
 
     var _toggleMenuEntriesState = false,

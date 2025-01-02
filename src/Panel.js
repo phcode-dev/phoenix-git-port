@@ -19,6 +19,7 @@ define(function (require, exports) {
         WorkspaceManager   = brackets.getModule("view/WorkspaceManager"),
         ProjectManager     = brackets.getModule("project/ProjectManager"),
         StringUtils        = brackets.getModule("utils/StringUtils"),
+        Constants          = require("src/Constants"),
         Git                = require("src/git/Git"),
         Events             = require("./Events"),
         EventEmitter       = require("./EventEmitter"),
@@ -1111,6 +1112,24 @@ define(function (require, exports) {
             });
     }
 
+    /**
+     * Retrieves the hash of the selected history commit in the panel. if panel not visible
+     * or if there is no selection, returns null.
+     *
+     * @returns {{hash: string, subject: string}|{}} The `hash` value and commit string
+     *              of the selected history commit if visible, otherwise {}.
+     */
+    function getSelectedHistoryCommit() {
+        const $historyRow = $(".history-commit.selected");
+        if($historyRow.is(":visible")){
+            return {
+                hash: $historyRow.attr("x-hash"),
+                subject: $historyRow.find(".commit-subject").text()
+            };
+        }
+        return {};
+    }
+
     function init() {
         // Add panel
         var panelHtml = Mustache.render(gitPanelTemplate, {
@@ -1166,12 +1185,18 @@ define(function (require, exports) {
             .on("click", ".git-remote-new", EventEmitter.getEmitter(Events.HANDLE_REMOTE_CREATE))
             .on("click", ".git-settings", SettingsDialog.show)
             .on("contextmenu", "tr", function (e) {
-                var $this = $(this);
-                if ($this.hasClass("history-commit")) { return; }
+                const $this = $(this);
+                if ($this.hasClass("history-commit")) {
+                    if(!$this.hasClass("selected")){
+                        $this.click();
+                    }
+                    Menus.getContextMenu(Constants.GIT_PANEL_HISTORY_CMENU).open(e);
+                    return;
+                }
 
                 $this.click();
                 setTimeout(function () {
-                    Menus.getContextMenu("git-panel-context-menu").open(e);
+                    Menus.getContextMenu(Constants.GIT_PANEL_CHANGES_CMENU).open(e);
                 }, 1);
             })
             .on("click", ".change-user-name", EventEmitter.getEmitter(Events.GIT_CHANGE_USERNAME))
@@ -1350,6 +1375,7 @@ define(function (require, exports) {
     exports.toggle = toggle;
     exports.enable = enable;
     exports.disable = disable;
+    exports.getSelectedHistoryCommit = getSelectedHistoryCommit;
     exports.getPanel = function () { return $gitPanel; };
 
 });
