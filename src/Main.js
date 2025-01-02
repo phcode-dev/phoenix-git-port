@@ -128,7 +128,7 @@ define(function (require, exports) {
             });
     }
 
-    function _resetOperation(operation, commitHash, message) {
+    function _resetOperation(operation, commitHash, title, message) {
         const commitDetail = Panel.getSelectedHistoryCommit() || {};
         commitHash = commitHash || commitDetail.hash;
         const commitDetailStr = commitDetail.subject || "";
@@ -136,10 +136,12 @@ define(function (require, exports) {
             console.error(`Cannot do Git Reset ${operation} as commit hash is ${commitHash}`);
             return;
         }
-        const displayStr = `git reset ${operation} ${commitHash}`+ " <br>" + commitDetailStr;
-        Utils.askQuestion(Strings.TITLE_RESET,
+        const gitCmdUsed = `git reset ${operation} ${commitHash}`
+        const displayStr = StringUtils.format(Strings.RESET_DETAIL, commitDetailStr, gitCmdUsed);
+        Utils.askQuestion(title,
             message + "<br><br>" + displayStr,
-            { booleanResponse: true, noescape: true })
+            { booleanResponse: true, noescape: true ,
+                customOkBtn: Strings.RESET, customOkBtnClass: "danger"})
             .then(function (response) {
                 if (response === true) {
                     return Git.reset(operation, commitHash).then(_refreshCallback);
@@ -148,15 +150,18 @@ define(function (require, exports) {
     }
 
     function resetHard(commitHash) {
-        return _resetOperation("--hard", commitHash, Strings.DIALOG_RESET_HARD);
+        return _resetOperation("--hard", commitHash,
+            Strings.RESET_HARD_TITLE, Strings.RESET_HARD_MESSAGE);
     }
 
     function resetMixed(commitHash) {
-        return _resetOperation("--mixed", commitHash, Strings.DIALOG_RESET_MIXED);
+        return _resetOperation("--mixed", commitHash,
+            Strings.RESET_MIXED_TITLE, Strings.DIALOG_RESET_MIXED);
     }
 
     function resetSoft(commitHash) {
-        return _resetOperation("--soft", commitHash, Strings.DIALOG_RESET_SOFT);
+        return _resetOperation("--soft", commitHash,
+            Strings.RESET_SOFT_TITLE, Strings.DIALOG_RESET_SOFT);
     }
 
     function initGitMenu() {
@@ -183,7 +188,10 @@ define(function (require, exports) {
         // create context menu for git history
         const historyCmenu = Menus.registerContextMenu(Constants.GIT_PANEL_HISTORY_CMENU);
         CommandManager.register(Strings.CHECKOUT_COMMIT, Constants.CMD_GIT_CHECKOUT, checkoutCommit);
+        CommandManager.register(Strings.MENU_RESET_HARD, Constants.CMD_GIT_RESET_HARD, resetHard);
         historyCmenu.addMenuItem(Constants.CMD_GIT_CHECKOUT);
+        historyCmenu.addMenuDivider();
+        historyCmenu.addMenuItem(Constants.CMD_GIT_RESET_HARD);
     }
 
     function init() {

@@ -214,6 +214,7 @@ define(function (require, exports, module) {
                 passwordInput: options.password,
                 defaultValue: options.defaultValue,
                 customOkBtn: options.customOkBtn,
+                customOkBtnClass: options.customOkBtnClass,
                 Strings: Strings
             });
 

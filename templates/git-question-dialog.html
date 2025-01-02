@@ -13,7 +13,7 @@
     </div>
     <div class="modal-footer">
         <button data-button-id="cancel" class="dialog-button btn cancel btn-80" >{{Strings.BUTTON_CANCEL}}</button>
-        <button data-button-id="ok"     class="dialog-button btn primary btn-80">
+        <button data-button-id="ok"     class="dialog-button btn btn-80 {{#customOkBtnClass}}{{customOkBtnClass}}{{/customOkBtnClass}}{{^customOkBtnClass}}primary{{/customOkBtnClass}}">
             {{#customOkBtn}}{{customOkBtn}}{{/customOkBtn}}{{^customOkBtn}}{{Strings.BUTTON_OK}}{{/customOkBtn}}
         </button>
     </div>
