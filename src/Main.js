@@ -21,7 +21,8 @@ define(function (require, exports) {
         CloseNotModified  = require("src/CloseNotModified"),
         Setup             = require("src/utils/Setup"),
         Preferences       = require("src/Preferences"),
-        Utils             = require("src/Utils");
+        Utils             = require("src/Utils"),
+        Git               = require("src/git/Git");
 
     var CMD_ADD_TO_IGNORE      = "git.addToIgnore",
         CMD_REMOVE_FROM_IGNORE = "git.removeFromIgnore",
