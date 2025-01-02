@@ -1133,7 +1133,6 @@ define(function (require, exports) {
     function init() {
         // Add panel
         var panelHtml = Mustache.render(gitPanelTemplate, {
-            enableAdvancedFeatures: Preferences.get("enableAdvancedFeatures"),
             S: Strings
         });
         var $panelHtml = $(panelHtml);
@@ -1208,15 +1207,6 @@ define(function (require, exports) {
                 handleGitTag($(e.target).closest("tr").attr("x-file"));
             })
             .on("click", ".reset-all", discardAllChanges);
-
-        /* Put here event handlers for advanced actions
-        if (Preferences.get("enableAdvancedFeatures")) {
-
-            $gitPanel
-                .on("click", target, function);
-
-         }
-         */
 
         // Attaching table handlers
         attachDefaultTableHandlers();

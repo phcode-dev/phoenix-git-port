@@ -17,8 +17,7 @@ define(function (require, exports) {
     var historyViewerTemplate       = require("text!templates/history-viewer.html"),
         historyViewerFilesTemplate  = require("text!templates/history-viewer-files.html");
 
-    let enableAdvancedFeatures = Preferences.get("enableAdvancedFeatures"),
-        useDifftool            = false,
+    let useDifftool            = false,
         isShown                = false,
         commit                 = null,
         currentlyViewedCommit  = null,
@@ -124,70 +123,10 @@ define(function (require, exports) {
                 }
             });
 
-        // Enable actions on advanced buttons if requested by user's preferences
-        if (enableAdvancedFeatures) {
-            attachAdvancedEvents();
-        }
-
         // Expand the diffs when wanted
         if (Preferences.get("autoExpandDiffsInHistory")) {
             expandAll();
         }
-    }
-
-    function attachAdvancedEvents() {
-        var refreshCallback  = function () {
-            // dialog.close();
-            EventEmitter.emit(Events.REFRESH_ALL);
-        };
-
-        $viewer.on("click", ".btn-checkout", function () {
-            var cmd = "git checkout " + commit.hash;
-            Utils.askQuestion(Strings.TITLE_CHECKOUT,
-                              Strings.DIALOG_CHECKOUT + "<br><br>" + cmd,
-                              { booleanResponse: true, noescape: true })
-                .then(function (response) {
-                    if (response === true) {
-                        return Git.checkout(commit.hash).then(refreshCallback);
-                    }
-                });
-        });
-
-        $viewer.on("click", ".btn-reset-hard", function () {
-            var cmd = "git reset --hard " + commit.hash;
-            Utils.askQuestion(Strings.TITLE_RESET,
-                              Strings.DIALOG_RESET_HARD + "<br><br>" + cmd,
-                              { booleanResponse: true, noescape: true })
-                .then(function (response) {
-                    if (response === true) {
-                        return Git.reset("--hard", commit.hash).then(refreshCallback);
-                    }
-                });
-        });
-
-        $viewer.on("click", ".btn-reset-mixed", function () {
-            var cmd = "git reset --mixed " + commit.hash;
-            Utils.askQuestion(Strings.TITLE_RESET,
-                              Strings.DIALOG_RESET_MIXED + "<br><br>" + cmd,
-                              { booleanResponse: true, noescape: true })
-                .then(function (response) {
-                    if (response === true) {
-                        return Git.reset("--mixed", commit.hash).then(refreshCallback);
-                    }
-                });
-        });
-
-        $viewer.on("click", ".btn-reset-soft", function () {
-            var cmd = "git reset --soft " + commit.hash;
-            Utils.askQuestion(Strings.TITLE_RESET,
-                              Strings.DIALOG_RESET_SOFT + "<br><br>" + cmd,
-                              { booleanResponse: true, noescape: true })
-                .then(function (response) {
-                    if (response === true) {
-                        return Git.reset("--soft", commit.hash).then(refreshCallback);
-                    }
-                });
-        });
     }
 
     function renderViewerContent(files, selectedFile) {
@@ -196,8 +135,7 @@ define(function (require, exports) {
         $viewer.html(Mustache.render(historyViewerTemplate, {
             commit: commit,
             bodyMarkdown: bodyMarkdown,
-            Strings: Strings,
-            enableAdvancedFeatures: enableAdvancedFeatures
+            Strings: Strings
         }));
 
         renderFiles(files);
