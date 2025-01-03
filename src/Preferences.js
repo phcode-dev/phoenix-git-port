@@ -20,7 +20,6 @@ define(function (require, exports, module) {
         "clearWhitespaceOnSave": {          "type": "boolean",           "value": false             },
         "gerritPushref": {                  "type": "boolean",           "value": false             },
         // shortcuts
-        "commitAllShortcut": {              "type": "string",            "value": null              },
         "pushShortcut": {                   "type": "string",            "value": null              },
         "pullShortcut": {                   "type": "string",            "value": null              },
         // system
