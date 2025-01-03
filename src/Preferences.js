@@ -4,7 +4,7 @@ define(function (require, exports, module) {
     var _                   = brackets.getModule("thirdparty/lodash"),
         PreferencesManager  = brackets.getModule("preferences/PreferencesManager"),
         StateManager        = PreferencesManager.stateManager,
-        prefix              = "brackets-git";
+        prefix              = "git";
 
     var defaultPreferences = {
         // features
@@ -85,12 +85,6 @@ define(function (require, exports, module) {
         return PreferencesManager.get(key);
     }
 
-    function persist(key, value) {
-        // FUTURE: remote this method
-        set(key, value);
-        save();
-    }
-
     function save() {
         PreferencesManager.save();
         StateManager.save();
@@ -103,7 +97,6 @@ define(function (require, exports, module) {
         getDefaults: getDefaults,
         getType: getType,
         getGlobal: getGlobal,
-        persist: persist,
         save: save
     };
 

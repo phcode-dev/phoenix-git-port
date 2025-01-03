@@ -58,7 +58,7 @@ define(function (require) {
     function setDefaultRemote(remoteName) {
         var defaultRemotes = Preferences.get("defaultRemotes") || {};
         defaultRemotes[Preferences.get("currentGitRoot")] = remoteName;
-        Preferences.persist("defaultRemotes", defaultRemotes);
+        Preferences.set("defaultRemotes", defaultRemotes);
     }
 
     function clearRemotePicker() {
