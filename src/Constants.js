@@ -33,4 +33,5 @@ define(function (require, exports) {
     exports.CMD_GIT_RESET_HARD = "git-reset-hard";
     exports.CMD_GIT_RESET_SOFT = "git-reset-soft";
     exports.CMD_GIT_RESET_MIXED = "git-reset-mixed";
+    exports.CMD_GIT_TOGGLE_PANEL = "git-toggle-panel";
 });

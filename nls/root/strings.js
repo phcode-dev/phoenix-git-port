@@ -136,7 +136,6 @@ define({
     ORIGIN_BRANCH:                      "Origin branch",
     ON_BRANCH:                          "'{0}' - Current Git branch",
     PANEL_COMMAND:                      "Show Git panel",
-    PANEL_SHORTCUT:                     "Toggle panel",
     PASSWORD:                           "Password",
     PASSWORDS:                          "Passwords",
     PATH_TO_GIT_EXECUTABLE:             "Path to Git executable",

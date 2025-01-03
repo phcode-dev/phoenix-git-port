@@ -31,8 +31,7 @@ define(function (require, exports) {
         Strings            = require("../strings"),
         Utils              = require("src/Utils"),
         SettingsDialog     = require("./SettingsDialog"),
-        ProgressDialog     = require("src/dialogs/Progress"),
-        PANEL_COMMAND_ID   = "brackets-git.panel";
+        ProgressDialog     = require("src/dialogs/Progress");
 
     var gitPanelTemplate            = require("text!templates/git-panel.html"),
         gitPanelResultsTemplate     = require("text!templates/git-panel-results.html"),
@@ -882,7 +881,7 @@ define(function (require, exports) {
         gitPanel.setVisible(bool);
 
         // Mark menu item as enabled/disabled.
-        CommandManager.get(PANEL_COMMAND_ID).setChecked(bool);
+        CommandManager.get(Constants.CMD_GIT_TOGGLE_PANEL).setChecked(bool);
 
         if (bool) {
             refresh();
@@ -1133,7 +1132,7 @@ define(function (require, exports) {
         var $panelHtml = $(panelHtml);
         $panelHtml.find(".git-available, .git-not-available").hide();
 
-        gitPanel = WorkspaceManager.createBottomPanel("brackets-git.panel", $panelHtml, 100);
+        gitPanel = WorkspaceManager.createBottomPanel("main-git.panel", $panelHtml, 100);
         $gitPanel = gitPanel.$panel;
 
         $gitPanel
@@ -1217,8 +1216,7 @@ define(function (require, exports) {
 
         // Add command to menu.
         // Register command for opening bottom panel.
-        CommandManager.register(Strings.PANEL_COMMAND, PANEL_COMMAND_ID, toggle);
-        KeyBindingManager.addBinding(PANEL_COMMAND_ID, Preferences.get("panelShortcut"), brackets.platform);
+        CommandManager.register(Strings.PANEL_COMMAND, Constants.CMD_GIT_TOGGLE_PANEL, toggle);
 
         CommandManager.register(Strings.COMMIT_CURRENT_SHORTCUT, COMMIT_CURRENT_CMD, commitCurrentFile);
         KeyBindingManager.addBinding(COMMIT_CURRENT_CMD, Preferences.get("commitCurrentShortcut"), brackets.platform);

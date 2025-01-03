@@ -170,6 +170,8 @@ define(function (require, exports) {
         let gitSubMenu = fileMenu.addSubMenu(Constants.GIT_STRING_UNIVERSAL,
             Constants.GIT_SUB_MENU, Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
         fileMenu.addMenuDivider(Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_TOGGLE_PANEL);
+        gitSubMenu.addMenuDivider();
         gitSubMenu.addMenuItem(Constants.CMD_GIT_CLOSE_UNMODIFIED);
         gitSubMenu.addMenuDivider();
         gitSubMenu.addMenuItem(Constants.CMD_GIT_SETTINGS_COMMAND_ID);
