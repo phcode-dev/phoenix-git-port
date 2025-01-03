@@ -180,6 +180,8 @@ define(function (require, exports) {
         gitSubMenu.addMenuItem(Constants.CMD_GIT_COMMIT_CURRENT);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_COMMIT_ALL);
         gitSubMenu.addMenuDivider();
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_PULL);
+        gitSubMenu.addMenuDivider();
         gitSubMenu.addMenuItem(Constants.CMD_GIT_SETTINGS_COMMAND_ID);
 
         // register commands for project tree / working files

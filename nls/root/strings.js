@@ -146,7 +146,7 @@ define({
     PULL_MERGE_NOCOMMIT:                "Merge without commit",
     PULL_REBASE:                        "Use rebase",
     PULL_RESET:                         "Use soft reset",
-    PULL_SHORTCUT:                      "Pull from remote repository",
+    PULL_SHORTCUT:                      "Pull from remote",
     PUSH_DEFAULT:                       "Default push",
     PUSH_DELETE_BRANCH:                 "Delete remote branch",
     PUSH_SEND_TAGS:                     "Send tags",
