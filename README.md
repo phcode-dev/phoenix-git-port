@@ -1,20 +1,18 @@
 # Phoenix-Git [![build status](https://travis-ci.org/zaggino/brackets-git.svg?branch=master)](https://travis-ci.org/zaggino/brackets-git)
 
-This is a temporary repo to port in the brackets-git extension into phoenix code. This is created to track
-all changes made to the original extension and help to understand what all changes were made for future reference.
-This repo will be archives as soon as this extension is merged into phoenix code.
+This is a temporary repository created to port the brackets-git extension into Phoenix Code. It serves as a tracking
+mechanism to understand and document all changes made to the original extension, providing reference for future
+development. This repo will be archived once the extension is successfully merged into Phoenix Code.
 
-The original extension was written in trypescript, and as phoenix core will be pure JS, we need a js impl. Luckily,
-the extension was originally written in js and only sprinkled ts for code hints to work in older versions of vscode.
-So the ts compiled output was usable as is with comments and structure intact. We copied the compiled extension
-as the base and build from there.
+The original extension was written in TypeScript, and as Phoenix core will be pure JavaScript, we need a JS
+implementation. Fortunately, the extension was originally written in JS with TypeScript sprinkled only for code hints in
+older versions of VSCode. The TypeScript compiled output was usable as-is with comments and structure intact. We copied
+the compiled extension as the base and build from there.
 
-Platform supported: Windows, Mac OS X, GNU/Linux
-
-In browsers, we could use isomorphic git, but we may need to make changes to our fs access backed vfs to add support.
-it also brings in problems as the fs access apis doesnt support changing file modes(Eg. read only, executable flags etc..)
-But we could make it work in read only mode to help browser users to atleast see the changes in ui.
-files fs is supported by isomorphic git, so we could use that in indexed db backed fs paths.
+Platform support includes Windows, Mac OS X, and GNU/Linux. In browsers, we could use isomorphic-git, but this requires
+changes to our filesystem access backed VFS to add support. While browser filesystem APIs don't support changing file
+modes (e.g., read-only, executable flags), we could implement read-only mode to help browser users view changes in UI.
+Since isomorphic-git supports filer, we need modify our vfs to make it compatible with isomorphic-git.
 
 ## Old extension readme follows
 
