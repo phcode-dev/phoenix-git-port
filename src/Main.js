@@ -171,6 +171,7 @@ define(function (require, exports) {
             Constants.GIT_SUB_MENU, Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
         fileMenu.addMenuDivider(Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_TOGGLE_PANEL);
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_REFRESH);
         gitSubMenu.addMenuDivider();
         gitSubMenu.addMenuItem(Constants.CMD_GIT_GOTO_NEXT_CHANGE);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_GOTO_PREVIOUS_CHANGE);

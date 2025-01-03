@@ -23,7 +23,6 @@ define(function (require, exports, module) {
         "commitAllShortcut": {              "type": "string",            "value": null              },
         "pushShortcut": {                   "type": "string",            "value": null              },
         "pullShortcut": {                   "type": "string",            "value": null              },
-        "refreshShortcut": {                "type": "string",            "value": null              },
         // system
         "gitTimeout": {                     "type": "number",            "value": 30                },
         "gitPath": {                        "type": "string",            "value": ""                }

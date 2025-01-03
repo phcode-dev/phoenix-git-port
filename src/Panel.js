@@ -1208,8 +1208,7 @@ define(function (require, exports) {
         // Commit current and all shortcuts
         var COMMIT_ALL_CMD     = "brackets-git.commitAll",
             PUSH_CMD           = "brackets-git.push",
-            PULL_CMD           = "brackets-git.pull",
-            REFRESH_GIT        = "brackets-git.refreshAll";
+            PULL_CMD           = "brackets-git.pull";
 
         // Add command to menu.
         CommandManager.register(Strings.PANEL_COMMAND, Constants.CMD_GIT_TOGGLE_PANEL, toggle);
@@ -1228,8 +1227,7 @@ define(function (require, exports) {
 
         CommandManager.register(Strings.GOTO_NEXT_GIT_CHANGE, Constants.CMD_GIT_GOTO_NEXT_CHANGE, GutterManager.goToNext);
 
-        CommandManager.register(Strings.REFRESH_GIT, REFRESH_GIT, EventEmitter.getEmitter(Events.REFRESH_ALL));
-        KeyBindingManager.addBinding(REFRESH_GIT, Preferences.get("refreshShortcut"), brackets.platform);
+        CommandManager.register(Strings.REFRESH_GIT, Constants.CMD_GIT_REFRESH, EventEmitter.getEmitter(Events.REFRESH_ALL));
 
         // Show gitPanel when appropriate
         if (Preferences.get("panelEnabled")) {

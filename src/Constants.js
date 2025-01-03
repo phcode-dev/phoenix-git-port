@@ -37,4 +37,5 @@ define(function (require, exports) {
     exports.CMD_GIT_GOTO_NEXT_CHANGE = "git-gotoNextChange";
     exports.CMD_GIT_GOTO_PREVIOUS_CHANGE = "git-gotoPrevChange";
     exports.CMD_GIT_COMMIT_CURRENT = "git-commitCurrent";
+    exports.CMD_GIT_REFRESH = "git-refresh";
 });
