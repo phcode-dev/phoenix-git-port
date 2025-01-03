@@ -34,6 +34,7 @@ define(function (require, exports) {
     exports.CMD_GIT_RESET_SOFT = "git-reset-soft";
     exports.CMD_GIT_RESET_MIXED = "git-reset-mixed";
     exports.CMD_GIT_TOGGLE_PANEL = "git-toggle-panel";
-    exports.CMD_GIT_GOTO_NEXT_CHANGE = "git-toggle-gotoNextChange";
-    exports.CMD_GIT_GOTO_PREVIOUS_CHANGE = "git-toggle-gotoPrevChange";
+    exports.CMD_GIT_GOTO_NEXT_CHANGE = "git-gotoNextChange";
+    exports.CMD_GIT_GOTO_PREVIOUS_CHANGE = "git-gotoPrevChange";
+    exports.CMD_GIT_COMMIT_CURRENT = "git-commitCurrent";
 });

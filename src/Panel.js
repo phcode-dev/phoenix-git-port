@@ -1206,18 +1206,14 @@ define(function (require, exports) {
         attachDefaultTableHandlers();
 
         // Commit current and all shortcuts
-        var COMMIT_CURRENT_CMD = "brackets-git.commitCurrent",
-            COMMIT_ALL_CMD     = "brackets-git.commitAll",
+        var COMMIT_ALL_CMD     = "brackets-git.commitAll",
             PUSH_CMD           = "brackets-git.push",
             PULL_CMD           = "brackets-git.pull",
             REFRESH_GIT        = "brackets-git.refreshAll";
 
         // Add command to menu.
-        // Register command for opening bottom panel.
         CommandManager.register(Strings.PANEL_COMMAND, Constants.CMD_GIT_TOGGLE_PANEL, toggle);
-
-        CommandManager.register(Strings.COMMIT_CURRENT_SHORTCUT, COMMIT_CURRENT_CMD, commitCurrentFile);
-        KeyBindingManager.addBinding(COMMIT_CURRENT_CMD, Preferences.get("commitCurrentShortcut"), brackets.platform);
+        CommandManager.register(Strings.COMMIT_CURRENT_SHORTCUT, Constants.CMD_GIT_COMMIT_CURRENT, commitCurrentFile);
 
         CommandManager.register(Strings.COMMIT_ALL_SHORTCUT, COMMIT_ALL_CMD, commitAllFiles);
         KeyBindingManager.addBinding(COMMIT_ALL_CMD, Preferences.get("commitAllShortcut"), brackets.platform);
