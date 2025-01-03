@@ -19,8 +19,6 @@ define(function (require, exports, module) {
         "useDifftool": {                    "type": "boolean",           "value": false             },
         "clearWhitespaceOnSave": {          "type": "boolean",           "value": false             },
         "gerritPushref": {                  "type": "boolean",           "value": false             },
-        // shortcuts
-        "pushShortcut": {                   "type": "string",            "value": null              },
         // system
         "gitTimeout": {                     "type": "number",            "value": 30                },
         "gitPath": {                        "type": "string",            "value": ""                }

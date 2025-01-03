@@ -1205,17 +1205,11 @@ define(function (require, exports) {
         // Attaching table handlers
         attachDefaultTableHandlers();
 
-        // Commit current and all shortcuts
-        var PUSH_CMD           = "brackets-git.push";
-
         // Add command to menu.
         CommandManager.register(Strings.PANEL_COMMAND, Constants.CMD_GIT_TOGGLE_PANEL, toggle);
         CommandManager.register(Strings.COMMIT_CURRENT_SHORTCUT, Constants.CMD_GIT_COMMIT_CURRENT, commitCurrentFile);
         CommandManager.register(Strings.COMMIT_ALL_SHORTCUT, Constants.CMD_GIT_COMMIT_ALL, commitAllFiles);
-
-        CommandManager.register(Strings.PUSH_SHORTCUT, PUSH_CMD, EventEmitter.getEmitter(Events.HANDLE_PUSH));
-        KeyBindingManager.addBinding(PUSH_CMD, Preferences.get("pushShortcut"), brackets.platform);
-
+        CommandManager.register(Strings.PUSH_SHORTCUT, Constants.CMD_GIT_PUSH, EventEmitter.getEmitter(Events.HANDLE_PUSH));
         CommandManager.register(Strings.PULL_SHORTCUT, Constants.CMD_GIT_PULL, EventEmitter.getEmitter(Events.HANDLE_PULL));
         CommandManager.register(Strings.GOTO_PREVIOUS_GIT_CHANGE, Constants.CMD_GIT_GOTO_PREVIOUS_CHANGE, GutterManager.goToPrev);
         CommandManager.register(Strings.GOTO_NEXT_GIT_CHANGE, Constants.CMD_GIT_GOTO_NEXT_CHANGE, GutterManager.goToNext);
