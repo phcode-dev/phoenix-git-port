@@ -59,8 +59,6 @@ define({
     CREATE_NEW_REMOTE:                  "Create new remote\u2026",
     CURRENT_TRACKING_BRANCH:            "Current tracking branch",
     _CURRENT_TRACKING_BRANCH:           "current tracking branch",
-    DEBUG:                              "Debug",
-    DEBUG_MODE_SETTING:                 "DEBUG mode &mdash; Leave this OFF unless you need to find a problem with the extension. All Git communication will be forwarded to Brackets console!",
     DEFAULT_GIT_TIMEOUT:                "Default Git operation timeout (in seconds)",
     DELETE_FILE:                        "Delete file",
     DELETE_LOCAL_BRANCH:                "Delete local branch",

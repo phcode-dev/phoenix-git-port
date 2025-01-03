@@ -7,8 +7,7 @@ define(function (require, exports, module) {
         Events        = require("src/Events"),
         Utils         = require("src/Utils");
 
-    let debugOn           = Preferences.get("debugMode"),
-        gitTimeout        = Preferences.get("gitTimeout") * 1000,
+    let gitTimeout        = Preferences.get("gitTimeout") * 1000,
         nextCliId         = 0,
         deferredMap       = {};
 
@@ -54,6 +53,9 @@ define(function (require, exports, module) {
     }
 
     function logDebug(opts, debugInfo, method, type, out) {
+        if (!logger.loggingOptions.logGit) {
+            return;
+        }
         var processInfo = [];
 
         var duration = (new Date()).getTime() - debugInfo.startTime;
@@ -91,11 +93,9 @@ define(function (require, exports, module) {
             opts.cwd = normalizePathForOs(opts.cwd);
 
             // log all cli communication into console when debug mode is on
-            if (debugOn) {
-                Utils.consoleDebug("cmd-" + method + (watchProgress ? "-watch" : "") + ": " +
-                    opts.cwd + " -> " +
-                    cmd + " " + args.join(" "));
-            }
+            Utils.consoleDebug("cmd-" + method + (watchProgress ? "-watch" : "") + ": " +
+                opts.cwd + " -> " +
+                cmd + " " + args.join(" "));
 
             let resolved      = false,
                 timeoutLength = opts.timeout ? (opts.timeout * 1000) : gitTimeout;
@@ -118,9 +118,7 @@ define(function (require, exports, module) {
                 .catch(function (err) {
                     if (!resolved) {
                         err = sanitizeOutput(err);
-                        if (debugOn) {
-                            logDebug(domainOpts, debugInfo, method, "fail", err);
-                        }
+                        logDebug(domainOpts, debugInfo, method, "fail", err);
                         delete deferredMap[cliId];
 
                         err = ErrorHandler.toError(err);
@@ -151,9 +149,7 @@ define(function (require, exports, module) {
                 .then(function (out) {
                     if (!resolved) {
                         out = sanitizeOutput(out);
-                        if (debugOn) {
-                            logDebug(domainOpts, debugInfo, method, "out", out);
-                        }
+                        logDebug(domainOpts, debugInfo, method, "out", out);
                         delete deferredMap[cliId];
                         resolve(out);
                     }
@@ -164,9 +160,7 @@ define(function (require, exports, module) {
                 });
 
             function timeoutPromise() {
-                if (debugOn) {
-                    logDebug(domainOpts, debugInfo, method, "timeout");
-                }
+                logDebug(domainOpts, debugInfo, method, "timeout");
                 var err = new Error("cmd-" + method + "-timeout: " + cmd + " " + args.join(" "));
                 if (!opts.timeoutExpected) {
                     ErrorHandler.logError(err);
@@ -194,14 +188,10 @@ define(function (require, exports, module) {
                             const currentTime = (new Date()).getTime();
                             const diff = currentTime - lastProgressTime;
                             if (diff > timeoutLength) {
-                                if (debugOn) {
-                                    Utils.consoleDebug("cmd(" + cliId + ") - last progress message was sent " + diff + "ms ago - timeout");
-                                }
+                                Utils.consoleDebug("cmd(" + cliId + ") - last progress message was sent " + diff + "ms ago - timeout");
                                 timeoutPromise();
                             } else {
-                                if (debugOn) {
-                                    Utils.consoleDebug("cmd(" + cliId + ") - last progress message was sent " + diff + "ms ago - delay");
-                                }
+                                Utils.consoleDebug("cmd(" + cliId + ") - last progress message was sent " + diff + "ms ago - delay");
                                 timeoutCall();
                             }
                         } else {

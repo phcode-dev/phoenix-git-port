@@ -29,7 +29,6 @@ define(function (require, exports, module) {
         "gotoNextChangeShortcut": {         "type": "string",            "value": null              },
         "refreshShortcut": {                "type": "string",            "value": null              },
         // system
-        "debugMode": {                      "type": "boolean",           "value": false             },
         "gitTimeout": {                     "type": "number",            "value": 30                },
         "gitPath": {                        "type": "string",            "value": ""                }
     };

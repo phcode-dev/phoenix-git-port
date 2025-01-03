@@ -36,7 +36,7 @@ define(function (require, exports) {
 
     exports.logError = function (err) {
         var msg = err && err.stack ? err.stack : err;
-        Utils.consoleLog("[brackets-git] " + msg, "error");
+        Utils.consoleError("[brackets-git] " + msg);
         errorQueue.push(err);
         return err;
     };

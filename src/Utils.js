@@ -27,7 +27,6 @@ define(function (require, exports, module) {
         questionDialogTemplate  = require("text!templates/git-question-dialog.html"),
         outputDialogTemplate    = require("text!templates/git-output.html"),
         writeTestResults        = {},
-        debugOn                 = Preferences.get("debugMode"),
         EXT_NAME                = "[brackets-git] ";
 
     // Implementation
@@ -352,12 +351,16 @@ define(function (require, exports, module) {
         return str;
     }
 
-    function consoleLog(msg, type) {
-        console[type || "log"](encodeSensitiveInformation(msg));
+    function consoleWarn(msg) {
+        console.warn(encodeSensitiveInformation(msg));
+    }
+
+    function consoleError(msg) {
+        console.error(encodeSensitiveInformation(msg));
     }
 
     function consoleDebug(msg) {
-        if (debugOn) {
+        if (logger.loggingOptions.logGit) {
             console.log(EXT_NAME + encodeSensitiveInformation(msg));
         }
     }
@@ -576,7 +579,8 @@ define(function (require, exports, module) {
     exports.setLoading                  = setLoading;
     exports.unsetLoading                = unsetLoading;
     exports.isLoading                   = isLoading;
-    exports.consoleLog                  = consoleLog;
+    exports.consoleWarn                 = consoleWarn;
+    exports.consoleError                = consoleError;
     exports.consoleDebug                = consoleDebug;
     exports.encodeSensitiveInformation  = encodeSensitiveInformation;
     exports.reloadDoc                   = reloadDoc;

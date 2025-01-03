@@ -56,7 +56,7 @@ define(function (require, exports) {
 
         gitignoreEntry.read(function (err, content) {
             if (err) {
-                Utils.consoleLog(err, "warn");
+                Utils.consoleWarn(err);
                 content = "";
             }
 
