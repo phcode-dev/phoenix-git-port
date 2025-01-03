@@ -1210,7 +1210,6 @@ define(function (require, exports) {
             COMMIT_ALL_CMD     = "brackets-git.commitAll",
             PUSH_CMD           = "brackets-git.push",
             PULL_CMD           = "brackets-git.pull",
-            GOTO_PREV_CHANGE   = "brackets-git.gotoPrevChange",
             REFRESH_GIT        = "brackets-git.refreshAll";
 
         // Add command to menu.
@@ -1229,8 +1228,7 @@ define(function (require, exports) {
         CommandManager.register(Strings.PULL_SHORTCUT, PULL_CMD, EventEmitter.getEmitter(Events.HANDLE_PULL));
         KeyBindingManager.addBinding(PULL_CMD, Preferences.get("pullShortcut"), brackets.platform);
 
-        CommandManager.register(Strings.GOTO_PREVIOUS_GIT_CHANGE, GOTO_PREV_CHANGE, GutterManager.goToPrev);
-        KeyBindingManager.addBinding(GOTO_PREV_CHANGE, Preferences.get("gotoPrevChangeShortcut"), brackets.platform);
+        CommandManager.register(Strings.GOTO_PREVIOUS_GIT_CHANGE, Constants.CMD_GIT_GOTO_PREVIOUS_CHANGE, GutterManager.goToPrev);
 
         CommandManager.register(Strings.GOTO_NEXT_GIT_CHANGE, Constants.CMD_GIT_GOTO_NEXT_CHANGE, GutterManager.goToNext);
 
