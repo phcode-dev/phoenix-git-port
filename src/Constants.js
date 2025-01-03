@@ -27,8 +27,8 @@ define(function (require, exports) {
     exports.GIT_PANEL_HISTORY_CMENU = "git-panel-history-cmenu";
 
     // commands
-    exports.SETTINGS_COMMAND_ID = "brackets-git.settings";
-    exports.CLOSE_UNMODIFIED = "git-close-unmodified-files";
+    exports.CMD_GIT_SETTINGS_COMMAND_ID = "git-settings";
+    exports.CMD_GIT_CLOSE_UNMODIFIED = "git-close-unmodified-files";
     exports.CMD_GIT_CHECKOUT = "git-checkout";
     exports.CMD_GIT_RESET_HARD = "git-reset-hard";
     exports.CMD_GIT_RESET_SOFT = "git-reset-soft";

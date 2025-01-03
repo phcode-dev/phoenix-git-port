@@ -170,9 +170,9 @@ define(function (require, exports) {
         let gitSubMenu = fileMenu.addSubMenu(Constants.GIT_STRING_UNIVERSAL,
             Constants.GIT_SUB_MENU, Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
         fileMenu.addMenuDivider(Menus.AFTER, Commands.FILE_EXTENSION_MANAGER);
-        gitSubMenu.addMenuItem(Constants.CLOSE_UNMODIFIED);
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_CLOSE_UNMODIFIED);
         gitSubMenu.addMenuDivider();
-        gitSubMenu.addMenuItem(Constants.SETTINGS_COMMAND_ID);
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_SETTINGS_COMMAND_ID);
 
         // register commands for project tree / working files
         CommandManager.register(Strings.ADD_TO_GITIGNORE, CMD_ADD_TO_IGNORE, addItemToGitingore);
@@ -200,7 +200,7 @@ define(function (require, exports) {
 
     function init() {
         $icon.removeClass("loading").removeAttr("title");
-        CommandManager.register(Strings.GIT_SETTINGS, Constants.SETTINGS_COMMAND_ID, SettingsDialog.show);
+        CommandManager.register(Strings.GIT_SETTINGS, Constants.CMD_GIT_SETTINGS_COMMAND_ID, SettingsDialog.show);
         // Try to get Git version, if succeeds then Git works
         Setup.findGit().then(function (_version) {
 

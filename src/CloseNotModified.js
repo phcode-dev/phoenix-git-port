@@ -56,7 +56,7 @@ define(function (require, exports) {
 
     function init() {
         closeUnmodifiedCmd       = CommandManager.register(Strings.CMD_CLOSE_UNMODIFIED,
-            Constants.CLOSE_UNMODIFIED, handleCloseNotModified);
+            Constants.CMD_GIT_CLOSE_UNMODIFIED, handleCloseNotModified);
         updateEnabledState();
     }
 
