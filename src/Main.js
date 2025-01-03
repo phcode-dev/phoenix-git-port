@@ -1,11 +1,12 @@
 define(function (require, exports) {
     "use strict";
 
-    const _                 = brackets.getModule("thirdparty/lodash"),
+    const _               = brackets.getModule("thirdparty/lodash"),
         CommandManager    = brackets.getModule("command/CommandManager"),
         Commands          = brackets.getModule("command/Commands"),
         Menus             = brackets.getModule("command/Menus"),
         FileSystem        = brackets.getModule("filesystem/FileSystem"),
+        Mustache          = brackets.getModule("thirdparty/mustache/mustache"),
         ProjectManager    = brackets.getModule("project/ProjectManager");
 
     const Constants       = require("src/Constants"),
@@ -18,11 +19,13 @@ define(function (require, exports) {
         Panel             = require("src/Panel"),
         Branch            = require("src/Branch"),
         SettingsDialog    = require("src/SettingsDialog"),
+        Dialogs                 = brackets.getModule("widgets/Dialogs"),
         CloseNotModified  = require("src/CloseNotModified"),
         Setup             = require("src/utils/Setup"),
         Preferences       = require("src/Preferences"),
         Utils             = require("src/Utils"),
-        Git               = require("src/git/Git");
+        Git               = require("src/git/Git"),
+        gitTagDialogTemplate    = require("text!templates/git-tag-dialog.html");
 
     var CMD_ADD_TO_IGNORE      = "git.addToIgnore",
         CMD_REMOVE_FROM_IGNORE = "git.removeFromIgnore",
@@ -128,6 +131,23 @@ define(function (require, exports) {
             });
     }
 
+    function tagCommit(commitHash) {
+        const commitDetail = Panel.getSelectedHistoryCommit() || {};
+        commitHash = commitHash || commitDetail.hash || "";
+        const compiledTemplate = Mustache.render(gitTagDialogTemplate, { Strings }),
+            dialog           = Dialogs.showModalDialogUsingTemplate(compiledTemplate),
+            $dialog          = dialog.getElement();
+        $dialog.find("input").focus();
+        $dialog.find("button.primary").on("click", function () {
+            const tagname = $dialog.find("input.commit-message").val();
+            Git.setTagName(tagname, commitHash).then(function () {
+                EventEmitter.emit(Events.REFRESH_HISTORY);
+            }).catch(function (err) {
+                ErrorHandler.showError(err, "Create tag failed");
+            });
+        });
+    }
+
     function _resetOperation(operation, commitHash, title, message) {
         const commitDetail = Panel.getSelectedHistoryCommit() || {};
         commitHash = commitHash || commitDetail.hash;
@@ -202,7 +222,9 @@ define(function (require, exports) {
         CommandManager.register(Strings.MENU_RESET_HARD, Constants.CMD_GIT_RESET_HARD, resetHard);
         CommandManager.register(Strings.MENU_RESET_MIXED, Constants.CMD_GIT_RESET_MIXED, resetMixed);
         CommandManager.register(Strings.MENU_RESET_SOFT, Constants.CMD_GIT_RESET_SOFT, resetSoft);
+        CommandManager.register(Strings.MENU_TAG_COMMIT, Constants.CMD_GIT_TAG, tagCommit);
         historyCmenu.addMenuItem(Constants.CMD_GIT_CHECKOUT);
+        historyCmenu.addMenuItem(Constants.CMD_GIT_TAG);
         historyCmenu.addMenuDivider();
         historyCmenu.addMenuItem(Constants.CMD_GIT_RESET_HARD);
         historyCmenu.addMenuItem(Constants.CMD_GIT_RESET_MIXED);

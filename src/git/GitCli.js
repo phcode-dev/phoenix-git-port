@@ -1052,8 +1052,12 @@ define(function (require, exports) {
             });
     }
 
-    function setTagName(tagname) {
-        return git(["tag", tagname]).then(function (stdout) {
+    function setTagName(tagname, commitHash) {
+        const args = ["tag", tagname];
+        if (commitHash) {
+            args.push(commitHash); // Add the commit hash to the arguments if provided
+        }
+        return git(args).then(function (stdout) {
             return stdout.trim();
         });
     }

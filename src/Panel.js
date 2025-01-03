@@ -11,7 +11,6 @@ define(function (require, exports) {
         DocumentManager    = brackets.getModule("document/DocumentManager"),
         EditorManager      = brackets.getModule("editor/EditorManager"),
         FileViewController = brackets.getModule("project/FileViewController"),
-        KeyBindingManager  = brackets.getModule("command/KeyBindingManager"),
         FileSystem         = brackets.getModule("filesystem/FileSystem"),
         Menus              = brackets.getModule("command/Menus"),
         Mustache           = brackets.getModule("thirdparty/mustache/mustache"),
@@ -33,11 +32,10 @@ define(function (require, exports) {
         SettingsDialog     = require("./SettingsDialog"),
         ProgressDialog     = require("src/dialogs/Progress");
 
-    var gitPanelTemplate            = require("text!templates/git-panel.html"),
+    const gitPanelTemplate            = require("text!templates/git-panel.html"),
         gitPanelResultsTemplate     = require("text!templates/git-panel-results.html"),
         gitAuthorsDialogTemplate    = require("text!templates/authors-dialog.html"),
         gitCommitDialogTemplate     = require("text!templates/git-commit-dialog.html"),
-        gitTagDialogTemplate        = require("text!templates/git-tag-dialog.html"),
         gitDiffDialogTemplate       = require("text!templates/git-diff-dialog.html"),
         questionDialogTemplate      = require("text!templates/git-question-dialog.html");
 
@@ -419,24 +417,6 @@ define(function (require, exports) {
                 ErrorHandler.showError(err, "Git Diff failed");
             });
         }
-    }
-
-    function handleGitTag(file) {
-        // Open the Tag Dialog
-        var compiledTemplate = Mustache.render(gitTagDialogTemplate, { file: file, Strings: Strings }),
-            dialog           = Dialogs.showModalDialogUsingTemplate(compiledTemplate),
-            $dialog          = dialog.getElement();
-        _makeDialogBig($dialog);
-
-        $dialog.find("button.primary").on("click", function () {
-            var tagname = $dialog.find("input.commit-message").val();
-            Git.setTagName(tagname).then(function () {
-                refresh();
-                EventEmitter.emit(Events.HISTORY_SHOW_GLOBAL);
-            }).catch(function (err) {
-                ErrorHandler.showError(err, "Create tag failed");
-            });
-        });
     }
 
     function handleGitUndo(file) {
@@ -1196,10 +1176,6 @@ define(function (require, exports) {
             .on("click", ".change-user-email", EventEmitter.getEmitter(Events.GIT_CHANGE_EMAIL))
             .on("click", ".toggle-gerrit-push-ref", EventEmitter.getEmitter(Events.GERRIT_TOGGLE_PUSH_REF))
             .on("click", ".undo-last-commit", undoLastLocalCommit)
-            .on("click", ".tags", function (e) {
-                e.stopPropagation();
-                handleGitTag($(e.target).closest("tr").attr("x-file"));
-            })
             .on("click", ".reset-all", discardAllChanges);
 
         // Attaching table handlers

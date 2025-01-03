@@ -41,4 +41,5 @@ define(function (require, exports) {
     exports.CMD_GIT_PULL = "git-pull";
     exports.CMD_GIT_PUSH = "git-push";
     exports.CMD_GIT_REFRESH = "git-refresh";
+    exports.CMD_GIT_TAG = "git-tag";
 });

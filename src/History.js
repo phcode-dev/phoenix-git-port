@@ -48,7 +48,7 @@ define(function (require) {
                 const historyShown = HistoryViewer.toggle(commit, getCurrentDocument(), {
                     isInitial: $(this).attr("x-initial-commit") === "true"
                 });
-                $tr.parent().find("tr.selected").removeClass("selected")
+                $tr.parent().find("tr.selected").removeClass("selected");
                 if(historyShown){
                     $tr.addClass("selected");
                 }
@@ -217,18 +217,31 @@ define(function (require) {
     }
 
     // Show or hide the history list on click of .history button
-    // newHistoryMode can be "FILE" or "GLOBAL"
+    // newHistoryMode can be "FILE", "GLOBAL" or "REFRESH"
     function handleToggleHistory(newHistoryMode, newDocument) {
         // this is here to check that $historyList is still attached to the DOM
         $historyList = $tableContainer.find("#git-history-list");
 
-        var historyEnabled = $historyList.is(":visible"),
+        let historyEnabled = $historyList.is(":visible"),
             currentFile = $historyList.data("file") || null,
             currentHistoryMode = historyEnabled ? (currentFile ? "FILE" : "GLOBAL") : "DISABLED",
             doc = newDocument ? newDocument : getCurrentDocument(),
             file;
 
-        if (currentHistoryMode !== newHistoryMode) {
+        // Variables to store scroll positions (only used for REFRESH case)
+        let savedScrollTop, savedScrollLeft, selectedCommitHash;
+        let isRefresh = false;
+        if(newHistoryMode === "REFRESH"){
+            newHistoryMode = currentHistoryMode;
+            isRefresh = true;
+            historyEnabled = true;
+            // Save current scroll positions before removing the list
+            if ($historyList.length > 0) {
+                savedScrollTop = $historyList.parent().scrollTop();
+                savedScrollLeft = $historyList.parent().scrollLeft();
+                selectedCommitHash = $historyList.find(".selected").attr("x-hash");
+            }
+        } else if (currentHistoryMode !== newHistoryMode) {
             // we are switching the modes so enable
             historyEnabled = true;
         } else if (!newDocument) {
@@ -250,13 +263,21 @@ define(function (require) {
         // Render #git-history-list if is not already generated or if the viewed file for file history has changed
         var isEmpty = $historyList.find("tr").length === 0,
             fileChanged = currentFile !== (file ? file.absolute : null);
-        if (historyEnabled && (isEmpty || fileChanged)) {
+        if (historyEnabled && (isEmpty || fileChanged || isRefresh)) {
             if ($historyList.length > 0) {
                 $historyList.remove();
             }
             var $spinner = $("<div class='spinner spin large'></div>").appendTo($gitPanel);
             renderHistory(file).finally(function () {
                 $spinner.remove();
+                if (isRefresh) {
+                    // After rendering, we need to fetch the newly created #git-history-list
+                    let $newHistoryList = $tableContainer.find("#git-history-list");
+                    // Restore the scroll position
+                    $newHistoryList.parent().scrollTop(savedScrollTop || 0);
+                    $newHistoryList.parent().scrollLeft(savedScrollLeft || 0);
+                    $historyList.find(`[x-hash="${selectedCommitHash}"]`).addClass("selected");
+                }
             });
         }
 
@@ -297,6 +318,9 @@ define(function (require) {
     });
     EventEmitter.on(Events.HISTORY_SHOW_GLOBAL, function () {
         handleToggleHistory("GLOBAL");
+    });
+    EventEmitter.on(Events.REFRESH_HISTORY, function () {
+        handleToggleHistory("REFRESH");
     });
     EventEmitter.on(Events.BRACKETS_CURRENT_DOCUMENT_CHANGE, function () {
         handleFileChange();

@@ -46,6 +46,7 @@ define(function (require, exports) {
     exports.HISTORY_SHOW_FILE = "history_showFile";
     exports.HISTORY_SHOW_GLOBAL = "history_showGlobal";
     exports.REFRESH_COUNTERS = "refresh_counters";
+    exports.REFRESH_HISTORY = "refresh_history";
 
     // Git results
     exports.GIT_STATUS_RESULTS = "git_status_results";

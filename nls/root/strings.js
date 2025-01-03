@@ -30,6 +30,7 @@ define({
     MENU_RESET_HARD:                    "Discard changes and commits after this (hard reset)",
     MENU_RESET_MIXED:                   "Discard commits after this but keep changes unstaged (mixed reset)",
     MENU_RESET_SOFT:                    "Discard commits after this but keep changes staged (soft reset)",
+    MENU_TAG_COMMIT:                    "Tag Commit",
     RESET_HARD_TITLE:                   "Confirm Hard Reset",
     RESET_MIXED_TITLE:                  "Confirm Mixed Reset",
     RESET_SOFT_TITLE:                   "Confirm Soft Reset",
