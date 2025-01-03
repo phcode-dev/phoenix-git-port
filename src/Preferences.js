@@ -25,7 +25,6 @@ define(function (require, exports, module) {
         "pushShortcut": {                   "type": "string",            "value": null              },
         "pullShortcut": {                   "type": "string",            "value": null              },
         "gotoPrevChangeShortcut": {         "type": "string",            "value": null              },
-        "gotoNextChangeShortcut": {         "type": "string",            "value": null              },
         "refreshShortcut": {                "type": "string",            "value": null              },
         // system
         "gitTimeout": {                     "type": "number",            "value": 30                },

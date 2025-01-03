@@ -1211,7 +1211,6 @@ define(function (require, exports) {
             PUSH_CMD           = "brackets-git.push",
             PULL_CMD           = "brackets-git.pull",
             GOTO_PREV_CHANGE   = "brackets-git.gotoPrevChange",
-            GOTO_NEXT_CHANGE   = "brackets-git.gotoNextChange",
             REFRESH_GIT        = "brackets-git.refreshAll";
 
         // Add command to menu.
@@ -1233,8 +1232,7 @@ define(function (require, exports) {
         CommandManager.register(Strings.GOTO_PREVIOUS_GIT_CHANGE, GOTO_PREV_CHANGE, GutterManager.goToPrev);
         KeyBindingManager.addBinding(GOTO_PREV_CHANGE, Preferences.get("gotoPrevChangeShortcut"), brackets.platform);
 
-        CommandManager.register(Strings.GOTO_NEXT_GIT_CHANGE, GOTO_NEXT_CHANGE, GutterManager.goToNext);
-        KeyBindingManager.addBinding(GOTO_NEXT_CHANGE, Preferences.get("gotoNextChangeShortcut"), brackets.platform);
+        CommandManager.register(Strings.GOTO_NEXT_GIT_CHANGE, Constants.CMD_GIT_GOTO_NEXT_CHANGE, GutterManager.goToNext);
 
         CommandManager.register(Strings.REFRESH_GIT, REFRESH_GIT, EventEmitter.getEmitter(Events.REFRESH_ALL));
         KeyBindingManager.addBinding(REFRESH_GIT, Preferences.get("refreshShortcut"), brackets.platform);
