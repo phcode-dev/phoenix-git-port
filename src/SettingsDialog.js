@@ -93,10 +93,6 @@ define(function (require, exports) {
     function init() {
         setValues(Preferences.getAll());
         assignActions();
-        $("#git-settings-tabs a", $dialog).click(function (e) {
-            e.preventDefault();
-            $(this).tab("show");
-        });
     }
 
     function showRestartDialog() {
