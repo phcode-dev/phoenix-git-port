@@ -1073,9 +1073,10 @@ define(function (require, exports) {
     });
 
     function setGerritCheckState(enabled) {
-        $gitPanel
-            .find(".toggle-gerrit-push-ref")
-            .toggleClass("checkmark", enabled);
+        const command = CommandManager.get(Constants.CMD_GIT_GERRIT_PUSH_REF);
+        if (command) {
+            command.setChecked(enabled);
+        }
     }
 
     function discardAllChanges() {
@@ -1176,8 +1177,7 @@ define(function (require, exports) {
                 setTimeout(function () {
                     Menus.getContextMenu(Constants.GIT_PANEL_CHANGES_CMENU).open(e);
                 }, 1);
-            })
-            .on("click", ".toggle-gerrit-push-ref", EventEmitter.getEmitter(Events.GERRIT_TOGGLE_PUSH_REF));
+            });
 
         // Attaching table handlers
         attachDefaultTableHandlers();
@@ -1196,6 +1196,7 @@ define(function (require, exports) {
         CommandManager.register(Strings.UNDO_LAST_LOCAL_COMMIT, Constants.CMD_GIT_UNDO_LAST_COMMIT, undoLastLocalCommit);
         CommandManager.register(Strings.CHANGE_USER_NAME, Constants.CMD_GIT_CHANGE_USERNAME, EventEmitter.getEmitter(Events.GIT_CHANGE_USERNAME));
         CommandManager.register(Strings.CHANGE_USER_EMAIL, Constants.CMD_GIT_CHANGE_EMAIL, EventEmitter.getEmitter(Events.GIT_CHANGE_EMAIL));
+        CommandManager.register(Strings.ENABLE_GERRIT_PUSH_REF, Constants.CMD_GIT_GERRIT_PUSH_REF, EventEmitter.getEmitter(Events.GERRIT_TOGGLE_PUSH_REF));
 
         // Show gitPanel when appropriate
         if (Preferences.get("panelEnabled")) {

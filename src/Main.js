@@ -241,6 +241,8 @@ define(function (require, exports) {
         optionsCmenu.addMenuItem(Constants.CMD_GIT_CHANGE_USERNAME);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_CHANGE_EMAIL);
         optionsCmenu.addMenuDivider();
+        optionsCmenu.addMenuItem(Constants.CMD_GIT_GERRIT_PUSH_REF);
+        optionsCmenu.addMenuDivider();
         optionsCmenu.addMenuItem(Constants.CMD_GIT_SETTINGS_COMMAND_ID);
     }
 

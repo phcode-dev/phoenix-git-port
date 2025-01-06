@@ -47,4 +47,5 @@ define(function (require, exports) {
     exports.CMD_GIT_UNDO_LAST_COMMIT = "git-undo-last-commit";
     exports.CMD_GIT_CHANGE_USERNAME = "git-change-username";
     exports.CMD_GIT_CHANGE_EMAIL = "git-change-email";
+    exports.CMD_GIT_GERRIT_PUSH_REF = "git-gerrit-push_ref";
 });
