@@ -238,11 +238,12 @@ define(function (require, exports) {
         optionsCmenu.addMenuItem(Constants.CMD_GIT_DISCARD_ALL_CHANGES);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_UNDO_LAST_COMMIT);
         optionsCmenu.addMenuDivider();
-        optionsCmenu.addMenuItem(Constants.CMD_GIT_CHANGE_USERNAME);
-        optionsCmenu.addMenuItem(Constants.CMD_GIT_CHANGE_EMAIL);
+        optionsCmenu.addMenuItem(Constants.CMD_GIT_AUTHORS_OF_SELECTION);
         optionsCmenu.addMenuDivider();
         optionsCmenu.addMenuItem(Constants.CMD_GIT_GERRIT_PUSH_REF);
         optionsCmenu.addMenuDivider();
+        optionsCmenu.addMenuItem(Constants.CMD_GIT_CHANGE_USERNAME);
+        optionsCmenu.addMenuItem(Constants.CMD_GIT_CHANGE_EMAIL);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_SETTINGS_COMMAND_ID);
     }
 
