@@ -155,7 +155,28 @@
     position: relative;
 
     .toolbar {
-        overflow: visible;
+        overflow: visible; // todo git hidden
+        .close {
+            position: absolute;
+            top: 23px;
+            margin-top: -10px;
+        }
+    }
+    .git-more-options-btn {
+        position: absolute;
+        right: 25px;
+        top: 9px;
+        padding: 4px 8px 2px 8px;
+        opacity: .7;
+        .dark & {
+            opacity: .5;
+        }
+    }
+    .git-more-options-btn:hover {
+        opacity: .9;
+        .dark & {
+            opacity: .8;
+        }
     }
     table {
         margin-bottom: 0;
@@ -208,7 +229,7 @@
     }
     .git-right-icons {
         position:absolute;
-        right: 40px;
+        right: 55px;
         top: 6px;
     }
     .octicon:not(:only-child) {
