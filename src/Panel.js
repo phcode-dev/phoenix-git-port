@@ -1022,7 +1022,7 @@ define(function (require, exports) {
 
     EventEmitter.on(Events.GIT_CHANGE_USERNAME, function (callback) {
         return Git.getConfig("user.name").then(function (currentUserName) {
-            return Utils.askQuestion(Strings.CHANGE_USER_NAME, Strings.ENTER_NEW_USER_NAME, { defaultValue: currentUserName })
+            return Utils.askQuestion(Strings.CHANGE_USER_NAME_TITLE, Strings.ENTER_NEW_USER_NAME, { defaultValue: currentUserName })
                 .then(function (userName) {
                     if (!userName.length) { userName = currentUserName; }
                     return Git.setConfig("user.name", userName, true).catch(function (err) {
