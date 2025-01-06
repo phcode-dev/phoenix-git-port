@@ -1176,8 +1176,7 @@ define(function (require, exports) {
             .on("click", ".change-user-name", EventEmitter.getEmitter(Events.GIT_CHANGE_USERNAME))
             .on("click", ".change-user-email", EventEmitter.getEmitter(Events.GIT_CHANGE_EMAIL))
             .on("click", ".toggle-gerrit-push-ref", EventEmitter.getEmitter(Events.GERRIT_TOGGLE_PUSH_REF))
-            .on("click", ".undo-last-commit", undoLastLocalCommit)
-            .on("click", ".reset-all", discardAllChanges);
+            .on("click", ".undo-last-commit", undoLastLocalCommit);
 
         // Attaching table handlers
         attachDefaultTableHandlers();
