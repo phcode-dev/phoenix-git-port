@@ -1157,7 +1157,6 @@ define(function (require, exports) {
             .on("click", ".change-remote", EventEmitter.getEmitter(Events.HANDLE_REMOTE_PICK))
             .on("click", ".remove-remote", EventEmitter.getEmitter(Events.HANDLE_REMOTE_DELETE))
             .on("click", ".git-remote-new", EventEmitter.getEmitter(Events.HANDLE_REMOTE_CREATE))
-            .on("click", ".git-settings", SettingsDialog.show)
             .on("contextmenu", "tr", function (e) {
                 const $this = $(this);
                 if ($this.hasClass("history-commit")) {
