@@ -184,7 +184,6 @@ define({
     TOOLTIP_HIDE_HISTORY:               "Hide history",
     TOOLTIP_INIT:                       "Initialize repository",
     TOOLTIP_MERGE_ABORT:                "Abort the merge operation and reset HEAD to the last local commit",
-    TOOLTIP_MORE:                       "More actions\u2026",
     TOOLTIP_PICK_REMOTE:                "Pick preferred remote",
     TOOLTIP_PULL:                       "Git Pull",
     TOOLTIP_PUSH:                       "Git Push",

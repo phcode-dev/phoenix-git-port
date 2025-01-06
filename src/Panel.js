@@ -996,6 +996,13 @@ define(function (require, exports) {
             })
             .on("mousedown", ".modified-file", function (e) {
                 var $this = $(e.currentTarget);
+                // we listen on mousedown event for faster file switch perception. but this results in
+                // this handler getting triggered before the above click handlers for table buttons and
+                // Check boxes. So we do a check to see if the clicked element is NOT a button,
+                // input, or tag inside a button.
+                if ($(e.target).is("button, input") || $(e.target).closest("button").length) {
+                    return;
+                }
                 if ($this.attr("x-status") === Git.FILE_STATUS.DELETED) {
                     return;
                 }
