@@ -870,10 +870,10 @@ define(function (require, exports) {
 
     function handleToggleUntracked() {
         showingUntracked = !showingUntracked;
-
-        $gitPanel
-            .find(".git-toggle-untracked")
-                .text(showingUntracked ? Strings.HIDE_UNTRACKED : Strings.SHOW_UNTRACKED);
+        const command = CommandManager.get(Constants.CMD_GIT_TOGGLE_UNTRACKED);
+        if (command) {
+            command.setChecked(!showingUntracked);
+        }
 
         refresh();
     }
@@ -1145,7 +1145,6 @@ define(function (require, exports) {
             .on("click", ".git-find-conflicts", findConflicts)
             .on("click", ".git-prev-gutter", GutterManager.goToPrev)
             .on("click", ".git-next-gutter", GutterManager.goToNext)
-            .on("click", ".git-toggle-untracked", handleToggleUntracked)
             .on("click", ".git-file-history", EventEmitter.getEmitter(Events.HISTORY_SHOW_FILE))
             .on("click", ".git-history-toggle", EventEmitter.getEmitter(Events.HISTORY_SHOW_GLOBAL))
             .on("click", ".git-fetch", EventEmitter.getEmitter(Events.HANDLE_FETCH))
@@ -1197,6 +1196,7 @@ define(function (require, exports) {
         CommandManager.register(Strings.ENABLE_GERRIT_PUSH_REF, Constants.CMD_GIT_GERRIT_PUSH_REF, EventEmitter.getEmitter(Events.GERRIT_TOGGLE_PUSH_REF));
         CommandManager.register(Strings.VIEW_AUTHORS_SELECTION, Constants.CMD_GIT_AUTHORS_OF_SELECTION, handleAuthorsSelection);
         CommandManager.register(Strings.VIEW_AUTHORS_FILE, Constants.CMD_GIT_AUTHORS_OF_FILE, handleAuthorsFile);
+        CommandManager.register(Strings.HIDE_UNTRACKED, Constants.CMD_GIT_TOGGLE_UNTRACKED, handleToggleUntracked);
 
         // Show gitPanel when appropriate
         if (Preferences.get("panelEnabled")) {

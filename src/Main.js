@@ -249,6 +249,7 @@ define(function (require, exports) {
         optionsCmenu.addMenuItem(Constants.CMD_GIT_PULL);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_PUSH);
         optionsCmenu.addMenuDivider();
+        optionsCmenu.addMenuItem(Constants.CMD_GIT_TOGGLE_UNTRACKED);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_GERRIT_PUSH_REF);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_CHANGE_USERNAME);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_CHANGE_EMAIL);

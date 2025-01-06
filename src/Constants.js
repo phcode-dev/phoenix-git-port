@@ -50,4 +50,5 @@ define(function (require, exports) {
     exports.CMD_GIT_GERRIT_PUSH_REF = "git-gerrit-push_ref";
     exports.CMD_GIT_AUTHORS_OF_SELECTION = "git-authors-of-selection";
     exports.CMD_GIT_AUTHORS_OF_FILE = "git-authors-of-file";
+    exports.CMD_GIT_TOGGLE_UNTRACKED = "git-toggle-untracked";
 });
