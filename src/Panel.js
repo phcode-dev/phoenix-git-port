@@ -1074,7 +1074,8 @@ define(function (require, exports) {
     }
 
     function discardAllChanges() {
-        return Utils.askQuestion(Strings.RESET_LOCAL_REPO, Strings.RESET_LOCAL_REPO_CONFIRM, { booleanResponse: true })
+        return Utils.askQuestion(Strings.RESET_LOCAL_REPO, Strings.RESET_LOCAL_REPO_CONFIRM, {
+            booleanResponse: true, customOkBtn: Strings.DISCARD_CHANGES, customOkBtnClass: "danger"})
             .then(function (response) {
                 if (response) {
                     return Git.discardAllChanges().catch(function (err) {
@@ -1190,6 +1191,7 @@ define(function (require, exports) {
         CommandManager.register(Strings.GOTO_PREVIOUS_GIT_CHANGE, Constants.CMD_GIT_GOTO_PREVIOUS_CHANGE, GutterManager.goToPrev);
         CommandManager.register(Strings.GOTO_NEXT_GIT_CHANGE, Constants.CMD_GIT_GOTO_NEXT_CHANGE, GutterManager.goToNext);
         CommandManager.register(Strings.REFRESH_GIT, Constants.CMD_GIT_REFRESH, EventEmitter.getEmitter(Events.REFRESH_ALL));
+        CommandManager.register(Strings.RESET_LOCAL_REPO, Constants.CMD_GIT_DISCARD_ALL_CHANGES, discardAllChanges);
 
         // Show gitPanel when appropriate
         if (Preferences.get("panelEnabled")) {

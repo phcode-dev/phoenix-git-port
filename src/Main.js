@@ -229,6 +229,11 @@ define(function (require, exports) {
         historyCmenu.addMenuItem(Constants.CMD_GIT_RESET_HARD);
         historyCmenu.addMenuItem(Constants.CMD_GIT_RESET_MIXED);
         historyCmenu.addMenuItem(Constants.CMD_GIT_RESET_SOFT);
+
+        // create context menu for git more options
+        const optionsCmenu = Menus.registerContextMenu(Constants.GIT_PANEL_OPTIONS_CMENU);
+        Menus.ContextMenu.assignContextMenuToSelector(".git-more-options-btn", optionsCmenu);
+        optionsCmenu.addMenuItem(Constants.CMD_GIT_DISCARD_ALL_CHANGES);
     }
 
     function init() {

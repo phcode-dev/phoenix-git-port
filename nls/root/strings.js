@@ -160,6 +160,7 @@ define({
     REMOVE_BOM:                         "Remove BOM from files",
     REMOVE_FROM_GITIGNORE:              "Remove from .gitignore",
     RESET_LOCAL_REPO:                   "Discard all changes since last commit",
+    DISCARD_CHANGES:                    "Discard Changes",
     RESET_LOCAL_REPO_CONFIRM:           "Do you wish to discard all changes done since last commit? This action can't be reverted.",
     RESTART:                            "Restart",
     SAVE_CREDENTIALS_HELP:              "You don't need to fill out username/password if your credentials are managed elsewhere. Use this only when your operation keeps timing out.",

@@ -25,6 +25,7 @@ define(function (require, exports) {
     // Menus
     exports.GIT_PANEL_CHANGES_CMENU = "git-panel-changes-cmenu";
     exports.GIT_PANEL_HISTORY_CMENU = "git-panel-history-cmenu";
+    exports.GIT_PANEL_OPTIONS_CMENU = "git-panel-options-cmenu";
 
     // commands
     exports.CMD_GIT_SETTINGS_COMMAND_ID = "git-settings";
@@ -42,4 +43,5 @@ define(function (require, exports) {
     exports.CMD_GIT_PUSH = "git-push";
     exports.CMD_GIT_REFRESH = "git-refresh";
     exports.CMD_GIT_TAG = "git-tag";
+    exports.CMD_GIT_DISCARD_ALL_CHANGES = "git-discard-all-changes";
 });
