@@ -1040,7 +1040,7 @@ define(function (require, exports) {
 
     EventEmitter.on(Events.GIT_CHANGE_EMAIL, function (callback) {
         return Git.getConfig("user.email").then(function (currentUserEmail) {
-            return Utils.askQuestion(Strings.CHANGE_USER_EMAIL, Strings.ENTER_NEW_USER_EMAIL, { defaultValue: currentUserEmail })
+            return Utils.askQuestion(Strings.CHANGE_USER_EMAIL_TITLE, Strings.ENTER_NEW_USER_EMAIL, { defaultValue: currentUserEmail })
                 .then(function (userEmail) {
                     if (!userEmail.length) { userEmail = currentUserEmail; }
                     return Git.setConfig("user.email", userEmail, true).catch(function (err) {
