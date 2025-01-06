@@ -5,7 +5,7 @@
     <div class="modal-body table-striped tab-content">
         <p>{{{question}}}</p>
         {{#stringInput}}
-        <input class="stringInput" type="text" value="{{defaultValue}}" />
+        <input class="stringInput" type="text" value="{{defaultValue}}" autocomplete="off" spellcheck="false" />
         {{/stringInput}}
         {{#passwordInput}}
         <input class="stringInput" type="password" value="{{defaultValue}}" />
