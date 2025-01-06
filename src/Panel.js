@@ -1174,8 +1174,7 @@ define(function (require, exports) {
             })
             .on("click", ".change-user-name", EventEmitter.getEmitter(Events.GIT_CHANGE_USERNAME))
             .on("click", ".change-user-email", EventEmitter.getEmitter(Events.GIT_CHANGE_EMAIL))
-            .on("click", ".toggle-gerrit-push-ref", EventEmitter.getEmitter(Events.GERRIT_TOGGLE_PUSH_REF))
-            .on("click", ".undo-last-commit", undoLastLocalCommit);
+            .on("click", ".toggle-gerrit-push-ref", EventEmitter.getEmitter(Events.GERRIT_TOGGLE_PUSH_REF));
 
         // Attaching table handlers
         attachDefaultTableHandlers();
@@ -1190,6 +1189,7 @@ define(function (require, exports) {
         CommandManager.register(Strings.GOTO_NEXT_GIT_CHANGE, Constants.CMD_GIT_GOTO_NEXT_CHANGE, GutterManager.goToNext);
         CommandManager.register(Strings.REFRESH_GIT, Constants.CMD_GIT_REFRESH, EventEmitter.getEmitter(Events.REFRESH_ALL));
         CommandManager.register(Strings.RESET_LOCAL_REPO, Constants.CMD_GIT_DISCARD_ALL_CHANGES, discardAllChanges);
+        CommandManager.register(Strings.UNDO_LAST_LOCAL_COMMIT, Constants.CMD_GIT_UNDO_LAST_COMMIT, undoLastLocalCommit);
 
         // Show gitPanel when appropriate
         if (Preferences.get("panelEnabled")) {

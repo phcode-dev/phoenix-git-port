@@ -234,6 +234,7 @@ define(function (require, exports) {
         const optionsCmenu = Menus.registerContextMenu(Constants.GIT_PANEL_OPTIONS_CMENU);
         Menus.ContextMenu.assignContextMenuToSelector(".git-more-options-btn", optionsCmenu);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_DISCARD_ALL_CHANGES);
+        optionsCmenu.addMenuItem(Constants.CMD_GIT_UNDO_LAST_COMMIT);
         optionsCmenu.addMenuDivider();
         optionsCmenu.addMenuItem(Constants.CMD_GIT_SETTINGS_COMMAND_ID);
     }
