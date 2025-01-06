@@ -443,27 +443,12 @@ define(function (require, exports) {
     }
 
     function handleGitDelete(file) {
-        var compiledTemplate = Mustache.render(questionDialogTemplate, {
-            title: Strings.DELETE_FILE,
-            question: StringUtils.format(Strings.Q_DELETE_FILE, _.escape(file)),
-            Strings: Strings
-        });
-        Dialogs.showModalDialogUsingTemplate(compiledTemplate).done(function (buttonId) {
-            if (buttonId === "ok") {
-                FileSystem.resolve(Preferences.get("currentGitRoot") + file, function (err, fileEntry) {
-                    if (err) {
-                        ErrorHandler.showError(err, "Could not resolve file");
-                        return;
-                    }
-                    jsPromise(ProjectManager.deleteItem(fileEntry))
-                        .then(function () {
-                            refresh();
-                        })
-                        .catch(function (err) {
-                            ErrorHandler.showError(err, "File deletion failed");
-                        });
-                });
+        FileSystem.resolve(Preferences.get("currentGitRoot") + file, function (err, fileEntry) {
+            if (err) {
+                ErrorHandler.showError(err, "Could not resolve file");
+                return;
             }
+            CommandManager.execute(Commands.FILE_DELETE, {file: fileEntry});
         });
     }
 
