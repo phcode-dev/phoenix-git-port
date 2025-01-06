@@ -1177,7 +1177,6 @@ define(function (require, exports) {
                     Menus.getContextMenu(Constants.GIT_PANEL_CHANGES_CMENU).open(e);
                 }, 1);
             })
-            .on("click", ".change-user-email", EventEmitter.getEmitter(Events.GIT_CHANGE_EMAIL))
             .on("click", ".toggle-gerrit-push-ref", EventEmitter.getEmitter(Events.GERRIT_TOGGLE_PUSH_REF));
 
         // Attaching table handlers
@@ -1196,6 +1195,7 @@ define(function (require, exports) {
         CommandManager.register(Strings.UNDO_LAST_LOCAL_COMMIT, Constants.CMD_GIT_UNDO_LAST_COMMIT, undoLastLocalCommit);
         CommandManager.register(Strings.UNDO_LAST_LOCAL_COMMIT, Constants.CMD_GIT_UNDO_LAST_COMMIT, undoLastLocalCommit);
         CommandManager.register(Strings.CHANGE_USER_NAME, Constants.CMD_GIT_CHANGE_USERNAME, EventEmitter.getEmitter(Events.GIT_CHANGE_USERNAME));
+        CommandManager.register(Strings.CHANGE_USER_EMAIL, Constants.CMD_GIT_CHANGE_EMAIL, EventEmitter.getEmitter(Events.GIT_CHANGE_EMAIL));
 
         // Show gitPanel when appropriate
         if (Preferences.get("panelEnabled")) {
@@ -1234,8 +1234,6 @@ define(function (require, exports) {
 
     // Event listeners
     EventEmitter.on(Events.GIT_USERNAME_CHANGED, function (userName) {
-        // todo wire to context menu title change
-        //$gitPanel.find(".git-user-name").text(userName);
         const command = CommandManager.get(Constants.CMD_GIT_CHANGE_USERNAME);
         if (command) {
             if(userName){
@@ -1248,6 +1246,14 @@ define(function (require, exports) {
 
     EventEmitter.on(Events.GIT_EMAIL_CHANGED, function (email) {
         $gitPanel.find(".git-user-email").text(email);
+        const command = CommandManager.get(Constants.CMD_GIT_CHANGE_EMAIL);
+        if (command) {
+            if(email){
+                command.setName(StringUtils.format(Strings.CHANGE_USER_EMAIL_MENU, email));
+            } else {
+                command.setName(Strings.CHANGE_USER_EMAIL);
+            }
+        }
     });
 
     EventEmitter.on(Events.GIT_REMOTE_AVAILABLE, function () {

@@ -42,6 +42,7 @@ define({
     RESET:                              "Reset",
     CANCEL:                             "Cancel",
     CHANGE_USER_EMAIL:                  "Change git email",
+    CHANGE_USER_EMAIL_MENU:             "Change git email ({0})",
     CHANGE_USER_NAME:                   "Change git username",
     CHANGE_USER_NAME_MENU:              "Change git username ({0})",
     CHECK_GIT_SETTINGS:                 "Failed to launch Git executable - is Git installed? fix Git settings and restart app",
