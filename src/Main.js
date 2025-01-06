@@ -197,14 +197,19 @@ define(function (require, exports) {
         gitSubMenu.addMenuItem(Constants.CMD_GIT_GOTO_PREVIOUS_CHANGE);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_CLOSE_UNMODIFIED);
         gitSubMenu.addMenuDivider();
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_AUTHORS_OF_SELECTION);
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_AUTHORS_OF_FILE);
+        gitSubMenu.addMenuDivider();
         gitSubMenu.addMenuItem(Constants.CMD_GIT_COMMIT_CURRENT);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_COMMIT_ALL);
         gitSubMenu.addMenuDivider();
         gitSubMenu.addMenuItem(Constants.CMD_GIT_PULL);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_PUSH);
         gitSubMenu.addMenuDivider();
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_GERRIT_PUSH_REF);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_CHANGE_USERNAME);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_CHANGE_EMAIL);
+        gitSubMenu.addMenuDivider();
         gitSubMenu.addMenuItem(Constants.CMD_GIT_SETTINGS_COMMAND_ID);
 
         // register commands for project tree / working files
@@ -239,11 +244,15 @@ define(function (require, exports) {
         optionsCmenu.addMenuItem(Constants.CMD_GIT_UNDO_LAST_COMMIT);
         optionsCmenu.addMenuDivider();
         optionsCmenu.addMenuItem(Constants.CMD_GIT_AUTHORS_OF_SELECTION);
+        optionsCmenu.addMenuItem(Constants.CMD_GIT_AUTHORS_OF_FILE);
+        optionsCmenu.addMenuDivider();
+        optionsCmenu.addMenuItem(Constants.CMD_GIT_PULL);
+        optionsCmenu.addMenuItem(Constants.CMD_GIT_PUSH);
         optionsCmenu.addMenuDivider();
         optionsCmenu.addMenuItem(Constants.CMD_GIT_GERRIT_PUSH_REF);
-        optionsCmenu.addMenuDivider();
         optionsCmenu.addMenuItem(Constants.CMD_GIT_CHANGE_USERNAME);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_CHANGE_EMAIL);
+        optionsCmenu.addMenuDivider();
         optionsCmenu.addMenuItem(Constants.CMD_GIT_SETTINGS_COMMAND_ID);
     }
 
