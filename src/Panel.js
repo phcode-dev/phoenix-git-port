@@ -1177,7 +1177,6 @@ define(function (require, exports) {
                     Menus.getContextMenu(Constants.GIT_PANEL_CHANGES_CMENU).open(e);
                 }, 1);
             })
-            .on("click", ".change-user-name", EventEmitter.getEmitter(Events.GIT_CHANGE_USERNAME))
             .on("click", ".change-user-email", EventEmitter.getEmitter(Events.GIT_CHANGE_EMAIL))
             .on("click", ".toggle-gerrit-push-ref", EventEmitter.getEmitter(Events.GERRIT_TOGGLE_PUSH_REF));
 
@@ -1195,6 +1194,8 @@ define(function (require, exports) {
         CommandManager.register(Strings.REFRESH_GIT, Constants.CMD_GIT_REFRESH, EventEmitter.getEmitter(Events.REFRESH_ALL));
         CommandManager.register(Strings.RESET_LOCAL_REPO, Constants.CMD_GIT_DISCARD_ALL_CHANGES, discardAllChanges);
         CommandManager.register(Strings.UNDO_LAST_LOCAL_COMMIT, Constants.CMD_GIT_UNDO_LAST_COMMIT, undoLastLocalCommit);
+        CommandManager.register(Strings.UNDO_LAST_LOCAL_COMMIT, Constants.CMD_GIT_UNDO_LAST_COMMIT, undoLastLocalCommit);
+        CommandManager.register(Strings.CHANGE_USER_NAME, Constants.CMD_GIT_CHANGE_USERNAME, EventEmitter.getEmitter(Events.GIT_CHANGE_USERNAME));
 
         // Show gitPanel when appropriate
         if (Preferences.get("panelEnabled")) {
@@ -1233,7 +1234,16 @@ define(function (require, exports) {
 
     // Event listeners
     EventEmitter.on(Events.GIT_USERNAME_CHANGED, function (userName) {
-        $gitPanel.find(".git-user-name").text(userName);
+        // todo wire to context menu title change
+        //$gitPanel.find(".git-user-name").text(userName);
+        const command = CommandManager.get(Constants.CMD_GIT_CHANGE_USERNAME);
+        if (command) {
+            if(userName){
+                command.setName(StringUtils.format(Strings.CHANGE_USER_NAME_MENU, userName));
+            } else {
+                command.setName(Strings.CHANGE_USER_NAME);
+            }
+        }
     });
 
     EventEmitter.on(Events.GIT_EMAIL_CHANGED, function (email) {

@@ -45,4 +45,5 @@ define(function (require, exports) {
     exports.CMD_GIT_TAG = "git-tag";
     exports.CMD_GIT_DISCARD_ALL_CHANGES = "git-discard-all-changes";
     exports.CMD_GIT_UNDO_LAST_COMMIT = "git-undo-last-commit";
+    exports.CMD_GIT_CHANGE_USERNAME = "git-change-username";
 });

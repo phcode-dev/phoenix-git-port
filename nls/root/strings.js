@@ -43,6 +43,7 @@ define({
     CANCEL:                             "Cancel",
     CHANGE_USER_EMAIL:                  "Change git email",
     CHANGE_USER_NAME:                   "Change git username",
+    CHANGE_USER_NAME_MENU:              "Change git username ({0})",
     CHECK_GIT_SETTINGS:                 "Failed to launch Git executable - is Git installed? fix Git settings and restart app",
     CLEAN_FILE_END:                     "File cleaned",
     CLEAN_FILE_START:                   "Cleaning file",
