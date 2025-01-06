@@ -912,12 +912,17 @@ define(function (require, exports) {
     });
 
     function undoLastLocalCommit() {
-        Git.undoLastLocalCommit()
-            .catch(function (err) {
-                ErrorHandler.showError(err, "Impossible to undo last commit");
-            })
-            .finally(function () {
-                refresh();
+        return Utils.askQuestion(Strings.UNDO_COMMIT, Strings.UNDO_LOCAL_COMMIT_CONFIRM, {booleanResponse: true})
+            .then(function (response) {
+                if (response) {
+                    Git.undoLastLocalCommit()
+                        .catch(function (err) {
+                            ErrorHandler.showError(err, "Impossible to undo last commit");
+                        })
+                        .finally(function () {
+                            refresh();
+                        });
+                }
             });
     }
 
