@@ -203,6 +203,8 @@ define(function (require, exports) {
         gitSubMenu.addMenuItem(Constants.CMD_GIT_PULL);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_PUSH);
         gitSubMenu.addMenuDivider();
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_CHANGE_USERNAME);
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_CHANGE_EMAIL);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_SETTINGS_COMMAND_ID);
 
         // register commands for project tree / working files
