@@ -171,6 +171,7 @@ define(function (require, exports) {
     function handleEvents() {
         $dropdown.on("click", "a.git-branch-new", function (e) {
             e.stopPropagation();
+            closeDropdown();
 
             Git.getAllBranches().catch(function (err) {
                 ErrorHandler.showError(err);
@@ -230,31 +231,19 @@ define(function (require, exports) {
                         Git.createBranch(branchName, originName, track).catch(function (err) {
                             ErrorHandler.showError(err, "Creating new branch failed");
                         }).then(function () {
-                            closeDropdown();
                             EventEmitter.emit(Events.REFRESH_ALL);
                         });
                     }
                 });
             });
 
-        }).on("click", "a.git-branch-link .switch-branch", function (e) {
-
-            e.stopPropagation();
-            var newBranchName = $(this).parent().data("branch");
-
-            Git.getCurrentBranchName().then(function (oldBranchName) {
-                Git.checkout(newBranchName).then(function () {
-                    closeDropdown();
-                    return closeNotExistingFiles(oldBranchName, newBranchName);
-                }).catch(function (err) { ErrorHandler.showError(err, "Switching branches failed."); });
-            }).catch(function (err) { ErrorHandler.showError(err, "Getting current branch name failed."); });
-
         }).on("mouseenter", "a", function () {
             $(this).addClass("selected");
         }).on("mouseleave", "a", function () {
             $(this).removeClass("selected");
-        }).on("click", "a.git-branch-link .trash-icon", function () {
-
+        }).on("click", "a.git-branch-link .trash-icon", function (e) {
+            e.stopPropagation();
+            closeDropdown();
             var branchName = $(this).parent().data("branch");
             Utils.askQuestion(Strings.DELETE_LOCAL_BRANCH,
                               StringUtils.format(Strings.DELETE_LOCAL_BRANCH_NAME, branchName),
@@ -282,9 +271,23 @@ define(function (require, exports) {
                     ErrorHandler.showError(err);
                 });
 
-        }).on("click", ".merge-branch", function () {
+        }).on("click", ".merge-branch", function (e) {
+            e.stopPropagation();
+            closeDropdown();
             var fromBranch = $(this).parent().data("branch");
             doMerge(fromBranch);
+        }).on("click", "a.git-branch-link", function (e) {
+
+            e.stopPropagation();
+            closeDropdown();
+            var newBranchName = $(this).data("branch");
+
+            Git.getCurrentBranchName().then(function (oldBranchName) {
+                Git.checkout(newBranchName).then(function () {
+                    return closeNotExistingFiles(oldBranchName, newBranchName);
+                }).catch(function (err) { ErrorHandler.showError(err, "Switching branches failed."); });
+            }).catch(function (err) { ErrorHandler.showError(err, "Getting current branch name failed."); });
+
         });
     }
 
@@ -359,6 +362,7 @@ define(function (require, exports) {
             }
 
             PopUpManager.addPopUp($dropdown, detachCloseEvents, true, {closeCurrentPopups: true});
+            PopUpManager.handleSelectionEvents($dropdown, {enableSearchFilter: true});
             attachCloseEvents();
             handleEvents();
         });

@@ -60,6 +60,7 @@ define({
     COMMIT_CURRENT_SHORTCUT:            "Commit current file\u2026",
     COMMIT_MESSAGE_PLACEHOLDER:         "Enter commit message here\u2026",
     CREATE_NEW_BRANCH:                  "Create new branch\u2026",
+    CREATE_NEW_BRANCH_TITLE:            "Create new branch",
     CREATE_NEW_GITFTP_SCOPE:            "Create new Git-FTP remote\u2026",
     CREATE_NEW_REMOTE:                  "Create new remote\u2026",
     CURRENT_TRACKING_BRANCH:            "Current tracking branch",
