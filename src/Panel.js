@@ -49,6 +49,7 @@ define(function (require, exports) {
 
     var gitPanel = null,
         $gitPanel = $(null),
+        $mainToolbar,
         gitPanelDisabled = null,
         gitPanelMode = null,
         showingUntracked = true,
@@ -1103,6 +1104,32 @@ define(function (require, exports) {
         return {};
     }
 
+    function _panelResized(_entries) {
+        if(!$mainToolbar || !$mainToolbar.is(":visible")){
+            return;
+        }
+        const mainToolbarWidth = $mainToolbar.width();
+        let overFlowWidth = 565;
+        console.log(mainToolbarWidth);
+        const breakpoints = [
+            { width: overFlowWidth, className: "hide-when-small" },
+            { width: 400, className: "hide-when-x-small" }
+        ];
+
+        if(mainToolbarWidth < overFlowWidth) {
+            $gitPanel.find(".mainToolbar").addClass("hide-overflow");
+        } else {
+            $gitPanel.find(".mainToolbar").removeClass("hide-overflow");
+        }
+        breakpoints.forEach(bp => {
+            if (mainToolbarWidth < bp.width) {
+                $gitPanel.find(`.${bp.className}`).addClass("forced-hidden");
+            } else {
+                $gitPanel.find(`.${bp.className}`).removeClass("forced-hidden");
+            }
+        });
+    }
+
     function init() {
         // Add panel
         var panelHtml = Mustache.render(gitPanelTemplate, {
@@ -1113,7 +1140,9 @@ define(function (require, exports) {
 
         gitPanel = WorkspaceManager.createBottomPanel("main-git.panel", $panelHtml, 100);
         $gitPanel = gitPanel.$panel;
-
+        const resizeObserver = new ResizeObserver(_panelResized);
+        resizeObserver.observe($gitPanel[0]);
+        $mainToolbar = $gitPanel.find(".mainToolbar");
         $gitPanel
             .on("click", ".close", toggle)
             .on("click", ".check-all", function () {
@@ -1194,6 +1223,7 @@ define(function (require, exports) {
         if (Preferences.get("panelEnabled")) {
             toggle(true);
         }
+        _panelResized();
     } // function init() {
 
     function enable() {
