@@ -313,7 +313,6 @@ define(function (require, exports) {
         // $(window).off("keydown", keydownHook);
 
         $dropdown = null;
-        MainViewManager.focusActivePane();
     }
 
     function toggleDropdown(e) {
