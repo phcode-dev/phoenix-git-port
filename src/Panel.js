@@ -1110,7 +1110,6 @@ define(function (require, exports) {
         }
         const mainToolbarWidth = $mainToolbar.width();
         let overFlowWidth = 565;
-        console.log(mainToolbarWidth);
         const breakpoints = [
             { width: overFlowWidth, className: "hide-when-small" },
             { width: 400, className: "hide-when-x-small" }
@@ -1206,6 +1205,7 @@ define(function (require, exports) {
         CommandManager.register(Strings.COMMIT_ALL_SHORTCUT, Constants.CMD_GIT_COMMIT_ALL, commitAllFiles);
         CommandManager.register(Strings.PUSH_SHORTCUT, Constants.CMD_GIT_PUSH, EventEmitter.getEmitter(Events.HANDLE_PUSH));
         CommandManager.register(Strings.PULL_SHORTCUT, Constants.CMD_GIT_PULL, EventEmitter.getEmitter(Events.HANDLE_PULL));
+        CommandManager.register(Strings.FETCH_SHORTCUT, Constants.CMD_GIT_FETCH, EventEmitter.getEmitter(Events.HANDLE_FETCH));
         CommandManager.register(Strings.GOTO_PREVIOUS_GIT_CHANGE, Constants.CMD_GIT_GOTO_PREVIOUS_CHANGE, GutterManager.goToPrev);
         CommandManager.register(Strings.GOTO_NEXT_GIT_CHANGE, Constants.CMD_GIT_GOTO_NEXT_CHANGE, GutterManager.goToNext);
         CommandManager.register(Strings.REFRESH_GIT, Constants.CMD_GIT_REFRESH, EventEmitter.getEmitter(Events.REFRESH_ALL));

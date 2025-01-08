@@ -203,6 +203,7 @@ define(function (require, exports) {
         gitSubMenu.addMenuItem(Constants.CMD_GIT_COMMIT_CURRENT);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_COMMIT_ALL);
         gitSubMenu.addMenuDivider();
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_FETCH);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_PULL);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_PUSH);
         gitSubMenu.addMenuDivider();
@@ -246,6 +247,7 @@ define(function (require, exports) {
         optionsCmenu.addMenuItem(Constants.CMD_GIT_AUTHORS_OF_SELECTION);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_AUTHORS_OF_FILE);
         optionsCmenu.addMenuDivider();
+        optionsCmenu.addMenuItem(Constants.CMD_GIT_FETCH);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_PULL);
         optionsCmenu.addMenuItem(Constants.CMD_GIT_PUSH);
         optionsCmenu.addMenuDivider();
