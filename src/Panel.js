@@ -54,7 +54,7 @@ define(function (require, exports) {
         gitPanelMode = null,
         showingUntracked = true,
         $tableContainer = $(null),
-        lastCommitMessage = null;
+        lastCommitMessage = {};
 
     function lintFile(filename) {
         var fullPath = Preferences.get("currentGitRoot") + filename,
@@ -253,6 +253,10 @@ define(function (require, exports) {
         recalculateMessageLength();
 
         dialog.done(function (buttonId) {
+            const commitMessageElement = getCommitMessageElement();
+            if(commitMessageElement){
+                lastCommitMessage[ProjectManager.getProjectRoot().fullPath] = commitMessageElement.val();
+            }
             if (buttonId === "ok") {
                 if (commitMode === COMMIT_MODE.ALL || commitMode === COMMIT_MODE.CURRENT) {
                     var filePaths = _.map(files, function (next) {
@@ -291,14 +295,14 @@ define(function (require, exports) {
         commitMessage = s.join("\n");
 
         // save lastCommitMessage in case the commit will fail
-        lastCommitMessage = commitMessage;
+        lastCommitMessage[ProjectManager.getProjectRoot().fullPath] = commitMessage;
 
         // now we are going to be paranoid and we will check if some mofo didn't change our diff
         _getStagedDiff().then(function (diff) {
             if (diff === stagedDiff) {
                 return Git.commit(commitMessage, amendCommit, noVerify).then(function () {
                     // clear lastCommitMessage because the commit was successful
-                    lastCommitMessage = null;
+                    lastCommitMessage[ProjectManager.getProjectRoot().fullPath] = null;
                 });
             } else {
                 throw new ExpectedError("The files you were going to commit were modified while commit dialog was displayed. " +
@@ -885,7 +889,7 @@ define(function (require, exports) {
                 return Git.resetIndex();
             })
             .then(function () {
-                return handleGitCommit(lastCommitMessage, false, COMMIT_MODE.CURRENT);
+                return handleGitCommit(lastCommitMessage[ProjectManager.getProjectRoot().fullPath], false, COMMIT_MODE.CURRENT);
             });
     }
 
@@ -896,7 +900,7 @@ define(function (require, exports) {
                 return Git.resetIndex();
             })
             .then(function () {
-                return handleGitCommit(lastCommitMessage, false, COMMIT_MODE.ALL);
+                return handleGitCommit(lastCommitMessage[ProjectManager.getProjectRoot().fullPath], false, COMMIT_MODE.ALL);
             });
     }
 
@@ -1356,7 +1360,7 @@ define(function (require, exports) {
     });
 
     EventEmitter.on(Events.HANDLE_GIT_COMMIT, function () {
-        handleGitCommit(lastCommitMessage, false, COMMIT_MODE.DEFAULT);
+        handleGitCommit(lastCommitMessage[ProjectManager.getProjectRoot().fullPath], false, COMMIT_MODE.DEFAULT);
     });
 
     exports.init = init;
