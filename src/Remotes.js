@@ -201,6 +201,9 @@ define(function (require) {
                 if (pushConfig.tags) {
                     additionalArgs.push("--tags");
                 }
+                if (pushConfig.noVerify) {
+                    additionalArgs.push("--no-verify");
+                }
 
                 // set a new tracking branch if desired
                 if (pushConfig.branch && pushConfig.setBranchAsTracking) {
@@ -221,13 +224,13 @@ define(function (require) {
                     // todo git wire tracker, also note that the tracker events are buffered and shown
                     const tracker = ProgressDialog.newProgressTracker();
                     if (pushConfig.pushToNew) {
-                        op = Git.pushToNewUpstream(pushConfig.remote, pushConfig.branch);
+                        op = Git.pushToNewUpstream(pushConfig.remote, pushConfig.branch, {noVerify: true});
                     } else if (pushConfig.strategy === "DEFAULT") {
                         op = Git.push(pushConfig.remote, pushConfig.branch, additionalArgs);
                     } else if (pushConfig.strategy === "FORCED") {
-                        op = Git.pushForced(pushConfig.remote, pushConfig.branch);
+                        op = Git.pushForced(pushConfig.remote, pushConfig.branch, {noVerify: true});
                     } else if (pushConfig.strategy === "DELETE_BRANCH") {
-                        op = Git.deleteRemoteBranch(pushConfig.remote, pushConfig.branch);
+                        op = Git.deleteRemoteBranch(pushConfig.remote, pushConfig.branch, {noVerify: true});
                     }
                     return ProgressDialog.show(op, tracker)
                         .then(function (result) {

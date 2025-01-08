@@ -150,12 +150,24 @@ define(function (require, exports) {
         });
     }
 
-    function pushForced(remote, branch) {
-        return GitCli.push(remote, branch, ["--force"]);
+    function pushForced(remote, branch, options = {}) {
+        const args = ["--force"];
+
+        if (options.noVerify) {
+            args.push("--no-verify");
+        }
+
+        return GitCli.push(remote, branch, args);
     }
 
-    function deleteRemoteBranch(remote, branch) {
-        return GitCli.push(remote, branch, ["--delete"]);
+    function deleteRemoteBranch(remote, branch, options = {}) {
+        const args = ["--delete"];
+
+        if (options.noVerify) {
+            args.push("--no-verify");
+        }
+
+        return GitCli.push(remote, branch, args);
     }
 
     function undoLastLocalCommit() {
