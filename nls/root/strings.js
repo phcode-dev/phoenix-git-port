@@ -5,6 +5,7 @@ define({
     ADD_ENDLINE_TO_THE_END_OF_FILE:     "Add endline at the end of file",
     ADD_TO_GITIGNORE:                   "Add to .gitignore",
     AMEND_COMMIT:                       "Amend last commit",
+    SKIP_COMMIT_CHECKS:                 "Skip pre-commit checks (--no-verify)",
     AMEND_COMMIT_FORBIDDEN:             "Cannot amend commit when there are no unpushed commits",
     _ANOTHER_BRANCH:                    "another branch",
     AUTHOR:                             "Author",

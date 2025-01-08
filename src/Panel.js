@@ -280,7 +280,8 @@ define(function (require, exports) {
     function _doGitCommit($dialog, getCommitMessageElement, stagedDiff) {
         // this event won't launch when commit-message is empty so its safe to assume that it is not
         var commitMessage = getCommitMessageElement().val(),
-            amendCommit = $dialog.find(".amend-commit").prop("checked");
+            amendCommit = $dialog.find(".amend-commit").prop("checked"),
+            noVerify = $dialog.find(".commit-no-verify").prop("checked");
 
         // if commit message is extended and has a newline, put an empty line after first line to separate subject and body
         var s = commitMessage.split("\n");
@@ -295,7 +296,7 @@ define(function (require, exports) {
         // now we are going to be paranoid and we will check if some mofo didn't change our diff
         _getStagedDiff().then(function (diff) {
             if (diff === stagedDiff) {
-                return Git.commit(commitMessage, amendCommit).then(function () {
+                return Git.commit(commitMessage, amendCommit, noVerify).then(function () {
                     // clear lastCommitMessage because the commit was successful
                     lastCommitMessage = null;
                 });

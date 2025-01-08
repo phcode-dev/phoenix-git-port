@@ -572,12 +572,16 @@ define(function (require, exports) {
         return git(["add", "--all"]);
     }
 
-    function commit(message, amend) {
+    function commit(message, amend, noVerify) {
         var lines = message.split("\n"),
             args = ["commit"];
 
         if (amend) {
             args.push("--amend", "--reset-author");
+        }
+
+        if (noVerify) {
+            args.push("--no-verify");
         }
 
         if (lines.length === 1) {
