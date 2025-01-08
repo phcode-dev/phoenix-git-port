@@ -774,6 +774,13 @@ define(function (require, exports) {
         $tableContainer.find(".git-edited-list").toggle(visibleBefore);
     }
 
+    function _setName(commandID, newName) {
+        const command = CommandManager.get(commandID);
+        if (command) {
+            command.setName(newName);
+        }
+    }
+
     function refreshCommitCounts() {
         // Find Push and Pull buttons
         var $pullBtn = $gitPanel.find(".git-pull");
@@ -781,6 +788,8 @@ define(function (require, exports) {
         var clearCounts = function () {
             $pullBtn.children("span").remove();
             $pushBtn.children("span").remove();
+            _setName(Constants.CMD_GIT_PULL, Strings.PULL_SHORTCUT);
+            _setName(Constants.CMD_GIT_PUSH, Strings.PUSH_SHORTCUT);
         };
 
         // Check if there's a remote, resolve if there's not
@@ -796,9 +805,13 @@ define(function (require, exports) {
             clearCounts();
             if (commits.behind > 0) {
                 $pullBtn.append($("<span/>").text(" (" + commits.behind + ")"));
+                _setName(Constants.CMD_GIT_PULL,
+                    StringUtils.format(Strings.PULL_SHORTCUT_BEHIND, commits.behind));
             }
             if (commits.ahead > 0) {
                 $pushBtn.append($("<span/>").text(" (" + commits.ahead + ")"));
+                _setName(Constants.CMD_GIT_PUSH,
+                    StringUtils.format(Strings.PUSH_SHORTCUT_AHEAD, commits.ahead));
             }
         }).catch(function (err) {
             clearCounts();
@@ -1257,25 +1270,21 @@ define(function (require, exports) {
 
     // Event listeners
     EventEmitter.on(Events.GIT_USERNAME_CHANGED, function (userName) {
-        const command = CommandManager.get(Constants.CMD_GIT_CHANGE_USERNAME);
-        if (command) {
-            if(userName){
-                command.setName(StringUtils.format(Strings.CHANGE_USER_NAME_MENU, userName));
-            } else {
-                command.setName(Strings.CHANGE_USER_NAME);
-            }
+        if(userName){
+            _setName(Constants.CMD_GIT_CHANGE_USERNAME,
+                StringUtils.format(Strings.CHANGE_USER_NAME_MENU, userName));
+        } else {
+            _setName(Constants.CMD_GIT_CHANGE_USERNAME, Strings.CHANGE_USER_NAME);
         }
     });
 
     EventEmitter.on(Events.GIT_EMAIL_CHANGED, function (email) {
         $gitPanel.find(".git-user-email").text(email);
-        const command = CommandManager.get(Constants.CMD_GIT_CHANGE_EMAIL);
-        if (command) {
-            if(email){
-                command.setName(StringUtils.format(Strings.CHANGE_USER_EMAIL_MENU, email));
-            } else {
-                command.setName(Strings.CHANGE_USER_EMAIL);
-            }
+        if(email){
+            _setName(Constants.CMD_GIT_CHANGE_EMAIL,
+                StringUtils.format(Strings.CHANGE_USER_EMAIL_MENU, email));
+        } else {
+            _setName(Constants.CMD_GIT_CHANGE_EMAIL, Strings.CHANGE_USER_EMAIL);
         }
     });
 
