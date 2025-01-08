@@ -76,6 +76,7 @@ define({
     DIALOG_CHECKOUT:                    "When checking out a commit, the repo will go into a DETACHED HEAD state. You can't make any commits unless you create a branch based on this.",
     DIALOG_PULL_TITLE:                  "Pull from remote",
     DIALOG_PUSH_TITLE:                  "Push to remote",
+    SKIP_PRE_PUSH_HOOKS:                "Skip pre-push hooks (--no-verify)",
     DIFF:                               "Diff",
     DIFFTOOL:                           "Diff with difftool",
     DIFF_FAILED_SEE_FILES:              "Git diff failed to provide diff results. This is the list of staged files to be commited:",

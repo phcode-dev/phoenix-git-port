@@ -573,6 +573,55 @@ pre.git-output {
     }
 }
 
+/* Accordion Styles */
+.accordion {
+    border: 1px solid @bc-section-separator;
+    .dark & {
+        border: 1px solid @dark-bc-section-separator;
+    }
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    background-color: inherit; /* Use the existing background color */
+}
+
+.accordion-header i {
+    transition: transform 0.3s ease;
+}
+
+/* Rotate the icon when expanded */
+.accordion-toggle:checked + .accordion-header i {
+    transform: rotate(180deg);
+}
+
+.accordion-content {
+    display: none;
+    padding: 15px;
+    border-top: 1px solid @bc-section-separator;
+    .dark & {
+        border-top: 1px solid @dark-bc-section-separator;
+    }
+}
+
+/* Show the content when the checkbox is checked */
+.accordion-toggle:checked + .accordion-header + .accordion-content {
+    display: block;
+}
+
+/* Hide the checkbox */
+.accordion-toggle {
+    display: none;
+}
+
 /*
 these mixins were copied out from the Brackets,
 because there's no way to import them right now

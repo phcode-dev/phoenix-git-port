@@ -11,8 +11,14 @@ define(function (require, exports) {
         Utils       = require("src/Utils");
 
     // Implementation
-    function pushToNewUpstream(remoteName, remoteBranch) {
-        return GitCli.push(remoteName, remoteBranch, ["--set-upstream"]);
+    function pushToNewUpstream(remoteName, remoteBranch, options = {}) {
+        const args = ["--set-upstream"];
+
+        if (options.noVerify) {
+            args.push("--no-verify");
+        }
+
+        return GitCli.push(remoteName, remoteBranch, args);
     }
 
     function getRemoteUrl(remote) {
