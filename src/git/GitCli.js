@@ -23,9 +23,10 @@ define(function (require, exports) {
         Utils         = require("src/Utils");
 
     // Module variables
-    var _gitPath = null,
+    let _gitPath = null,
         _gitQueue = [],
-        _gitQueueBusy = false;
+        _gitQueueBusy = false,
+        lastGitStatusResults;
 
     var FILE_STATUS = {
         STAGED: "STAGED",
@@ -775,8 +776,31 @@ define(function (require, exports) {
                 return 0;
             });
         }).then(function (results) {
+            lastGitStatusResults = results;
             EventEmitter.emit(Events.GIT_STATUS_RESULTS, results);
             return results;
+        });
+    }
+
+    function hasStatusChanged() {
+        const prevStatus = lastGitStatusResults;
+        return status().then(function (currentStatus) {
+            // the results are already sorted by file name
+            // Compare the current statuses with the previous ones
+            if (!prevStatus || prevStatus.length !== currentStatus.length) {
+                return true;
+            }
+            for (let i = 0; i < prevStatus.length; i++) {
+                if (prevStatus[i].file !== currentStatus[i].file ||
+                    prevStatus[i].status.join(", ") !== currentStatus[i].status.join(", ")) {
+                    return true;
+                }
+            }
+
+            return false;
+        }).catch(function (error) {
+            console.error("Error fetching Git status in hasStatusChanged:", error);
+            return false;
         });
     }
 
@@ -1097,6 +1121,7 @@ define(function (require, exports) {
     exports.checkout                  = checkout;
     exports.createBranch              = createBranch;
     exports.status                    = status;
+    exports.hasStatusChanged          = hasStatusChanged;
     exports.diffFile                  = diffFile;
     exports.diffFileNice              = diffFileNice;
     exports.difftool                  = difftool;

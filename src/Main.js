@@ -34,12 +34,14 @@ define(function (require, exports) {
                                     .addClass("loading")
                                     .appendTo($("#main-toolbar .buttons"));
 
+    let gitEnabled = false;
+
     EventEmitter.on(Events.GIT_DISABLED, function () {
         $icon.removeClass("dirty");
     });
 
-    EventEmitter.on(Events.GIT_STATUS_RESULTS, function (results) {
-        $icon.toggleClass("dirty", results.length !== 0);
+    EventEmitter.on(Events.GIT_STATUS_RESULTS, function (sortedResults) {
+        $icon.toggleClass("dirty", sortedResults.length !== 0);
     });
 
     // This only launches when Git is available
@@ -335,12 +337,45 @@ define(function (require, exports) {
         _enableCommand(Constants.CMD_GIT_UNDO_LAST_COMMIT, enabled);
     }
 
+    let lastExecutionTime = 0;
+    let isCommandExecuting = false;
+    const FOCUS_SWITCH_DEDUPE_TIME = 5000;
+    function refreshOnFocusChange() {
+        // to sync external git changes after switching to app.
+        if (gitEnabled) {
+            const now = Date.now();
+
+            if (isCommandExecuting) {
+                return;
+            }
+
+            if (now - lastExecutionTime > FOCUS_SWITCH_DEDUPE_TIME) {
+                isCommandExecuting = true;
+                lastExecutionTime = Date.now();
+                Git.hasStatusChanged().then((hasChanged) => {
+                    if(!hasChanged){
+                        return;
+                    }
+
+                    CommandManager.execute(Constants.CMD_GIT_REFRESH).catch((err) => {
+                        console.error("error refreshing on focus switch", err);
+                    });
+                }).finally(()=>{
+                    isCommandExecuting = false;
+                });
+            }
+        }
+    }
+    $(window).focus(refreshOnFocusChange);
+
     // Event handlers
     EventEmitter.on(Events.GIT_ENABLED, function () {
         _enableAllCommands(true);
+        gitEnabled = true;
     });
     EventEmitter.on(Events.GIT_DISABLED, function () {
         _enableAllCommands(false);
+        gitEnabled = false;
     });
 
     // API
