@@ -306,12 +306,41 @@ define(function (require, exports) {
         _toggleMenuEntriesState = bool;
     }
 
+    function _enableCommand(commandID, enabled) {
+        const command = CommandManager.get(commandID);
+        if(!command){
+            return;
+        }
+        command.setEnabled(enabled);
+    }
+
+    function _enableAllCommands(enabled) {
+        _enableCommand(Constants.CMD_GIT_REFRESH, enabled);
+
+        _enableCommand(Constants.CMD_GIT_GOTO_NEXT_CHANGE, enabled);
+        _enableCommand(Constants.CMD_GIT_GOTO_PREVIOUS_CHANGE, enabled);
+        _enableCommand(Constants.CMD_GIT_CLOSE_UNMODIFIED, enabled);
+
+        _enableCommand(Constants.CMD_GIT_AUTHORS_OF_SELECTION, enabled);
+        _enableCommand(Constants.CMD_GIT_AUTHORS_OF_FILE, enabled);
+
+        _enableCommand(Constants.CMD_GIT_COMMIT_CURRENT, enabled);
+        _enableCommand(Constants.CMD_GIT_COMMIT_ALL, enabled);
+
+        _enableCommand(Constants.CMD_GIT_FETCH, enabled);
+        _enableCommand(Constants.CMD_GIT_PULL, enabled);
+        _enableCommand(Constants.CMD_GIT_PUSH, enabled);
+
+        _enableCommand(Constants.CMD_GIT_DISCARD_ALL_CHANGES, enabled);
+        _enableCommand(Constants.CMD_GIT_UNDO_LAST_COMMIT, enabled);
+    }
+
     // Event handlers
     EventEmitter.on(Events.GIT_ENABLED, function () {
-        toggleMenuEntries(true);
+        _enableAllCommands(true);
     });
     EventEmitter.on(Events.GIT_DISABLED, function () {
-        toggleMenuEntries(false);
+        _enableAllCommands(false);
     });
 
     // API
