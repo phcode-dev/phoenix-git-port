@@ -1,4 +1,4 @@
-<div>
+<div class="current-tracking-branch">
     <label>
         {{Strings.CURRENT_TRACKING_BRANCH}}:
     </label>
@@ -11,8 +11,8 @@
 </div>
 
 <div>
-    <label>
-        {{Strings.ACTION}}:
+    <label class="text-bold">
+        {{Strings.TARGET_BRANCH}}
     </label>
     <label>
         <input type="radio" name="action" value="{{mode}}_CURRENT" checked> {{modeLabel}} {{Strings._CURRENT_TRACKING_BRANCH}}
@@ -25,14 +25,14 @@
     </label>
 </div>
 
-<div class="only-from-selected">
+<div class="only-from-selected" style="margin-left: 15px;">
     <div class="input-append">
         <select class="branchSelect" name="selectedBranch"></select>
         <button class="btn fetchBranches" type="button"><i class="octicon octicon-sync"></i></button>
     </div>
 </div>
 
-<div class="only-from-selected">
+<div class="only-from-selected" style="margin-left: 15px;">
     <label>
         <input type="checkbox" name="setBranchAsTracking"> {{Strings.SET_THIS_BRANCH_AS_TRACKING}}
     </label>
