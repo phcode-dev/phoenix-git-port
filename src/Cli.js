@@ -11,6 +11,10 @@ define(function (require, exports, module) {
         nextCliId         = 0,
         deferredMap       = {};
 
+    Preferences.getExtensionPref().on("change", "gitTimeout", ()=>{
+        gitTimeout = Preferences.get("gitTimeout") * 1000;
+    });
+
     // Constants
     var MAX_COUNTER_VALUE = 4294967295; // 2^32 - 1
 
