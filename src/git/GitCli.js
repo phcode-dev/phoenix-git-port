@@ -273,7 +273,17 @@ define(function (require, exports) {
                   or the merge can be resolved as a fast-forward.
     */
 
-    function mergeRemote(remote, branch, ffOnly, noCommit) {
+    /**
+     *
+     * @param remote
+     * @param branch
+     * @param {boolean} [ffOnly]
+     * @param {boolean} [noCommit]
+     * @param {object} [options]
+     * @param [options.progressTracker]
+     * @returns {Promise<unknown>}
+     */
+    function mergeRemote(remote, branch, ffOnly, noCommit, options = {}) {
         var args = ["merge"];
 
         if (ffOnly) { args.push("--ff-only"); }
@@ -287,7 +297,7 @@ define(function (require, exports) {
             });
         };
 
-        return git(args)
+        return git(args, {progressTracker: options.progressTracker})
             .then(function (stdout) {
                 // return stdout if available - usually not
                 if (stdout) { return stdout; }
@@ -305,12 +315,12 @@ define(function (require, exports) {
             });
     }
 
-    function rebaseRemote(remote, branch) {
-        return git(["rebase", remote + "/" + branch]);
+    function rebaseRemote(remote, branch, progressTracker) {
+        return git(["rebase", remote + "/" + branch], {progressTracker});
     }
 
-    function resetRemote(remote, branch) {
-        return git(["reset", "--soft", remote + "/" + branch]).then(function (stdout) {
+    function resetRemote(remote, branch, progressTracker) {
+        return git(["reset", "--soft", remote + "/" + branch], {progressTracker}).then(function (stdout) {
             return stdout || "Current branch was resetted to branch " + branch + " from " + remote;
         });
     }

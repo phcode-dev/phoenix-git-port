@@ -286,19 +286,22 @@ define(function (require) {
                 // do the pull itself (we are not using pull command)
                 q = q.then(function () {
                     // fetch the remote first
-                    const tracker = ProgressDialog.newProgressTracker();
-                    return ProgressDialog.show(Git.fetchRemote(pullConfig.remote, tracker), tracker)
+                    const progressTracker = ProgressDialog.newProgressTracker();
+                    return ProgressDialog.show(Git.fetchRemote(pullConfig.remote, progressTracker), progressTracker)
                         .then(function () {
                             if (pullConfig.strategy === "DEFAULT") {
-                                return Git.mergeRemote(pullConfig.remote, pullConfig.branch);
+                                return Git.mergeRemote(pullConfig.remote, pullConfig.branch,
+                                    false, false, {progressTracker});
                             } else if (pullConfig.strategy === "AVOID_MERGING") {
-                                return Git.mergeRemote(pullConfig.remote, pullConfig.branch, true);
+                                return Git.mergeRemote(pullConfig.remote, pullConfig.branch,
+                                    true, false, {progressTracker});
                             } else if (pullConfig.strategy === "MERGE_NOCOMMIT") {
-                                return Git.mergeRemote(pullConfig.remote, pullConfig.branch, false, true);
+                                return Git.mergeRemote(pullConfig.remote, pullConfig.branch,
+                                    false, true, {progressTracker});
                             } else if (pullConfig.strategy === "REBASE") {
-                                return Git.rebaseRemote(pullConfig.remote, pullConfig.branch);
+                                return Git.rebaseRemote(pullConfig.remote, pullConfig.branch, progressTracker);
                             } else if (pullConfig.strategy === "RESET") {
-                                return Git.resetRemote(pullConfig.remote, pullConfig.branch);
+                                return Git.resetRemote(pullConfig.remote, pullConfig.branch, progressTracker);
                             }
                         })
                         .then(function (result) {
