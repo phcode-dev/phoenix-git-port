@@ -344,7 +344,7 @@ define(function (require, exports) {
             to: "refs/heads/rewrite-remotes"
         }
     */
-    function push(remoteName, remoteBranch, additionalArgs) {
+    function push(remoteName, remoteBranch, additionalArgs, progressTracker) {
         if (!remoteName) { throw new TypeError("remoteName argument is missing!"); }
 
         var args = ["push", "--porcelain", "--progress"];
@@ -360,7 +360,7 @@ define(function (require, exports) {
                 } else {
                     args.push(remoteBranch);
                 }
-                return doPushWithArgs(args);
+                return doPushWithArgs(args, progressTracker);
             });
         }
 
@@ -368,11 +368,11 @@ define(function (require, exports) {
             args.push(remoteBranch);
         }
 
-        return doPushWithArgs(args);
+        return doPushWithArgs(args, progressTracker);
     }
 
-    function doPushWithArgs(args) {
-        return git(args)
+    function doPushWithArgs(args, progressTracker) {
+        return git(args, {progressTracker})
             .catch(repositoryNotFoundHandler)
             .then(function (stdout) {
                 // this should clear lines from push hooks

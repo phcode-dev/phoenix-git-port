@@ -18,7 +18,7 @@ define(function (require, exports) {
             args.push("--no-verify");
         }
 
-        return GitCli.push(remoteName, remoteBranch, args);
+        return GitCli.push(remoteName, remoteBranch, args, options.progressTracker);
     }
 
     function getRemoteUrl(remote) {
@@ -157,7 +157,7 @@ define(function (require, exports) {
             args.push("--no-verify");
         }
 
-        return GitCli.push(remote, branch, args);
+        return GitCli.push(remote, branch, args, options.progressTracker);
     }
 
     function deleteRemoteBranch(remote, branch, options = {}) {
@@ -167,7 +167,7 @@ define(function (require, exports) {
             args.push("--no-verify");
         }
 
-        return GitCli.push(remote, branch, args);
+        return GitCli.push(remote, branch, args, options.progressTracker);
     }
 
     function undoLastLocalCommit() {

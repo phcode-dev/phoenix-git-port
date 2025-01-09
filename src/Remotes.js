@@ -219,20 +219,21 @@ define(function (require) {
                 }
                 // do the pull itself (we are not using pull command)
                 q = q.then(function () {
-                    var op;
-
-                    // todo git wire tracker, also note that the tracker events are buffered and shown
-                    const tracker = ProgressDialog.newProgressTracker();
+                    let op;
+                    const progressTracker = ProgressDialog.newProgressTracker();
                     if (pushConfig.pushToNew) {
-                        op = Git.pushToNewUpstream(pushConfig.remote, pushConfig.branch, {noVerify: true});
+                        op = Git.pushToNewUpstream(pushConfig.remote, pushConfig.branch, {
+                            noVerify: true, progressTracker});
                     } else if (pushConfig.strategy === "DEFAULT") {
-                        op = Git.push(pushConfig.remote, pushConfig.branch, additionalArgs);
+                        op = Git.push(pushConfig.remote, pushConfig.branch, additionalArgs, progressTracker);
                     } else if (pushConfig.strategy === "FORCED") {
-                        op = Git.pushForced(pushConfig.remote, pushConfig.branch, {noVerify: true});
+                        op = Git.pushForced(pushConfig.remote, pushConfig.branch, {
+                            noVerify: true, progressTracker});
                     } else if (pushConfig.strategy === "DELETE_BRANCH") {
-                        op = Git.deleteRemoteBranch(pushConfig.remote, pushConfig.branch, {noVerify: true});
+                        op = Git.deleteRemoteBranch(pushConfig.remote, pushConfig.branch, {
+                            noVerify: true, progressTracker});
                     }
-                    return ProgressDialog.show(op, tracker)
+                    return ProgressDialog.show(op, progressTracker)
                         .then(function (result) {
                             return ProgressDialog.waitForClose().then(function () {
                                 showPushResult(result);
