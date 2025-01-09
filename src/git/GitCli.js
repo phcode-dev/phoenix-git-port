@@ -52,6 +52,10 @@ define(function (require, exports) {
         return _gitPath;
     }
 
+    Preferences.getExtensionPref().on("change", "gitPath", ()=>{
+        _gitPath = Preferences.get("gitPath");
+    });
+
     function setGitPath(path) {
         if (path === true) { path = "git"; }
         Preferences.set("gitPath", path);
