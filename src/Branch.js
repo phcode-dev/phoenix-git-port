@@ -86,11 +86,6 @@ define(function (require, exports) {
                 $mergeMessage[0].setSelectionRange(prMsg.indexOf("???"), prMsg.indexOf("???") + 3);
             });
 
-            // load default value for --no-ff
-            var useNoffDefaultValue = Preferences.get("useNoffDefaultValue");
-            if (typeof useNoffDefaultValue !== "boolean") { useNoffDefaultValue = true; }
-            $useNoff.prop("checked", useNoffDefaultValue);
-
             // can't use rebase and no-ff together so have a change handler for this
             $useRebase.on("change", function () {
                 var useRebase = $useRebase.prop("checked");
@@ -104,9 +99,6 @@ define(function (require, exports) {
                 var useRebase = $useRebase.prop("checked");
                 var useNoff = $useNoff.prop("checked");
                 var mergeMsg = $mergeMessage.val();
-
-                // save state for next time branch merge is invoked
-                Preferences.set("useNoffDefaultValue", useNoff);
 
                 if (buttonId === "ok") {
 
