@@ -1,10 +1,6 @@
 // main: brackets-git.less
 
 .CodeMirror {
-    .CodeMirror-gutter-elt {
-        // do not enable pointer events
-        // pointer-events: all;
-    }
     .brackets-git-gutter {
         width: @gutterWidth;
         margin-left: 1px;
@@ -25,21 +21,15 @@
     .brackets-git-gutter-added {
         background-color: @green;
     }
-    .brackets-git-gutter-added.brackets-git-gutter-hover:before {
-        content: "+";
-    }
+
     .brackets-git-gutter-modified {
         background-color: @orange;
     }
-    .brackets-git-gutter-modified.brackets-git-gutter-hover:before {
-        content: "*";
-    }
+
     .brackets-git-gutter-removed {
         background-color: @red;
     }
-    .brackets-git-gutter-removed.brackets-git-gutter-hover:before {
-        content: "-";
-    }
+
     .brackets-git-gutter-deleted-lines {
         color: @bc-text;
         background-color: lighten(@red, 25%);
@@ -58,15 +48,6 @@
             padding: 1px;
             height: 1.2em;
             line-height: 0.5em;
-        }
-    }
-    .CodeMirror-linenumber.brackets-git-gutter-hover {
-        background-color: @bc-panel-bg-alt;
-        color: @bc-text-thin;
-
-        .dark & {
-            background-color: @dark-bc-panel-bg-alt;
-            color: @dark-bc-text-alt !important;
         }
     }
 }

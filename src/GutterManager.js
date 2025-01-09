@@ -333,47 +333,6 @@ define(function (require, exports) {
         }
     }
 
-    /* // disable because of https://github.com/zaggino/brackets-git/issues/1019
-    var _timer;
-    var $line = $(),
-        $gitGutterLines = $();
-
-    $(document)
-        .on("mouseenter", ".CodeMirror-linenumber", function (evt) {
-            var $target = $(evt.target);
-
-            // Remove tooltip
-            $line.attr("title", "");
-
-            // Remove any misc gutter hover classes
-            $(".CodeMirror-linenumber").removeClass("brackets-git-gutter-hover");
-            $(".brackets-git-gutter-hover").removeClass("brackets-git-gutter-hover");
-
-            // Add new gutter hover classes
-            $gitGutterLines = $(".gitline-" + $target.html()).addClass("brackets-git-gutter-hover");
-
-            // Add tooltips if there are any git gutter marks
-            if ($gitGutterLines.hasClass("brackets-git-gutter-modified") ||
-                $gitGutterLines.hasClass("brackets-git-gutter-removed")) {
-
-                $line = $target.attr("title", Strings.GUTTER_CLICK_DETAILS);
-                $target.addClass("brackets-git-gutter-hover");
-            }
-        })
-        .on("mouseleave", ".CodeMirror-linenumber", function (evt) {
-            var $target = $(evt.target);
-
-            if (_timer) {
-                clearTimeout(_timer);
-            }
-
-            _timer = setTimeout(function () {
-                $(".gitline-" + $target.html()).removeClass("brackets-git-gutter-hover");
-                $target.removeClass("brackets-git-gutter-hover");
-            }, 500);
-        });
-    */
-
     // Event handlers
     EventEmitter.on(Events.GIT_ENABLED, function () {
         gitAvailable = true;
