@@ -196,5 +196,15 @@ define({
     VIEW_THIS_FILE:                     "View this file",
     TAG_NAME_PLACEHOLDER:               "Enter tag name here\u2026",
     TAG_NAME:                           "Tag",
-    CMD_CLOSE_UNMODIFIED:               "Close Unmodified Files"
+    CMD_CLOSE_UNMODIFIED:               "Close Unmodified Files",
+    FILE_ADDED:                         "New file",
+    FILE_COPIED:                        "Copied",
+    FILE_DELETED:                       "Deleted",
+    FILE_IGNORED:                       "Ignored",
+    FILE_MODIFIED:                      "Modified",
+    FILE_RENAMED:                       "Renamed",
+    FILE_STAGED:                        "Staged",
+    FILE_UNMERGED:                      "Unmerged",
+    FILE_UNMODIFIED:                    "Unmodified",
+    FILE_UNTRACKED:                     "Untracked"
 });
