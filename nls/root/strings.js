@@ -207,5 +207,11 @@ define({
     FILE_STAGED:                        "Staged",
     FILE_UNMERGED:                      "Unmerged",
     FILE_UNMODIFIED:                    "Unmodified",
-    FILE_UNTRACKED:                     "Untracked"
+    FILE_UNTRACKED:                     "Untracked",
+    GIT_PUSH_SUCCESS_MSG:               "Successfully pushed fast-forward",
+    GIT_PUSH_FORCE_UPDATED_MSG:         "Successful forced update",
+    GIT_PUSH_DELETED_MSG:               "Successfully deleted ref",
+    GIT_PUSH_NEW_REF_MSG:               "Successfully pushed new ref",
+    GIT_PUSH_REJECTED_MSG:              "Ref was rejected or failed to push",
+    GIT_PUSH_UP_TO_DATE_MSG:            "Ref was up to date and did not need pushing",
 });

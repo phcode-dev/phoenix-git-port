@@ -15,6 +15,7 @@ define(function (require, exports) {
 
     // Local modules
     const Cli           = require("src/Cli"),
+        Strings       = require("strings"),
         ErrorHandler  = require("src/ErrorHandler"),
         Events        = require("src/Events"),
         EventEmitter  = require("src/EventEmitter"),
@@ -392,25 +393,25 @@ define(function (require, exports) {
 
                 switch (retObj.flag) {
                     case " ":
-                        retObj.flagDescription = "Successfully pushed fast-forward";
+                        retObj.flagDescription = Strings.GIT_PUSH_SUCCESS_MSG;
                         break;
                     case "+":
-                        retObj.flagDescription = "Successful forced update";
+                        retObj.flagDescription = Strings.GIT_PUSH_FORCE_UPDATED_MSG;
                         break;
                     case "-":
-                        retObj.flagDescription = "Successfully deleted ref";
+                        retObj.flagDescription = Strings.GIT_PUSH_DELETED_MSG;
                         break;
                     case "*":
-                        retObj.flagDescription = "Successfully pushed new ref";
+                        retObj.flagDescription = Strings.GIT_PUSH_NEW_REF_MSG;
                         break;
                     case "!":
-                        retObj.flagDescription = "Ref was rejected or failed to push";
+                        retObj.flagDescription = Strings.GIT_PUSH_REJECTED_MSG;
                         break;
                     case "=":
-                        retObj.flagDescription = "Ref was up to date and did not need pushing";
+                        retObj.flagDescription = Strings.GIT_PUSH_UP_TO_DATE_MSG;
                         break;
                     default:
-                        retObj.flagDescription = "Unknown push flag received: " + retObj.flag;
+                        retObj.flagDescription = "Unknown push flag received: " + retObj.flag; // internal error not translated
                 }
 
                 return retObj;
