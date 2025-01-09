@@ -214,4 +214,5 @@ define({
     GIT_PUSH_NEW_REF_MSG:               "Successfully pushed new ref",
     GIT_PUSH_REJECTED_MSG:              "Ref was rejected or failed to push",
     GIT_PUSH_UP_TO_DATE_MSG:            "Ref was up to date and did not need pushing",
+    GIT_PULL_SUCCESS:                   "Successfully completed git pull",
 });

@@ -302,7 +302,14 @@ define(function (require) {
                         })
                         .then(function (result) {
                             return ProgressDialog.waitForClose().then(function () {
-                                return Utils.showOutput(result, Strings.GIT_PULL_RESPONSE);
+                                // Git writes status messages (including informational messages) to stderr,
+                                // even when the command succeeds. For example, during `git pull --rebase`,
+                                // the "Successfully rebased and updated" message is sent to stderr,
+                                // leaving the result as empty in stdout.
+                                // If we reach this point, the command has succeeded,
+                                // so we display a success message if `result` is "".
+                                return Utils.showOutput(result || Strings.GIT_PULL_SUCCESS,
+                                    Strings.GIT_PULL_RESPONSE);
                             });
                         })
                         .catch(function (err) {

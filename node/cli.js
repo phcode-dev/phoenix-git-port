@@ -63,6 +63,10 @@ function spawn(directory, command, args, opts, callback) {
         stdout[stdout.length] = text;
     });
     child.stderr.addListener("data", function (text) {
+        // Git writes its informational messages (such as Successfully rebased
+        // and updated) to stderr. This behavior is intentional because Git uses
+        // stderr for all output that is not a direct result of the command (e.g.,
+        // status updates, progress, or errors).
         if (opts.watchProgress) {
             gitNodeConnector.triggerPeer(GIT_PROGRESS_EVENT, {
                 cliId: opts.cliId,
