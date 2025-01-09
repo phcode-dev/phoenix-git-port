@@ -558,14 +558,20 @@ define(function (require, exports, module) {
         });
     }
 
-    if (Preferences.get("clearWhitespaceOnSave")) {
-        EventEmitter.on(Events.BRACKETS_DOCUMENT_SAVED, function (doc) {
-            var fullPath       = doc.file.fullPath,
-                currentGitRoot = Preferences.get("currentGitRoot"),
-                path           = fullPath.substring(currentGitRoot.length);
-            stripWhitespaceFromFile(path);
-        });
-    }
+    let clearWhitespace = Preferences.get("clearWhitespaceOnSave");
+    Preferences.getExtensionPref().on("change", "clearWhitespaceOnSave", ()=>{
+        clearWhitespace = Preferences.get("clearWhitespaceOnSave");
+    });
+
+    EventEmitter.on(Events.BRACKETS_DOCUMENT_SAVED, function (doc) {
+        if(!clearWhitespace){
+            return;
+        }
+        var fullPath       = doc.file.fullPath,
+            currentGitRoot = Preferences.get("currentGitRoot"),
+            path           = fullPath.substring(currentGitRoot.length);
+        stripWhitespaceFromFile(path);
+    });
 
     // Public API
     exports.formatDiff                  = formatDiff;

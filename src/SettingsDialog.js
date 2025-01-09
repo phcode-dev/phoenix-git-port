@@ -2,9 +2,7 @@ define(function (require, exports) {
     "use strict";
 
     // Brackets modules
-    var _                       = brackets.getModule("thirdparty/lodash"),
-        CommandManager          = brackets.getModule("command/CommandManager"),
-        Dialogs                 = brackets.getModule("widgets/Dialogs"),
+    const Dialogs                 = brackets.getModule("widgets/Dialogs"),
         Mustache                = brackets.getModule("thirdparty/mustache/mustache"),
         Preferences             = require("./Preferences"),
         Strings                 = require("../strings"),
@@ -95,20 +93,6 @@ define(function (require, exports) {
         assignActions();
     }
 
-    function showRestartDialog() {
-        var questionDialogTemplate = require("text!templates/git-question-dialog.html");
-        var compiledTemplate = Mustache.render(questionDialogTemplate, {
-            title: Strings.RESTART,
-            question: _.escape(Strings.Q_RESTART_BRACKETS),
-            Strings: Strings
-        });
-        Dialogs.showModalDialogUsingTemplate(compiledTemplate).done(function (buttonId) {
-            if (buttonId === "ok") {
-                CommandManager.execute("debug.refreshWindow");
-            }
-        });
-    }
-
     exports.show = function () {
         var compiledTemplate = Mustache.render(settingsDialogTemplate, Strings);
 
@@ -121,8 +105,6 @@ define(function (require, exports) {
             if (buttonId === "ok") {
                 // Save everything to preferences
                 collectValues();
-                // Restart brackets to reload changes.
-                showRestartDialog();
             }
         });
     };

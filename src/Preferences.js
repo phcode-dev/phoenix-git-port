@@ -76,9 +76,12 @@ define(function (require, exports, module) {
         return PreferencesManager.get(key);
     }
 
+    function getExtensionPref() {
+        return prefs;
+    }
+
     function save() {
         PreferencesManager.save();
-        StateManager.save();
     }
 
     module.exports = {
@@ -88,6 +91,7 @@ define(function (require, exports, module) {
         getDefaults: getDefaults,
         getType: getType,
         getGlobal: getGlobal,
+        getExtensionPref: getExtensionPref,
         save: save
     };
 
