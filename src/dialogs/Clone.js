@@ -10,8 +10,7 @@ define(function (require, exports) {
         Strings         = require("strings");
 
     // Templates
-    const template            = require("text!src/dialogs/templates/clone-dialog.html"),
-        credentialsTemplate = require("text!src/dialogs/templates/credentials-template.html");
+    const template            = require("text!src/dialogs/templates/clone-dialog.html");
 
     // Module variables
     let $cloneInput;
@@ -48,9 +47,7 @@ define(function (require, exports) {
                 Strings: Strings
             };
 
-            var compiledTemplate = Mustache.render(template, templateArgs, {
-                    credentials: credentialsTemplate
-                }),
+            var compiledTemplate = Mustache.render(template, templateArgs),
                 dialog = Dialogs.showModalDialogUsingTemplate(compiledTemplate),
                 $dialog = dialog.getElement();
 

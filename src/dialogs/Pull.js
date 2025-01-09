@@ -12,8 +12,7 @@ define(function (require, exports) {
 
     // Templates
     var template            = require("text!src/dialogs/templates/pull-dialog.html"),
-        remotesTemplate     = require("text!src/dialogs/templates/remotes-template.html"),
-        credentialsTemplate = require("text!src/dialogs/templates/credentials-template.html");
+        remotesTemplate     = require("text!src/dialogs/templates/remotes-template.html");
 
     // Implementation
     function _attachEvents($dialog, pullConfig) {
@@ -35,7 +34,6 @@ define(function (require, exports) {
         };
 
         const compiledTemplate = Mustache.render(template, templateArgs, {
-                credentials: credentialsTemplate,
                 remotes: remotesTemplate
             }),
             dialog = Dialogs.showModalDialogUsingTemplate(compiledTemplate),
