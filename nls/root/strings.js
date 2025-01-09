@@ -133,6 +133,7 @@ define({
     PULL_RESET:                         "Use soft reset",
     PULL_SHORTCUT:                      "Pull from remote\u2026",
     PULL_SHORTCUT_BEHIND:               "Pull from remote ({0} behind)\u2026",
+    PULL_BEHAVIOR:                      "Pull Behavior",
     FETCH_SHORTCUT:                     "Fetch from remote",
     PUSH_DEFAULT:                       "Default push",
     PUSH_DELETE_BRANCH:                 "Delete remote branch",
