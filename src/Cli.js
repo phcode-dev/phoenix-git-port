@@ -84,7 +84,7 @@ define(function (require, exports, module) {
             const savedDefer = {resolve, reject, progressTracker};
             deferredMap[cliId] = savedDefer;
 
-            const watchProgress = args.indexOf("--progress") !== -1;
+            const watchProgress = !!progressTracker || (args.indexOf("--progress") !== -1);
             const startTime = (new Date()).getTime();
 
             // it is possible to set a custom working directory in options
