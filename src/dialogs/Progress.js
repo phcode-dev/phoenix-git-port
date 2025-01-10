@@ -16,19 +16,37 @@ define(function (require, exports) {
     var lines,
         $textarea;
 
-    // Implementation
+    const maxLines = 5000;
+    // some git commit may have pre commit/push hooks which
+    // may run tests suits that print large amount of data on the console, so we need to
+    // debounce and truncate the git output we get in progress window.
     function addLine(str) {
+        if (lines.length >= maxLines) {
+            lines.shift(); // Remove the oldest line
+        }
         lines.push(str);
+    }
+    let updateTimeout = null;
+    function updateTextarea() {
+        if(updateTimeout){
+            // an update is scheduled, debounce, we dont need to print now
+            return;
+        }
+        updateTimeout = setTimeout(() => {
+            updateTimeout = null;
+            if(!$textarea){
+                return;
+            }
+            $textarea.val(lines.join("\n"));
+            $textarea.scrollTop($textarea[0].scrollHeight - $textarea.height());
+        }, 100);
     }
 
     function onProgress(str) {
         if (typeof str === "string") {
             addLine(str);
         }
-        if ($textarea) {
-            $textarea.val(lines.join("\n"));
-            $textarea.scrollTop($textarea[0].scrollHeight - $textarea.height());
-        }
+        updateTextarea();
     }
 
     function show(promise, progressTracker, showOpts = {}) {
