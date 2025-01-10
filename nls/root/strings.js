@@ -48,6 +48,7 @@ define({
     CHANGE_USER_NAME:                   "Change git username\u2026",
     CHANGE_USER_NAME_MENU:              "Change git username ({0})\u2026",
     CHECK_GIT_SETTINGS:                 "Failed to launch Git executable - is Git installed? fix Git settings and restart app",
+    REQUIRES_APP_RESTART_SETTING:       "Changing this setting requires an app restart to take effect",
     CLEAN_FILE_END:                     "File cleaned",
     CLEAN_FILE_START:                   "Cleaning file",
     CLEANING_WHITESPACE_PROGRESS:       "Cleaning whitespace from files\u2026",

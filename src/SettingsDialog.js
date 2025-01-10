@@ -28,7 +28,7 @@ define(function (require, exports) {
         });
     }
 
-    function collectValues() {
+    function collectDialogValues() {
         $("*[settingsProperty]", $dialog).each(function () {
             var $this = $(this),
                 type = $this.attr("type"),
@@ -104,7 +104,7 @@ define(function (require, exports) {
         dialog.done(function (buttonId) {
             if (buttonId === "ok") {
                 // Save everything to preferences
-                collectValues();
+                collectDialogValues();
             }
         });
     };
