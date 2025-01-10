@@ -588,7 +588,7 @@ define(function (require, exports) {
         return git(["add", "--all"]);
     }
 
-    function commit(message, amend, noVerify) {
+    function commit(message, amend, noVerify, progressTracker) {
         var lines = message.split("\n"),
             args = ["commit"];
 
@@ -602,7 +602,7 @@ define(function (require, exports) {
 
         if (lines.length === 1) {
             args.push("-m", message);
-            return git(args);
+            return git(args, {progressTracker});
         } else {
             return new Promise(function (resolve, reject) {
                 // FUTURE: maybe use git commit --file=-
@@ -610,7 +610,7 @@ define(function (require, exports) {
                 jsPromise(FileUtils.writeText(fileEntry, message))
                     .then(function () {
                         args.push("-F", ".bracketsGitTemp");
-                        return git(args);
+                        return git(args, {progressTracker});
                     })
                     .then(function (res) {
                         fileEntry.unlink(function () {

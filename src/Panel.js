@@ -300,10 +300,16 @@ define(function (require, exports) {
         // now we are going to be paranoid and we will check if some mofo didn't change our diff
         _getStagedDiff().then(function (diff) {
             if (diff === stagedDiff) {
-                return Git.commit(commitMessage, amendCommit, noVerify).then(function () {
-                    // clear lastCommitMessage because the commit was successful
-                    lastCommitMessage[ProjectManager.getProjectRoot().fullPath] = null;
-                });
+                const tracker = ProgressDialog.newProgressTracker();
+                return ProgressDialog.show(Git.commit(commitMessage, amendCommit, noVerify, tracker),
+                    tracker, {
+                        title: Strings.GIT_COMMIT_IN_PROGRESS,
+                        options: { preDelay: 1, postDelay: 1 }
+                    })
+                    .then(function () {
+                        // clear lastCommitMessage because the commit was successful
+                        lastCommitMessage[ProjectManager.getProjectRoot().fullPath] = null;
+                    })
             } else {
                 throw new ExpectedError("The files you were going to commit were modified while commit dialog was displayed. " +
                                         "Aborting the commit as the result would be different then what was shown in the dialog.");
@@ -458,11 +464,12 @@ define(function (require, exports) {
         });
     }
 
-    function _getStagedDiff(commitMode, files) {
+    function _getStagedDiff(commitMode, files = []) {
         const tracker = ProgressDialog.newProgressTracker();
-        // todo git wire tracker
+        const fileNamesString = files.map(file => file.file).join(", ");
         return ProgressDialog.show(_getStagedDiffForCommitMode(commitMode, files), tracker, {
             title: Strings.GETTING_STAGED_DIFF_PROGRESS,
+            initialMessage: `${fileNamesString}\n${Strings.PLEASE_WAIT}`,
             options: { preDelay: 3, postDelay: 1 }
         })
         .catch(function (err) {

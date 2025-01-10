@@ -34,7 +34,7 @@ define(function (require, exports) {
         }
         updateTimeout = setTimeout(() => {
             updateTimeout = null;
-            if(!$textarea){
+            if(!$textarea || !lines.length){
                 return;
             }
             $textarea.val(lines.join("\n"));
@@ -62,7 +62,7 @@ define(function (require, exports) {
 
         return new Promise(function (resolve, reject) {
 
-            lines = [];
+            lines = showOpts.initialMessage ? [showOpts.initialMessage] : [];
             $textarea = null;
 
             var dialog,
@@ -82,6 +82,7 @@ define(function (require, exports) {
                 dialog = Dialogs.showModalDialogUsingTemplate(compiledTemplate);
 
                 $textarea = dialog.getElement().find("textarea");
+                $textarea.val(Strings.PLEASE_WAIT);
                 onProgress();
             }
 
