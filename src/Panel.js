@@ -29,7 +29,6 @@ define(function (require, exports) {
         GutterManager      = require("./GutterManager"),
         Strings            = require("../strings"),
         Utils              = require("src/Utils"),
-        SettingsDialog     = require("./SettingsDialog"),
         ProgressDialog     = require("src/dialogs/Progress");
 
     const gitPanelTemplate            = require("text!templates/git-panel.html"),
@@ -101,13 +100,19 @@ define(function (require, exports) {
         // Flatten the error structure from various providers
         lintResults.forEach(function (lintResult) {
             lintResult.errors = [];
+            const lintingFilePath = path.join(ProjectManager.getProjectRoot().fullPath, lintResult.filename);
             if (Array.isArray(lintResult.result)) {
                 lintResult.result.forEach(function (resultSet) {
                     if (!resultSet.result || !resultSet.result.errors) { return; }
 
                     var providerName = resultSet.provider.name;
                     resultSet.result.errors.forEach(function (e) {
-                        lintResult.errors.push((e.pos.line + 1) + ": " + e.message + " (" + providerName + ")");
+                        lintResult.errors.push({
+                            errorLineMessage: (e.pos.line + 1) + ": " + e.message + " (" + providerName + ")",
+                            line: e.pos.line,
+                            ch: e.pos.ch,
+                            file: lintingFilePath
+                        });
                     });
                 });
             } else {
@@ -252,6 +257,19 @@ define(function (require, exports) {
             .on("change", recalculateMessageLength);
         recalculateMessageLength();
 
+        $dialog.find(".lint-error-commit-link").click((e)=>{
+            e.preventDefault();
+            const $el = $(e.target);
+            const fileToOpen = $el.data("file"),
+                line = $el.data("line"),
+                ch = $el.data("ch");
+            CommandManager.execute(Commands.FILE_OPEN, {fullPath: fileToOpen})
+                .done(()=>{
+                    EditorManager.getCurrentFullEditor().setCursorPos(line, ch, true);
+                });
+            dialog.close();
+        });
+
         dialog.done(function (buttonId) {
             const commitMessageElement = getCommitMessageElement();
             if(commitMessageElement){
@@ -309,7 +327,7 @@ define(function (require, exports) {
                     .then(function () {
                         // clear lastCommitMessage because the commit was successful
                         lastCommitMessage[ProjectManager.getProjectRoot().fullPath] = null;
-                    })
+                    });
             } else {
                 throw new ExpectedError("The files you were going to commit were modified while commit dialog was displayed. " +
                                         "Aborting the commit as the result would be different then what was shown in the dialog.");

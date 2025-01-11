@@ -17,7 +17,11 @@
                     {{filename}}
                     <ul>
                         {{#errors}}
-                        <li>{{.}}</li>
+                        <li>
+                            <a class="lint-error-commit-link" data-file="{{file}}" data-line="{{line}}" data-ch="{{ch}}" style="cursor: pointer">
+                                {{errorLineMessage}}
+                            </a>
+                        </li>
                         {{/errors}}
                     </ul>
                 </li>
