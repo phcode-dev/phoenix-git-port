@@ -460,6 +460,10 @@
 
 #git-commit-dialog {
     .modal-body {
+        .accordion {
+            margin-top: 0;
+            margin-bottom: 1em;
+        }
         .lint-errors {
 
             background-color: @bc-menu-bg;
@@ -472,7 +476,6 @@
             }
 
             border-radius: 3px;
-            margin-bottom: 1em;
             // no grow, no shrink
             .flex-item(0, 0);
             max-height: 150px;

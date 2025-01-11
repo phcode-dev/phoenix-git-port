@@ -35,6 +35,7 @@ define(function (require, exports) {
         gitPanelResultsTemplate     = require("text!templates/git-panel-results.html"),
         gitAuthorsDialogTemplate    = require("text!templates/authors-dialog.html"),
         gitCommitDialogTemplate     = require("text!templates/git-commit-dialog.html"),
+        gitCommitLintResultTemplate = require("text!templates/git-commit-dialog-lint-results.html"),
         gitDiffDialogTemplate       = require("text!templates/git-diff-dialog.html"),
         questionDialogTemplate      = require("text!templates/git-question-dialog.html");
 
@@ -81,46 +82,71 @@ define(function (require, exports) {
             .end();
     }
 
-    function _showCommitDialog(stagedDiff, lintResults, prefilledMessage, commitMode, files) {
-        lintResults = lintResults || [];
-
-        // Flatten the error structure from various providers
-        lintResults.forEach(function (lintResult) {
-            lintResult.errors = [];
-            const lintingFilePath = path.join(ProjectManager.getProjectRoot().fullPath, lintResult.filename);
-            if (Array.isArray(lintResult.result)) {
-                lintResult.result.forEach(function (resultSet) {
-                    if (!resultSet.result || !resultSet.result.errors) { return; }
-
-                    var providerName = resultSet.provider.name;
-                    resultSet.result.errors.forEach(function (e) {
-                        lintResult.errors.push({
-                            errorLineMessage: (e.pos.line + 1) + ": " + e.message + " (" + providerName + ")",
-                            line: e.pos.line,
-                            ch: e.pos.ch,
-                            file: lintingFilePath
-                        });
-                    });
-                });
-            } else {
-                ErrorHandler.logError("[brackets-git] lintResults contain object in unexpected format: " + JSON.stringify(lintResult));
-            }
-            lintResult.hasErrors = lintResult.errors.length > 0;
-        });
-
-        // Filter out only results with errors to show
-        lintResults = _.filter(lintResults, function (lintResult) {
-            return lintResult.hasErrors;
-        });
-
+    function _showCommitDialog(stagedDiff, prefilledMessage, commitMode, files) {
         // Open the dialog
-        var compiledTemplate = Mustache.render(gitCommitDialogTemplate, {
-                Strings: Strings,
-                hasLintProblems: lintResults.length > 0,
-                lintResults: lintResults
-            }),
+        const compiledTemplate = Mustache.render(gitCommitDialogTemplate, {Strings: Strings}),
             dialog           = Dialogs.showModalDialogUsingTemplate(compiledTemplate),
             $dialog          = dialog.getElement();
+        inspectFiles(files, $dialog).then(function (lintResults) {
+            // Flatten the error structure from various providers
+            lintResults = lintResults || [];
+            lintResults.forEach(function (lintResult) {
+                lintResult.errors = [];
+                const lintingFilePath = path.join(ProjectManager.getProjectRoot().fullPath, lintResult.filename);
+                if (Array.isArray(lintResult.result)) {
+                    lintResult.result.forEach(function (resultSet) {
+                        if (!resultSet.result || !resultSet.result.errors) { return; }
+
+                        var providerName = resultSet.provider.name;
+                        resultSet.result.errors.forEach(function (e) {
+                            lintResult.errors.push({
+                                errorLineMessage: (e.pos.line + 1) + ": " + e.message + " (" + providerName + ")",
+                                line: e.pos.line,
+                                ch: e.pos.ch,
+                                file: lintingFilePath
+                            });
+                        });
+                    });
+                } else {
+                    ErrorHandler.logError("[brackets-git] lintResults contain object in unexpected format: " + JSON.stringify(lintResult));
+                }
+                lintResult.hasErrors = lintResult.errors.length > 0;
+            });
+
+            // Filter out only results with errors to show
+            lintResults = _.filter(lintResults, function (lintResult) {
+                return lintResult.hasErrors;
+            });
+            const compiledResultHTML = Mustache.render(gitCommitLintResultTemplate, {
+                    Strings: Strings,
+                    lintResults: lintResults
+                });
+            if(!$dialog || !$dialog.is(":visible")) {
+                return;
+            }
+            $dialog.find(".accordion-title").html(Strings.CODE_INSPECTION_PROBLEMS);
+            if(!lintResults.length){
+                $dialog.find(".lint-errors").html(Strings.CODE_INSPECTION_PROBLEMS_NONE);
+                $dialog.find(".accordion").addClass("forced-hidden");
+                return;
+            }
+            $dialog.find(".lint-errors").html(compiledResultHTML);
+            if(!$dialog.find(".lint-errors").is(":visible")){
+                $dialog.find(".accordion-toggle").click();
+            }
+            $dialog.find(".lint-error-commit-link").click((e)=>{
+                e.preventDefault();
+                const $el = $(e.target);
+                const fileToOpen = $el.data("file"),
+                    line = $el.data("line"),
+                    ch = $el.data("ch");
+                CommandManager.execute(Commands.FILE_OPEN, {fullPath: fileToOpen})
+                    .done(()=>{
+                        EditorManager.getCurrentFullEditor().setCursorPos(line, ch, true);
+                    });
+                dialog.close();
+            });
+        });
 
         // We need bigger commit dialog
         _makeDialogBig($dialog);
@@ -243,19 +269,6 @@ define(function (require, exports) {
             .on("keyup", recalculateMessageLength)
             .on("change", recalculateMessageLength);
         recalculateMessageLength();
-
-        $dialog.find(".lint-error-commit-link").click((e)=>{
-            e.preventDefault();
-            const $el = $(e.target);
-            const fileToOpen = $el.data("file"),
-                line = $el.data("line"),
-                ch = $el.data("ch");
-            CommandManager.execute(Commands.FILE_OPEN, {fullPath: fileToOpen})
-                .done(()=>{
-                    EditorManager.getCurrentFullEditor().setCursorPos(line, ch, true);
-                });
-            dialog.close();
-        });
 
         dialog.done(function (buttonId) {
             const commitMessageElement = getCommitMessageElement();
@@ -584,38 +597,50 @@ define(function (require, exports) {
         });
     }
 
-    function inspectFiles(gitStatusResults) {
-        var lintResults = [];
+    function inspectFiles(gitStatusResults, $dialog) {
+        const lintResults = [];
+        let totalFiles = gitStatusResults.length,
+            filesDone = 0;
 
-        var codeInspectionPromises = gitStatusResults.map(function (fileObj) {
-            var isDeleted = fileObj.status.indexOf(Git.FILE_STATUS.DELETED) !== -1;
+        const codeInspectionPromises = gitStatusResults.map(function (fileObj) {
+            const isDeleted = fileObj.status.indexOf(Git.FILE_STATUS.DELETED) !== -1;
 
-            // do a code inspection for the file, if it was not deleted
+            // Do a code inspection for the file, if it was not deleted
             if (!isDeleted) {
-                return lintFile(fileObj.file)
-                    .catch(function () {
-                        return [
-                            {
-                                provider: { name: "See console [F12] for details" },
-                                result: {
-                                    errors: [
-                                        {
-                                            pos: { line: 0, ch: 0 },
-                                            message: "CodeInspection failed to execute for this file."
+                return new Promise((resolve) => {
+                    // Delay lintFile execution to give the event loop some breathing room
+                    setTimeout(() => {
+                        lintFile(fileObj.file)
+                            .catch(function () {
+                                return [
+                                    {
+                                        provider: { name: "See console [F12] for details" },
+                                        result: {
+                                            errors: [
+                                                {
+                                                    pos: { line: 0, ch: 0 },
+                                                    message: "CodeInspection failed to execute for this file."
+                                                }
+                                            ]
                                         }
-                                    ]
+                                    }
+                                ];
+                            })
+                            .then(function (result) {
+                                if (result) {
+                                    lintResults.push({
+                                        filename: fileObj.file,
+                                        result: result
+                                    });
                                 }
-                            }
-                        ];
-                    })
-                    .then(function (result) {
-                        if (result) {
-                            lintResults.push({
-                                filename: fileObj.file,
-                                result: result
+                                resolve();
+                            }).finally(()=>{
+                                filesDone++;
+                                const progressString = StringUtils.format(Strings.CODE_INSPECTION_DONE_FILES, filesDone, totalFiles);
+                                $dialog.find(".lint-errors").html(progressString);
                             });
-                        }
-                    });
+                    }, 0); // Delay of 0ms to defer to the next tick of the event loop
+                });
             }
         });
 
@@ -623,6 +648,7 @@ define(function (require, exports) {
             return lintResults;
         });
     }
+
 
     function handleGitCommit(prefilledMessage, isMerge, commitMode) {
         if(Utils.isLoading($gitPanel.find(".git-commit"))){
@@ -685,8 +711,7 @@ define(function (require, exports) {
     }
 
     function handleGitCommitInternal(stripWhitespace, files, commitMode, prefilledMessage) {
-        var queue = Promise.resolve();
-        var lintResults;
+        let queue = Promise.resolve();
 
         if (stripWhitespace) {
             queue = queue.then(function () {
@@ -701,17 +726,10 @@ define(function (require, exports) {
             });
         }
 
-
-        queue = queue.then(function () {
-            return inspectFiles(files).then(function (_lintResults) {
-                lintResults = _lintResults;
-            });
-        });
-
         return queue.then(function () {
             // All files are in the index now, get the diff and show dialog.
             return _getStagedDiff(commitMode, files).then(function (diff) {
-                return _showCommitDialog(diff, lintResults, prefilledMessage, commitMode, files);
+                return _showCommitDialog(diff, prefilledMessage, commitMode, files);
             });
         });
     }
