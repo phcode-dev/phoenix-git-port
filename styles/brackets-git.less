@@ -590,6 +590,7 @@ pre.git-output {
 }
 
 .accordion-header {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -597,6 +598,23 @@ pre.git-output {
     cursor: pointer;
     margin: 0;
     font-size: 16px;
+
+    .accordion-progress-bar {
+        position: absolute;
+        bottom: 0; /* Align with the bottom border */
+        left: 0;
+        width: 100%;
+        height: 2px; /* Thin progress bar */
+        background: transparent; /* Background of the progress bar container */
+        overflow: hidden; /* Ensure inner progress doesn't overflow */
+    }
+
+    .accordion-progress-bar-inner {
+        width: 0; /* Start at 0% */
+        height: 100%;
+        background: #007bff; /* Progress bar color */
+        transition: width 0.3s ease; /* Smooth animation for progress updates */
+    }
 }
 
 .accordion-header i {

@@ -636,8 +636,16 @@ define(function (require, exports) {
                                 resolve();
                             }).finally(()=>{
                                 filesDone++;
+                                const $progressBar = $dialog.find('.accordion-progress-bar-inner');
+                                if ($progressBar.length) {
+                                    $progressBar[0].style.width = `${filesDone/totalFiles*100}%`;
+                                }
+                                if(filesDone === totalFiles){
+                                    $dialog.find('.accordion-progress-bar').addClass("forced-inVisible");
+                                }
                                 const progressString = StringUtils.format(Strings.CODE_INSPECTION_DONE_FILES, filesDone, totalFiles);
                                 $dialog.find(".lint-errors").html(progressString);
+
                             });
                     }, 0); // Delay of 0ms to defer to the next tick of the event loop
                 });
