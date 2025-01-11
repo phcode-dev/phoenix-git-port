@@ -74,24 +74,11 @@ define(function (require, exports) {
         var $wrapper = $dialog.parents(".modal-wrapper").first();
         if ($wrapper.length === 0) { return; }
 
-        // We need bigger commit dialog
-        var minWidth = 500,
-            minHeight = 300,
-            maxWidth = $wrapper.width(),
-            maxHeight = $wrapper.height(),
-            desiredWidth = maxWidth / 1.5,
-            desiredHeight = maxHeight / 2;
-
-        if (desiredWidth < minWidth) { desiredWidth = minWidth; }
-        if (desiredHeight < minHeight) { desiredHeight = minHeight; }
-
         $dialog
-            .width(desiredWidth)
+            .width("80%")
             .children(".modal-body")
-                .css("max-height", desiredHeight)
+                .css("max-height", "72vh")
             .end();
-
-        return { width: desiredWidth, height: desiredHeight };
     }
 
     function _showCommitDialog(stagedDiff, lintResults, prefilledMessage, commitMode, files) {
