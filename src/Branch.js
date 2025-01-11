@@ -107,24 +107,21 @@ define(function (require, exports) {
                         Git.rebaseInit(fromBranch).catch(function (err) {
                             throw ErrorHandler.showError(err, "Rebase failed");
                         }).then(function (stdout) {
-                            Utils.showOutput(stdout, Strings.REBASE_RESULT).finally(function () {
+                            Utils.showOutput(stdout || Strings.GIT_REBASE_SUCCESS, Strings.REBASE_RESULT).finally(function () {
                                 EventEmitter.emit(Events.REFRESH_ALL);
                             });
 
                         });
-
                     } else {
 
                         Git.mergeBranch(fromBranch, mergeMsg, useNoff).catch(function (err) {
                             throw ErrorHandler.showError(err, "Merge failed");
                         }).then(function (stdout) {
-                            Utils.showOutput(stdout, Strings.MERGE_RESULT).finally(function () {
+                            Utils.showOutput(stdout || Strings.GIT_MERGE_SUCCESS, Strings.MERGE_RESULT).finally(function () {
                                 EventEmitter.emit(Events.REFRESH_ALL);
                             });
                         });
-
                     }
-
                 }
             });
         });
@@ -249,7 +246,7 @@ define(function (require, exports) {
                             }).then(function (response) {
                                 if (response === true) {
                                     return Git.forceBranchDelete(branchName).then(function (output) {
-                                        return Utils.showOutput(output);
+                                        return Utils.showOutput(output || Strings.GIT_BRANCH_DELETE_SUCCESS);
                                     }).catch(function (err) {
                                         ErrorHandler.showError(err, "Forced branch deletion failed");
                                     });

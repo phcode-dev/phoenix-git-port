@@ -216,4 +216,7 @@ define({
     GIT_PUSH_REJECTED_MSG:              "Ref was rejected or failed to push",
     GIT_PUSH_UP_TO_DATE_MSG:            "Ref was up to date and did not need pushing",
     GIT_PULL_SUCCESS:                   "Successfully completed git pull",
+    GIT_MERGE_SUCCESS:                  "Successfully completed git merge",
+    GIT_REBASE_SUCCESS:                 "Successfully completed git rebase",
+    GIT_BRANCH_DELETE_SUCCESS:          "Successfully deleted git branch"
 });
