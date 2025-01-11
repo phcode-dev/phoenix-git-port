@@ -4,11 +4,10 @@ define(function (require, exports) {
     const _             = brackets.getModule("thirdparty/lodash"),
         LanguageManager = brackets.getModule("language/LanguageManager"),
         Mustache        = brackets.getModule("thirdparty/mustache/mustache"),
+        WorkspaceManager  = brackets.getModule("view/WorkspaceManager"),
         marked          = brackets.getModule('thirdparty/marked.min').marked;
 
     const ErrorHandler  = require("src/ErrorHandler"),
-        Events        = require("src/Events"),
-        EventEmitter  = require("src/EventEmitter"),
         Git           = require("src/git/Git"),
         Preferences   = require("src/Preferences"),
         Strings       = require("strings"),
@@ -243,12 +242,31 @@ define(function (require, exports) {
         render();
         currentlyViewedCommit = commitInfo.hash;
         isShown   = true;
+        if ($("#first-pane").length) {
+            const firstPaneStyle =
+                $("#first-pane").prop("style") && $("#first-pane").prop("style").cssText ?
+                    $("#first-pane").prop("style").cssText : "";
+            $("#first-pane").prop("style", firstPaneStyle + ";display: none !important;");
+        }
+
+        if ($("#second-pane").length) {
+            const secondPaneStyle =
+                $("#second-pane").prop("style") && $("#second-pane").prop("style").cssText ?
+                    $("#second-pane").prop("style").cssText : "";
+            $("#second-pane").prop("style", secondPaneStyle + ";display: none !important;");
+        }
     }
 
     function onRemove() {
         isShown = false;
         $viewer = null;
         currentlyViewedCommit = null;
+        $("#first-pane").show();
+        $("#second-pane").show();
+        // we need to relayout as when the history overlay is visible over the editor, we
+        // hide the editor with css, and if we resize app while history view is open, the editor wont
+        // be resized. So we relayout on panel close.
+        WorkspaceManager.recomputeLayout();
         // detach events that were added by this viewer to another element than one added to $editorHolder
     }
 
