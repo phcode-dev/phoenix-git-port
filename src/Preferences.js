@@ -14,7 +14,6 @@ define(function (require, exports, module) {
         "normalizeLineEndings": {           "type": "boolean",           "value": false             },
         "useGitGutter": {                   "type": "boolean",           "value": true              },
         "markModifiedInTree": {             "type": "boolean",           "value": true              },
-        "useCodeInspection": {              "type": "boolean",           "value": true              },
         "useVerboseDiff": {                 "type": "boolean",           "value": false             },
         "useDifftool": {                    "type": "boolean",           "value": false             },
         "clearWhitespaceOnSave": {          "type": "boolean",           "value": false             },

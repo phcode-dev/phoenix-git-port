@@ -187,7 +187,6 @@ define({
     URL:                                "URL",
     USERNAME:                           "Username",
     USER_ABORTED:                       "User aborted!",
-    USE_CODE_INSPECTION:                "Use Code inspection",
     USE_GIT_GUTTER:                     "Use Git gutter marks",
     USE_NOFF:                           "Create a merge commit even when the merge resolves as a fast-forward (--no-ff)",
     USE_REBASE:                         "Use REBASE",

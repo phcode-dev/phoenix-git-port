@@ -630,7 +630,6 @@ define(function (require, exports) {
         }
 
         var stripWhitespace = Preferences.get("stripWhitespaceFromCommits");
-        var codeInspectionEnabled = Preferences.get("useCodeInspection");
 
         // Disable button (it will be enabled when selecting files after reset)
         Utils.setLoading($gitPanel.find(".git-commit"));
@@ -653,7 +652,6 @@ define(function (require, exports) {
 
                 return handleGitCommitInternal(stripWhitespace,
                                                files,
-                                               codeInspectionEnabled,
                                                commitMode,
                                                prefilledMessage);
             });
@@ -661,7 +659,6 @@ define(function (require, exports) {
             p = Git.status().then(function (files) {
                 return handleGitCommitInternal(stripWhitespace,
                                                files,
-                                               codeInspectionEnabled,
                                                commitMode,
                                                prefilledMessage);
             });
@@ -674,7 +671,7 @@ define(function (require, exports) {
                     var currentFile = _.filter(files, function (next) {
                         return relativePath === next.file;
                     });
-                    return handleGitCommitInternal(stripWhitespace, currentFile, codeInspectionEnabled, commitMode, prefilledMessage);
+                    return handleGitCommitInternal(stripWhitespace, currentFile, commitMode, prefilledMessage);
                 }
             });
         }
@@ -687,7 +684,7 @@ define(function (require, exports) {
 
     }
 
-    function handleGitCommitInternal(stripWhitespace, files, codeInspectionEnabled, commitMode, prefilledMessage) {
+    function handleGitCommitInternal(stripWhitespace, files, commitMode, prefilledMessage) {
         var queue = Promise.resolve();
         var lintResults;
 
@@ -704,13 +701,12 @@ define(function (require, exports) {
             });
         }
 
-        if (codeInspectionEnabled) {
-            queue = queue.then(function () {
-                return inspectFiles(files).then(function (_lintResults) {
-                    lintResults = _lintResults;
-                });
+
+        queue = queue.then(function () {
+            return inspectFiles(files).then(function (_lintResults) {
+                lintResults = _lintResults;
             });
-        }
+        });
 
         return queue.then(function () {
             // All files are in the index now, get the diff and show dialog.
