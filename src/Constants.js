@@ -29,6 +29,7 @@ define(function (require, exports) {
 
     // commands
     exports.CMD_GIT_INIT = "git-init";
+    exports.CMD_GIT_CLONE = "git-clone";
     exports.CMD_GIT_SETTINGS_COMMAND_ID = "git-settings";
     exports.CMD_GIT_CLOSE_UNMODIFIED = "git-close-unmodified-files";
     exports.CMD_GIT_CHECKOUT = "git-checkout";

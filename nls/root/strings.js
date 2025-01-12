@@ -17,7 +17,7 @@ define({
     BUTTON_CANCEL:                      "Cancel",
     CHECKOUT_COMMIT:                    "Checkout",
     CHECKOUT_COMMIT_DETAIL:             "<b>Commit Message:</b> {0} <br><b>Commit hash:</b> {1}",
-    BUTTON_CLONE:                       "Clone",
+    GIT_CLONE:                          "Clone",
     BUTTON_CLOSE:                       "Close",
     BUTTON_COMMIT:                      "Commit",
     BUTTON_DEFAULTS:                    "Restore defaults",

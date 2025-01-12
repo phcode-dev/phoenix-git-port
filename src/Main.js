@@ -194,6 +194,9 @@ define(function (require, exports) {
         gitSubMenu.addMenuItem(Constants.CMD_GIT_INIT, undefined, undefined, undefined, {
             hideWhenCommandDisabled: true
         });
+        gitSubMenu.addMenuItem(Constants.CMD_GIT_CLONE, undefined, undefined, undefined, {
+            hideWhenCommandDisabled: true
+        });
         gitSubMenu.addMenuItem(Constants.CMD_GIT_TOGGLE_PANEL);
         gitSubMenu.addMenuItem(Constants.CMD_GIT_REFRESH);
         gitSubMenu.addMenuDivider();
