@@ -1272,6 +1272,7 @@ define(function (require, exports) {
         CommandManager.register(Strings.VIEW_AUTHORS_SELECTION, Constants.CMD_GIT_AUTHORS_OF_SELECTION, handleAuthorsSelection);
         CommandManager.register(Strings.VIEW_AUTHORS_FILE, Constants.CMD_GIT_AUTHORS_OF_FILE, handleAuthorsFile);
         CommandManager.register(Strings.HIDE_UNTRACKED, Constants.CMD_GIT_TOGGLE_UNTRACKED, handleToggleUntracked);
+        CommandManager.register(Strings.GIT_INIT, Constants.CMD_GIT_INIT, EventEmitter.getEmitter(Events.HANDLE_GIT_INIT));
 
         // Show gitPanel when appropriate
         if (Preferences.get("panelEnabled")) {
@@ -1287,6 +1288,7 @@ define(function (require, exports) {
         //
         $gitPanel.find(".git-available").show();
         $gitPanel.find(".git-not-available").hide();
+        CommandManager.get(Constants.CMD_GIT_INIT).setEnabled(false);
         //
         Main.$icon.removeClass("warning");
         gitPanelDisabled = false;
@@ -1301,6 +1303,7 @@ define(function (require, exports) {
         if (gitPanelMode === "not-repo") {
             $gitPanel.find(".git-available").hide();
             $gitPanel.find(".git-not-available").show();
+            CommandManager.get(Constants.CMD_GIT_INIT).setEnabled(true);
         } else {
             Main.$icon.addClass("warning");
             toggle(false);

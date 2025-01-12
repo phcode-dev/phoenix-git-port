@@ -22,7 +22,7 @@ define({
     BUTTON_COMMIT:                      "Commit",
     BUTTON_DEFAULTS:                    "Restore defaults",
     BUTTON_FIND_CONFLICTS:              "Find conflicts\u2026",
-    BUTTON_INIT:                        "Init",
+    GIT_INIT:                           "Init",
     BUTTON_MERGE_ABORT:                 "Abort merge",
     BUTTON_OK:                          "OK",
     BUTTON_REBASE_ABORT:                "Abort",
