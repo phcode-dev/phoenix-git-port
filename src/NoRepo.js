@@ -44,7 +44,9 @@ define(function (require) {
     function handleGitInit() {
         Utils.isProjectRootWritable().then(function (writable) {
             if (!writable) {
-                throw new ExpectedError("Folder " + Utils.getProjectRoot() + " is not writable!");
+                const initPath = Phoenix.app.getDisplayPath(Utils.getProjectRoot());
+                const errorStr = StringUtils.format(Strings.FOLDER_NOT_WRITABLE, initPath)
+                throw new ExpectedError(errorStr);
             }
             return Git.init().catch(function (err) {
                 return new Promise((resolve, reject)=>{
@@ -67,7 +69,7 @@ define(function (require) {
         }).then(function () {
             return stageGitIgnore("Initial staging");
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Initializing new repository failed");
+            ErrorHandler.showError(err, Strings.INIT_NEW_REPO_FAILED, true);
         }).then(function () {
             EventEmitter.emit(Events.REFRESH_ALL);
         });
@@ -104,7 +106,7 @@ define(function (require) {
                         const tracker = ProgressDialog.newProgressTracker();
                         return ProgressDialog.show(Git.clone(remoteUrl, ".", tracker), tracker);
                     }).catch(function (err) {
-                        ErrorHandler.showError(err, "Cloning remote repository failed!");
+                        ErrorHandler.showError(err, Strings.GIT_CLONE_REMOTE_FAILED);
                     });
 
                     // restore original url if desired
@@ -119,11 +121,11 @@ define(function (require) {
                     });
                 }).catch(function (err) {
                     // when dialog is cancelled, there's no error
-                    if (err) { ErrorHandler.showError(err, "Cloning remote repository failed!"); }
+                    if (err) { ErrorHandler.showError(err, Strings.GIT_CLONE_REMOTE_FAILED); }
                 });
 
             } else {
-                const clonePath = Phoenix.app.getDisplayPath(ProjectManager.getProjectRoot().fullPath);
+                const clonePath = Phoenix.app.getDisplayPath(Utils.getProjectRoot());
                 const err = new ExpectedError(
                     StringUtils.format(Strings.GIT_CLONE_ERROR_EXPLAIN, clonePath));
                 ErrorHandler.showError(err, Strings.GIT_CLONE_REMOTE_FAILED, true);
