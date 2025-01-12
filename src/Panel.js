@@ -41,7 +41,7 @@ define(function (require, exports) {
 
     var showFileWhiteList = /^\.gitignore$/;
 
-    var COMMIT_MODE = {
+    const COMMIT_MODE = {
         CURRENT: "CURRENT",
         ALL: "ALL",
         DEFAULT: "DEFAULT"
@@ -896,12 +896,14 @@ define(function (require, exports) {
         }
         Preferences.set("panelEnabled", bool);
         Main.$icon.toggleClass("on", bool);
+        Main.$icon.toggleClass("selected-button", bool);
         gitPanel.setVisible(bool);
 
         // Mark menu item as enabled/disabled.
         CommandManager.get(Constants.CMD_GIT_TOGGLE_PANEL).setChecked(bool);
 
         if (bool) {
+            $("#git-toolbar-icon").removeClass("forced-hidden");
             refresh();
         }
     }

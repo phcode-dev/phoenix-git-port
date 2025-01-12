@@ -27,12 +27,12 @@ define(function (require, exports) {
         Git               = require("src/git/Git"),
         gitTagDialogTemplate    = require("text!templates/git-tag-dialog.html");
 
-    var CMD_ADD_TO_IGNORE      = "git.addToIgnore",
+    const CMD_ADD_TO_IGNORE      = "git.addToIgnore",
         CMD_REMOVE_FROM_IGNORE = "git.removeFromIgnore",
         $icon                  = $("<a id='git-toolbar-icon' href='#'></a>")
                                     .attr("title", Strings.LOADING)
                                     .addClass("loading")
-                                    .appendTo($("#main-toolbar .buttons"));
+                                    .prependTo($(".bottom-buttons"));
 
     let gitEnabled = false;
 
@@ -335,6 +335,11 @@ define(function (require, exports) {
 
         _enableCommand(Constants.CMD_GIT_DISCARD_ALL_CHANGES, enabled);
         _enableCommand(Constants.CMD_GIT_UNDO_LAST_COMMIT, enabled);
+        if(enabled){
+            $icon.removeClass("forced-hidden");
+        } else if(!$("#git-panel").is(":visible")){
+            $icon.addClass("forced-hidden");
+        }
     }
 
     let lastExecutionTime = 0;
