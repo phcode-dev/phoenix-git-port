@@ -520,6 +520,13 @@ define(function (require, exports) {
         refresh();
     });
 
+    EventEmitter.on(Events.GIT_ENABLED, function () {
+        $("#git-branch-dropdown-toggle").removeClass("forced-inVisible");
+    });
+    EventEmitter.on(Events.GIT_DISABLED, function () {
+        $("#git-branch-dropdown-toggle").addClass("forced-inVisible");
+    });
+
     exports.init    = init;
     exports.refresh = refresh;
 
