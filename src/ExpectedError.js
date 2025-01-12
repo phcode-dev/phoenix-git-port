@@ -11,7 +11,7 @@ define(function (require, exports, module) {
     ExpectedError.prototype = new Error();
     ExpectedError.prototype.name = "ExpectedError";
     ExpectedError.prototype.toString = function () {
-        return this.name + ": " + this.message;
+        return this.message;
     };
 
     module.exports = ExpectedError;

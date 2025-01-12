@@ -219,5 +219,7 @@ define({
     GIT_PULL_SUCCESS:                   "Successfully completed git pull",
     GIT_MERGE_SUCCESS:                  "Successfully completed git merge",
     GIT_REBASE_SUCCESS:                 "Successfully completed git rebase",
-    GIT_BRANCH_DELETE_SUCCESS:          "Successfully deleted git branch"
+    GIT_BRANCH_DELETE_SUCCESS:          "Successfully deleted git branch",
+    GIT_CLONE_REMOTE_FAILED:            "Cloning remote repository failed!",
+    GIT_CLONE_ERROR_EXPLAIN:            "The selected directory `{0}`\n is not empty. Git clone requires a clean, empty directory.\nIf it appears empty, check for hidden files."
 });

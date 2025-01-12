@@ -41,7 +41,7 @@ define(function (require, exports) {
         return err;
     };
 
-    exports.showError = function (err, title) {
+    exports.showError = function (err, title, dontStripError) {
         if (err.__shown) { return err; }
 
         exports.logError(err);
@@ -52,7 +52,7 @@ define(function (require, exports) {
         if (typeof err === "string") {
             errorBody = err;
         } else if (err instanceof Error) {
-            errorBody = errorToString(err);
+            errorBody = dontStripError ? err.toString() : errorToString(err);
             errorStack = err.stack || "";
         }
 

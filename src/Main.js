@@ -10,7 +10,6 @@ define(function (require, exports) {
         ProjectManager    = brackets.getModule("project/ProjectManager");
 
     const Constants       = require("src/Constants"),
-        ExpectedError     = require("src/ExpectedError"),
         Events            = require("src/Events"),
         EventEmitter      = require("src/EventEmitter"),
         Strings           = require("strings"),

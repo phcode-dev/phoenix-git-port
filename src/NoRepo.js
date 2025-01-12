@@ -3,12 +3,14 @@ define(function (require) {
     // Brackets modules
     const FileSystem      = brackets.getModule("filesystem/FileSystem"),
         FileUtils       = brackets.getModule("file/FileUtils"),
-        ProjectManager  = brackets.getModule("project/ProjectManager");
+        ProjectManager  = brackets.getModule("project/ProjectManager"),
+        StringUtils           = brackets.getModule("utils/StringUtils");
 
     // Local modules
     const ErrorHandler    = require("src/ErrorHandler"),
         Events          = require("src/Events"),
         EventEmitter    = require("src/EventEmitter"),
+        Strings         = require("strings"),
         ExpectedError   = require("src/ExpectedError"),
         ProgressDialog  = require("src/dialogs/Progress"),
         CloneDialog     = require("src/dialogs/Clone"),
@@ -121,8 +123,10 @@ define(function (require) {
                 });
 
             } else {
-                var err = new ExpectedError("Project root is not empty, be sure you have deleted hidden files");
-                ErrorHandler.showError(err, "Cloning remote repository failed!");
+                const clonePath = Phoenix.app.getDisplayPath(ProjectManager.getProjectRoot().fullPath);
+                const err = new ExpectedError(
+                    StringUtils.format(Strings.GIT_CLONE_ERROR_EXPLAIN, clonePath));
+                ErrorHandler.showError(err, Strings.GIT_CLONE_REMOTE_FAILED, true);
             }
         }).catch(function (err) {
             ErrorHandler.showError(err);
