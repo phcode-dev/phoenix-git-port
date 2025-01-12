@@ -2,6 +2,7 @@
 
 define({
     ACTION:                             "Action",
+    STATUSBAR_SHOW_GIT:                 "Git Panel",
     ADD_ENDLINE_TO_THE_END_OF_FILE:     "Add endline at the end of file",
     ADD_TO_GITIGNORE:                   "Add to .gitignore",
     AMEND_COMMIT:                       "Amend last commit",
@@ -47,7 +48,6 @@ define({
     CHANGE_USER_NAME_TITLE:             "Change git username",
     CHANGE_USER_NAME:                   "Change git username\u2026",
     CHANGE_USER_NAME_MENU:              "Change git username ({0})\u2026",
-    CHECK_GIT_SETTINGS:                 "Failed to launch Git executable - is Git installed? fix Git settings and restart app",
     REQUIRES_APP_RESTART_SETTING:       "Changing this setting requires an app restart to take effect",
     CLEAN_FILE_END:                     "File cleaned",
     CLEAN_FILE_START:                   "Cleaning file",
@@ -120,7 +120,6 @@ define({
     MERGE_BRANCH:                       "Merge branch",
     MERGE_MESSAGE:                      "Merge message",
     MERGE_RESULT:                       "Merge result",
-    MORE_INFO:                          "More information\u2026",
     NORMALIZE_LINE_ENDINGS:             "Normalize line endings (to \\n)",
     NOTHING_TO_COMMIT:                  "Nothing to commit, working directory clean.",
     OK:                                 "OK",

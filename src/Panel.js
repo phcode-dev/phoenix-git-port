@@ -1288,7 +1288,7 @@ define(function (require, exports) {
         $gitPanel.find(".git-available").show();
         $gitPanel.find(".git-not-available").hide();
         //
-        Main.$icon.removeClass("warning").removeAttr("title");
+        Main.$icon.removeClass("warning");
         gitPanelDisabled = false;
         // after all is enabled
         refresh();
@@ -1302,7 +1302,7 @@ define(function (require, exports) {
             $gitPanel.find(".git-available").hide();
             $gitPanel.find(".git-not-available").show();
         } else {
-            Main.$icon.addClass("warning").attr("title", cause);
+            Main.$icon.addClass("warning");
             toggle(false);
             gitPanelDisabled = true;
         }

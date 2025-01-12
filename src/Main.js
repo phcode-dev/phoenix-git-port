@@ -29,8 +29,7 @@ define(function (require, exports) {
 
     const CMD_ADD_TO_IGNORE      = "git.addToIgnore",
         CMD_REMOVE_FROM_IGNORE = "git.removeFromIgnore",
-        $icon                  = $("<a id='git-toolbar-icon' href='#'></a>")
-                                    .attr("title", Strings.LOADING)
+        $icon                  = $(`<a id='git-toolbar-icon' title="${Strings.STATUSBAR_SHOW_GIT}" href='#'></a>`)
                                     .addClass("loading")
                                     .prependTo($(".bottom-buttons"));
 
@@ -262,7 +261,7 @@ define(function (require, exports) {
     }
 
     function init() {
-        $icon.removeClass("loading").removeAttr("title");
+        $icon.removeClass("loading");
         CommandManager.register(Strings.GIT_SETTINGS, Constants.CMD_GIT_SETTINGS_COMMAND_ID, SettingsDialog.show);
         // Try to get Git version, if succeeds then Git works
         Setup.findGit().then(function (_version) {
@@ -271,13 +270,7 @@ define(function (require, exports) {
             initGitMenu();
 
         }).catch(function (err) {
-            $icon.addClass("error").attr("title", Strings.CHECK_GIT_SETTINGS + " - " + err.toString());
-
-            var expected = new ExpectedError(err);
-            // todo git: docs url update here
-            expected.detailsUrl = "https://docs.phcode.dev/docs/";
-            ErrorHandler.showError(expected, Strings.CHECK_GIT_SETTINGS);
-
+            console.error("Failed to launch Git executable. Is git installed?", err);
         });
     }
 

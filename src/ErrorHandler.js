@@ -46,14 +46,8 @@ define(function (require, exports) {
 
         exports.logError(err);
 
-        var dialog,
-            errorBody,
+        let errorBody,
             errorStack;
-
-        var showDetailsButton = false;
-        if (err.detailsUrl) {
-            showDetailsButton = true;
-        }
 
         if (typeof err === "string") {
             errorBody = err;
@@ -73,18 +67,10 @@ define(function (require, exports) {
         var compiledTemplate = Mustache.render(errorDialogTemplate, {
             title: title,
             body: window.debugMode ? `${errorBody}\n${errorStack}` : errorBody,
-            showDetailsButton: showDetailsButton,
             Strings: Strings
         });
 
-        dialog = Dialogs.showModalDialogUsingTemplate(compiledTemplate);
-
-        dialog.done(function (buttonId) {
-            if (buttonId === "details") {
-                NativeApp.openURLInDefaultBrowser(err.detailsUrl);
-            }
-        });
-
+        Dialogs.showModalDialogUsingTemplate(compiledTemplate);
         if (typeof err === "string") { err = new Error(err); }
         err.__shown = true;
         return err;
