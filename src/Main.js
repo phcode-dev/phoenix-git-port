@@ -360,7 +360,7 @@ define(function (require, exports) {
                         return;
                     }
 
-                    CommandManager.execute(Constants.CMD_GIT_REFRESH).catch((err) => {
+                    CommandManager.execute(Constants.CMD_GIT_REFRESH).fail((err) => {
                         console.error("error refreshing on focus switch", err);
                     });
                 }).finally(()=>{

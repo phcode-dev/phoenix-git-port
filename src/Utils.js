@@ -7,7 +7,6 @@ define(function (require, exports, module) {
         Commands        = brackets.getModule("command/Commands"),
         Dialogs         = brackets.getModule("widgets/Dialogs"),
         DocumentManager = brackets.getModule("document/DocumentManager"),
-        ExtensionUtils  = brackets.getModule("utils/ExtensionUtils"),
         FileSystem      = brackets.getModule("filesystem/FileSystem"),
         FileUtils       = brackets.getModule("file/FileUtils"),
         LanguageManager = brackets.getModule("language/LanguageManager"),

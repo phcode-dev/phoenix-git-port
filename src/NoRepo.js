@@ -4,6 +4,7 @@ define(function (require) {
     const FileSystem      = brackets.getModule("filesystem/FileSystem"),
         FileUtils       = brackets.getModule("file/FileUtils"),
         ProjectManager  = brackets.getModule("project/ProjectManager"),
+        CommandManager  = brackets.getModule("command/CommandManager"),
         StringUtils           = brackets.getModule("utils/StringUtils");
 
     // Local modules
@@ -16,6 +17,7 @@ define(function (require) {
         CloneDialog     = require("src/dialogs/Clone"),
         Git             = require("src/git/Git"),
         Preferences     = require("src/Preferences"),
+        Constants       = require("src/Constants"),
         Utils           = require("src/Utils");
 
     // Templates
@@ -87,55 +89,64 @@ define(function (require) {
         });
     }
 
-    function handleGitClone() {
+    function handleGitClone(gitCloneURL, destPath) {
         var $gitPanel = $("#git-panel");
         var $cloneButton = $gitPanel.find(".git-clone");
         $cloneButton.prop("disabled", true);
         isProjectRootEmpty().then(function (isEmpty) {
-            if (isEmpty) {
-                CloneDialog.show().then(function (cloneConfig) {
-                    var q = Promise.resolve();
-                    // put username and password into remote url
-                    var remoteUrl = cloneConfig.remoteUrl;
-                    if (cloneConfig.remoteUrlNew) {
-                        remoteUrl = cloneConfig.remoteUrlNew;
-                    }
-
-                    // do the clone
-                    q = q.then(function () {
-                        const tracker = ProgressDialog.newProgressTracker();
-                        return ProgressDialog.show(Git.clone(remoteUrl, ".", tracker), tracker);
-                    }).catch(function (err) {
-                        ErrorHandler.showError(err, Strings.GIT_CLONE_REMOTE_FAILED);
-                    });
-
-                    // restore original url if desired
-                    if (cloneConfig.remoteUrlRestore) {
-                        q = q.then(function () {
-                            return Git.setRemoteUrl(cloneConfig.remote, cloneConfig.remoteUrlRestore);
-                        });
-                    }
-
-                    return q.finally(function () {
-                        EventEmitter.emit(Events.REFRESH_ALL);
-                    });
-                }).catch(function (err) {
-                    // when dialog is cancelled, there's no error
-                    if (err) { ErrorHandler.showError(err, Strings.GIT_CLONE_REMOTE_FAILED); }
-                });
-
-            } else {
+            if (!isEmpty) {
                 const clonePath = Phoenix.app.getDisplayPath(Utils.getProjectRoot());
                 const err = new ExpectedError(
                     StringUtils.format(Strings.GIT_CLONE_ERROR_EXPLAIN, clonePath));
                 ErrorHandler.showError(err, Strings.GIT_CLONE_REMOTE_FAILED, true);
+                return;
             }
+            function _clone(cloneConfig) {
+                var q = Promise.resolve();
+                // put username and password into remote url
+                var remoteUrl = cloneConfig.remoteUrl;
+                if (cloneConfig.remoteUrlNew) {
+                    remoteUrl = cloneConfig.remoteUrlNew;
+                }
+
+                // do the clone
+                q = q.then(function () {
+                    const tracker = ProgressDialog.newProgressTracker();
+                    destPath = destPath ? fs.getTauriPlatformPath(destPath) : ".";
+                    return ProgressDialog.show(Git.clone(remoteUrl, destPath, tracker), tracker);
+                }).catch(function (err) {
+                    ErrorHandler.showError(err, Strings.GIT_CLONE_REMOTE_FAILED);
+                });
+
+                // restore original url if desired
+                if (cloneConfig.remoteUrlRestore) {
+                    q = q.then(function () {
+                        return Git.setRemoteUrl(cloneConfig.remote, cloneConfig.remoteUrlRestore);
+                    });
+                }
+
+                return q.finally(function () {
+                    EventEmitter.emit(Events.REFRESH_ALL);
+                });
+            }
+            if(gitCloneURL){
+                return _clone({
+                    remote: "origin",
+                    remoteUrlNew: gitCloneURL
+                })
+            }
+            CloneDialog.show().then(_clone).catch(function (err) {
+                // when dialog is cancelled, there's no error
+                if (err) { ErrorHandler.showError(err, Strings.GIT_CLONE_REMOTE_FAILED); }
+            });
         }).catch(function (err) {
             ErrorHandler.showError(err);
         }).finally(function () {
             $cloneButton.prop("disabled", false);
         });
     }
+
+    CommandManager.register(Strings.GIT_CLONE, Constants.CMD_GIT_CLONE_WITH_URL, handleGitClone);
 
     // Event subscriptions
     EventEmitter.on(Events.HANDLE_GIT_INIT, function () {
