@@ -1,6 +1,7 @@
 /*jshint maxlen:false */
 
 define({
+    ENABLE_GIT:                         "Enable Git",
     ACTION:                             "Action",
     STATUSBAR_SHOW_GIT:                 "Git Panel",
     ADD_ENDLINE_TO_THE_END_OF_FILE:     "Add endline at the end of file",

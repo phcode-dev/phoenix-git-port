@@ -19,6 +19,7 @@ define(function (require, exports, module) {
         "clearWhitespaceOnSave": {          "type": "boolean",           "value": false             },
         "gerritPushref": {                  "type": "boolean",           "value": false             },
         // system
+        "enableGit": {                      "type": "boolean",           "value": true              },
         "gitTimeout": {                     "type": "number",            "value": 30                },
         "gitPath": {                        "type": "string",            "value": ""                }
     };

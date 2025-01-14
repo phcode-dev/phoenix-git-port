@@ -95,15 +95,25 @@ define(function (require, exports) {
     }
 
     exports.show = function () {
+        const enableGitPreference = Preferences.get("enableGit");
         const compiledTemplate = Mustache.render(settingsDialogTemplate, {
             Strings,
-            gitNotFound: !Setup.isExtensionActivated()
+            gitDisabled: !enableGitPreference,
+            gitNotFound: enableGitPreference ? !Setup.isExtensionActivated() : false
         });
 
         dialog = Dialogs.showModalDialogUsingTemplate(compiledTemplate);
         $dialog = dialog.getElement();
 
         init();
+        $dialog.find("#git-settings-enableGit").on("change", function () {
+            const anyChecked = $dialog.find("#git-settings-enableGit:checked").length > 0;
+            if (anyChecked) {
+                $dialog.find(".git-settings-content").removeClass("forced-inVisible");
+            } else {
+                $dialog.find(".git-settings-content").addClass("forced-inVisible");
+            }
+        });
 
         dialog.done(function (buttonId) {
             if (buttonId === "ok") {

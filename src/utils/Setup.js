@@ -88,7 +88,7 @@ define(function (require, exports) {
     }
 
     function isExtensionActivated() {
-        return extensionActivated;
+        return extensionActivated && Preferences.get("enableGit");
     }
 
     /**
@@ -103,6 +103,11 @@ define(function (require, exports) {
      */
     function init() {
         return new Promise((resolve) =>{
+            if(!Preferences.get("enableGit")){
+                resolve(false);
+                console.log("Git is disabled in preferences.");
+                return;
+            }
             getGitVersion().then(function (_version) {
                 extensionActivated = true;
                 resolve(extensionActivated);
