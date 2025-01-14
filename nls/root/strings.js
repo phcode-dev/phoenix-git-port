@@ -223,5 +223,17 @@ define({
     GIT_CLONE_REMOTE_FAILED:            "Cloning remote repository failed!",
     GIT_CLONE_ERROR_EXPLAIN:            "The selected directory `{0}`\n is not empty. Git clone requires a clean, empty directory.\nIf it appears empty, check for hidden files.",
     FOLDER_NOT_WRITABLE:                "The selected directory `{0}`\n is not writable.",
-    GIT_NOT_FOUND_MESSAGE:              "Git is not installed or cannot be found on your system. Please install Git or provide the correct path to the Git executable in the text field below."
+    GIT_NOT_FOUND_MESSAGE:              "Git is not installed or cannot be found on your system. Please install Git or provide the correct path to the Git executable in the text field below.",
+    ERROR_GETTING_BRANCH_LIST:          "Getting branch list failed",
+    ERROR_READING_GIT_HEAD:             "Reading .git/HEAD file failed",
+    ERROR_PARSING_BRANCH_NAME:          "Failed parsing branch name from {0}",
+    ERROR_READING_GIT_STATE:            "Reading .git state failed",
+    ERROR_GETTING_DELETED_FILES:        "Getting list of deleted files failed",
+    ERROR_SWITCHING_BRANCHES:           "Switching branches failed",
+    ERROR_GETTING_CURRENT_BRANCH:       "Getting current branch name failed",
+    ERROR_REBASE_FAILED:               "Rebase failed",
+    ERROR_MERGE_FAILED:                "Merge failed",
+    ERROR_BRANCH_DELETE_FORCED:         "Forced branch deletion failed",
+    ERROR_FETCH_REMOTE_INFO:           "Fetching remote information failed",
+    ERROR_CREATE_BRANCH:               "Creating new branch failed"
 });

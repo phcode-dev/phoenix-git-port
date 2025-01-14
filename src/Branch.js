@@ -106,7 +106,7 @@ define(function (require, exports) {
                     if (useRebase) {
 
                         Git.rebaseInit(fromBranch).catch(function (err) {
-                            throw ErrorHandler.showError(err, "Rebase failed");
+                            throw ErrorHandler.showError(err, Strings.ERROR_REBASE_FAILED);
                         }).then(function (stdout) {
                             Utils.showOutput(stdout || Strings.GIT_REBASE_SUCCESS, Strings.REBASE_RESULT).finally(function () {
                                 EventEmitter.emit(Events.REFRESH_ALL);
@@ -116,7 +116,7 @@ define(function (require, exports) {
                     } else {
 
                         Git.mergeBranch(fromBranch, mergeMsg, useNoff).catch(function (err) {
-                            throw ErrorHandler.showError(err, "Merge failed");
+                            throw ErrorHandler.showError(err, Strings.ERROR_MERGE_FAILED);
                         }).then(function (stdout) {
                             Utils.showOutput(stdout || Strings.GIT_MERGE_SUCCESS, Strings.MERGE_RESULT).finally(function () {
                                 EventEmitter.emit(Events.REFRESH_ALL);
@@ -154,7 +154,7 @@ define(function (require, exports) {
             EventEmitter.emit(Events.REFRESH_ALL);
 
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Getting list of deleted files failed.");
+            ErrorHandler.showError(err, Strings.ERROR_GETTING_DELETED_FILES);
         });
     }
 
@@ -203,7 +203,7 @@ define(function (require, exports) {
                                 _reloadBranchSelect($select, branches);
                             });
                         }).catch(function (err) {
-                            throw ErrorHandler.showError(err, "Fetching remote information failed");
+                            throw ErrorHandler.showError(err, Strings.ERROR_FETCH_REMOTE_INFO);
                         });
                 });
 
@@ -219,7 +219,7 @@ define(function (require, exports) {
                             track       = !!isRemote;
 
                         Git.createBranch(branchName, originName, track).catch(function (err) {
-                            ErrorHandler.showError(err, "Creating new branch failed");
+                            throw ErrorHandler.showError(err, Strings.ERROR_CREATE_BRANCH);
                         }).then(function () {
                             EventEmitter.emit(Events.REFRESH_ALL);
                         });
@@ -249,7 +249,7 @@ define(function (require, exports) {
                                     return Git.forceBranchDelete(branchName).then(function (output) {
                                         return Utils.showOutput(output || Strings.GIT_BRANCH_DELETE_SUCCESS);
                                     }).catch(function (err) {
-                                        ErrorHandler.showError(err, "Forced branch deletion failed");
+                                        ErrorHandler.showError(err, Strings.ERROR_BRANCH_DELETE_FORCED);
                                     });
                                 }
                             });
@@ -275,8 +275,12 @@ define(function (require, exports) {
             Git.getCurrentBranchName().then(function (oldBranchName) {
                 Git.checkout(newBranchName).then(function () {
                     return closeNotExistingFiles(oldBranchName, newBranchName);
-                }).catch(function (err) { ErrorHandler.showError(err, "Switching branches failed."); });
-            }).catch(function (err) { ErrorHandler.showError(err, "Getting current branch name failed."); });
+                }).catch(function (err) {
+                    throw ErrorHandler.showError(err, Strings.ERROR_SWITCHING_BRANCHES);
+                });
+            }).catch(function (err) {
+                throw ErrorHandler.showError(err, Strings.ERROR_GETTING_CURRENT_BRANCH);
+            });
 
         });
     }
@@ -320,7 +324,7 @@ define(function (require, exports) {
         Menus.closeAll();
 
         Git.getBranches().catch(function (err) {
-            ErrorHandler.showError(err, "Getting branch list failed");
+            ErrorHandler.showError(err, Strings.ERROR_GETTING_BRANCH_LIST);
         }).then(function (branches) {
             branches = branches.reduce(function (arr, branch) {
                 if (!branch.currentBranch && !branch.remote) {
@@ -374,7 +378,7 @@ define(function (require, exports) {
     function checkBranch() {
         FileSystem.getFileForPath(_getHeadFilePath()).read(function (err, contents) {
             if (err) {
-                ErrorHandler.showError(err, "Reading .git/HEAD file failed");
+                ErrorHandler.showError(err, Strings.ERROR_READING_GIT_HEAD);
                 return;
             }
 
@@ -386,7 +390,7 @@ define(function (require, exports) {
             if (!m) { m = contents.match(/^([a-f0-9]{40})$/); }
 
             if (!m) {
-                ErrorHandler.showError(new Error("Failed parsing branch name from " + contents));
+                ErrorHandler.showError(new Error(StringUtils.format(Strings.ERROR_PARSING_BRANCH_NAME, contents)));
                 return;
             }
 
@@ -466,7 +470,7 @@ define(function (require, exports) {
                     Panel.enable();
 
                 }).catch(function (err) {
-                    ErrorHandler.showError(err, "Reading .git state failed");
+                    ErrorHandler.showError(err, Strings.ERROR_READING_GIT_STATE);
                 });
 
             }).catch(function (ex) {
