@@ -289,7 +289,7 @@ define(function (require, exports) {
                         _doGitCommit($dialog, getCommitMessageElement, diff);
                     })
                     .catch(function (err) {
-                        ErrorHandler.showError(err, "Cant get diff for staged files");
+                        ErrorHandler.showError(err, Strings.ERROR_CANT_GET_STAGED_DIFF);
                     });
                 } else {
                     _doGitCommit($dialog, getCommitMessageElement, stagedDiff);
@@ -330,8 +330,7 @@ define(function (require, exports) {
                         lastCommitMessage[ProjectManager.getProjectRoot().fullPath] = null;
                     });
             } else {
-                throw new ExpectedError("The files you were going to commit were modified while commit dialog was displayed. " +
-                                        "Aborting the commit as the result would be different then what was shown in the dialog.");
+                throw new ExpectedError(Strings.ERROR_MODIFIED_DIALOG_FILES);
             }
         }).catch(function (err) {
             if (ErrorHandler.contains(err, "Please tell me who you are")) {
@@ -344,7 +343,7 @@ define(function (require, exports) {
                 });
             }
 
-            ErrorHandler.showError(err, "Git Commit failed");
+            ErrorHandler.showError(err, Strings.ERROR_GIT_COMMIT_FAILED);
 
         }).finally(function () {
             EventEmitter.emit(Events.GIT_COMMITED);
@@ -420,7 +419,7 @@ define(function (require, exports) {
         Git.getBlame(filePath, fromLine, toLine).then(function (blame) {
             return _showAuthors(filePath, blame, fromLine, toLine);
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Git Blame failed");
+            ErrorHandler.showError(err, Strings.ERROR_GIT_BLAME_FAILED);
         });
     }
 
@@ -429,7 +428,7 @@ define(function (require, exports) {
         Git.getBlame(filePath).then(function (blame) {
             return _showAuthors(filePath, blame);
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Git Blame failed");
+            ErrorHandler.showError(err, Strings.ERROR_GIT_BLAME_FAILED);
         });
     }
 
@@ -445,7 +444,7 @@ define(function (require, exports) {
                 _makeDialogBig($dialog);
                 $dialog.find(".commit-diff").append(Utils.formatDiff(diff));
             }).catch(function (err) {
-                ErrorHandler.showError(err, "Git Diff failed");
+                ErrorHandler.showError(err, Strings.ERROR_GIT_DIFF_FAILED);
             });
         }
     }
@@ -467,7 +466,7 @@ define(function (require, exports) {
                     });
                     refresh();
                 }).catch(function (err) {
-                    ErrorHandler.showError(err, "Discard changes to a file failed");
+                    ErrorHandler.showError(err, Strings.ERROR_DISCARD_CHANGES_FAILED);
                 });
             }
         });
@@ -476,7 +475,7 @@ define(function (require, exports) {
     function handleGitDelete(file) {
         FileSystem.resolve(Preferences.get("currentGitRoot") + file, function (err, fileEntry) {
             if (err) {
-                ErrorHandler.showError(err, "Could not resolve file");
+                ErrorHandler.showError(err, Strings.ERROR_COULD_NOT_RESOLVE_FILE);
                 return;
             }
             CommandManager.execute(Commands.FILE_DELETE, {file: fileEntry});
@@ -579,7 +578,7 @@ define(function (require, exports) {
         Git.discardAllChanges().then(function () {
             EventEmitter.emit(Events.REFRESH_ALL);
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Merge abort failed");
+            ErrorHandler.showError(err, Strings.ERROR_MERGE_ABORT_FAILED);
         });
     }
 
@@ -958,7 +957,7 @@ define(function (require, exports) {
                 if (response) {
                     Git.undoLastLocalCommit()
                         .catch(function (err) {
-                            ErrorHandler.showError(err, "Impossible to undo last commit");
+                            ErrorHandler.showError(err, Strings.ERROR_UNDO_LAST_COMMIT_FAILED);
                         })
                         .finally(function () {
                             refresh();
@@ -1003,7 +1002,7 @@ define(function (require, exports) {
                         return Promise.all(promises).then(function () {
                             return Git.status();
                         }).catch(function (err) {
-                            ErrorHandler.showError(err, "Modifying file status failed");
+                            ErrorHandler.showError(err, Strings.ERROR_MODIFY_FILE_STATUS_FAILED);
                         });
                     }
                 }
@@ -1067,7 +1066,7 @@ define(function (require, exports) {
                 .then(function (userName) {
                     if (!userName.length) { userName = currentUserName; }
                     return Git.setConfig("user.name", userName, true).catch(function (err) {
-                        ErrorHandler.showError(err, "Impossible to change username");
+                        ErrorHandler.showError(err, Strings.ERROR_CHANGE_USERNAME_FAILED);
                     }).then(function () {
                         EventEmitter.emit(Events.GIT_USERNAME_CHANGED, userName);
                     }).finally(function () {
@@ -1085,7 +1084,7 @@ define(function (require, exports) {
                 .then(function (userEmail) {
                     if (!userEmail.length) { userEmail = currentUserEmail; }
                     return Git.setConfig("user.email", userEmail, true).catch(function (err) {
-                        ErrorHandler.showError(err, "Impossible to change user email");
+                        ErrorHandler.showError(err, Strings.ERROR_CHANGE_EMAIL_FAILED);
                     }).then(function () {
                         EventEmitter.emit(Events.GIT_EMAIL_CHANGED, userEmail);
                     }).finally(function () {
@@ -1112,7 +1111,7 @@ define(function (require, exports) {
                     EventEmitter.emit(Events.GERRIT_PUSH_REF_TOGGLED, toggledValue);
                 });
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Impossible to toggle gerrit push ref");
+            ErrorHandler.showError(err, Strings.ERROR_TOGGLE_GERRIT_PUSH_REF_FAILED);
         });
     });
 
@@ -1133,7 +1132,7 @@ define(function (require, exports) {
             .then(function (response) {
                 if (response) {
                     return Git.discardAllChanges().catch(function (err) {
-                        ErrorHandler.showError(err, "Reset of local repository failed");
+                        ErrorHandler.showError(err, Strings.ERROR_RESET_LOCAL_REPO_FAILED);
                     }).then(function () {
                         refresh();
                     });

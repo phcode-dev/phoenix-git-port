@@ -243,5 +243,16 @@ define({
     ERROR_GET_DIFF_FILE_COMMIT:         "Failed to get diff",
     ERROR_GET_DIFF_FILES:               "Failed to load list of diff files",
     ERROR_MODIFY_GITIGNORE:             "Failed modifying .gitignore",
-    ERROR_CREATE_TAG:                    "Create tag failed"
+    ERROR_UNDO_LAST_COMMIT_FAILED:      "Impossible to undo last commit",
+    ERROR_MODIFY_FILE_STATUS_FAILED:     "Failed to modify file status",
+    ERROR_CREATE_TAG:                    "Create tag failed",
+    ERROR_CODE_INSPECTION_FAILED:        "CodeInspection.inspectFile failed to execute for file",
+    ERROR_CANT_GET_STAGED_DIFF:          "Cant get diff for staged files",
+    ERROR_GIT_COMMIT_FAILED:            "Git Commit failed",
+    ERROR_GIT_BLAME_FAILED:            "Git Blame failed",
+    ERROR_GIT_DIFF_FAILED:            "Git Diff failed",
+    ERROR_DISCARD_CHANGES_FAILED:        "Discard changes to a file failed",
+    ERROR_COULD_NOT_RESOLVE_FILE:        "Could not resolve file",
+    ERROR_MERGE_ABORT_FAILED:            "Merge abort failed",
+    ERROR_MODIFIED_DIALOG_FILES:        "The files you were going to commit were modified while commit dialog was displayed. Aborting the commit as the result would be different then what was shown in the dialog."
 });
