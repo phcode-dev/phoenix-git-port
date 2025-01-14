@@ -238,5 +238,6 @@ define({
     ERROR_CREATE_BRANCH:               "Creating new branch failed",
     ERROR_REFRESH_GUTTER:               "Refreshing gutter failed!",
     ERROR_GET_HISTORY:                  "Failed to get history",
-    ERROR_GET_MORE_HISTORY:             "Failed to load more history rows"
+    ERROR_GET_MORE_HISTORY:             "Failed to load more history rows",
+    ERROR_GET_CURRENT_BRANCH:           "Failed to get current branch name"
 });

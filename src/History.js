@@ -165,7 +165,7 @@ define(function (require) {
                     });
                 })
                 .catch(function (err) {
-                    ErrorHandler.showError(err, "Failed to get current branch name");
+                    ErrorHandler.showError(err, Strings.ERROR_GET_CURRENT_BRANCH);
                 });
             }
         }
