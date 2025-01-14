@@ -108,6 +108,7 @@ define({
     GIT_PUSH_RESPONSE:                  "Git Push response",
     GIT_REMOTES:                        "Git remotes",
     GIT_SETTINGS:                       "Git Settings\u2026",
+    GIT_SETTINGS_TITLE:                 "Git Settings",
     GOTO_NEXT_GIT_CHANGE:               "Go to next Git change",
     GOTO_PREVIOUS_GIT_CHANGE:           "Go to previous Git change",
     GUTTER_CLICK_DETAILS:               "Click for more details",
