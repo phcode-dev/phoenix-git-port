@@ -265,5 +265,7 @@ define({
     ERROR_PULLING_REMOTE:               "Pulling from remote failed",
     ERROR_PULLING_OPERATION:            "Pulling operation failed",
     ERROR_PUSHING_OPERATION:            "Pushing operation failed",
-    ERROR_NO_REMOTE_SELECTED:           "No remote has been selected for {0}!"
+    ERROR_NO_REMOTE_SELECTED:           "No remote has been selected for {0}!",
+    ERROR_BRANCH_LIST:                  "Getting branch list failed",
+    ERROR_FETCH_REMOTE:                 "Fetching remote information failed"
 });

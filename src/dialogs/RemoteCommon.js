@@ -24,7 +24,7 @@ define(function (require, exports) {
             const html = Mustache.render(template, { branches: branches });
             $dialog.find(".branchSelect").html(html);
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Getting branch list failed");
+            ErrorHandler.showError(err, Strings.ERROR_BRANCH_LIST);
         });
     }
 
@@ -51,7 +51,7 @@ define(function (require, exports) {
                 }
             });
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Getting remote information failed");
+            ErrorHandler.showError(err, Strings.ERROR_FETCH_REMOTE);
         });
     };
 
@@ -85,7 +85,7 @@ define(function (require, exports) {
                 .then(function () {
                     fillBranches(config, $dialog);
                 }).catch(function (err) {
-                    throw ErrorHandler.showError(err, "Fetching remote information failed");
+                    throw ErrorHandler.showError(err, Strings.ERROR_FETCH_REMOTE);
                 });
         });
         fillBranches(config, $dialog);
