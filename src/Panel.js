@@ -23,6 +23,7 @@ define(function (require, exports) {
         Events             = require("./Events"),
         EventEmitter       = require("./EventEmitter"),
         Preferences        = require("./Preferences"),
+        Setup                    = require("src/utils/Setup"),
         ErrorHandler       = require("./ErrorHandler"),
         ExpectedError      = require("./ExpectedError"),
         Main               = require("./Main"),
@@ -1265,7 +1266,6 @@ define(function (require, exports) {
         CommandManager.register(Strings.REFRESH_GIT, Constants.CMD_GIT_REFRESH, EventEmitter.getEmitter(Events.REFRESH_ALL));
         CommandManager.register(Strings.RESET_LOCAL_REPO, Constants.CMD_GIT_DISCARD_ALL_CHANGES, discardAllChanges);
         CommandManager.register(Strings.UNDO_LAST_LOCAL_COMMIT, Constants.CMD_GIT_UNDO_LAST_COMMIT, undoLastLocalCommit);
-        CommandManager.register(Strings.UNDO_LAST_LOCAL_COMMIT, Constants.CMD_GIT_UNDO_LAST_COMMIT, undoLastLocalCommit);
         CommandManager.register(Strings.CHANGE_USER_NAME, Constants.CMD_GIT_CHANGE_USERNAME, EventEmitter.getEmitter(Events.GIT_CHANGE_USERNAME));
         CommandManager.register(Strings.CHANGE_USER_EMAIL, Constants.CMD_GIT_CHANGE_EMAIL, EventEmitter.getEmitter(Events.GIT_CHANGE_EMAIL));
         CommandManager.register(Strings.ENABLE_GERRIT_PUSH_REF, Constants.CMD_GIT_GERRIT_PUSH_REF, EventEmitter.getEmitter(Events.GERRIT_TOGGLE_PUSH_REF));
@@ -1276,7 +1276,7 @@ define(function (require, exports) {
         CommandManager.register(Strings.GIT_CLONE, Constants.CMD_GIT_CLONE, EventEmitter.getEmitter(Events.HANDLE_GIT_CLONE));
 
         // Show gitPanel when appropriate
-        if (Preferences.get("panelEnabled")) {
+        if (Preferences.get("panelEnabled") && Setup.isExtensionActivated()) {
             toggle(true);
         }
         _panelResized();
@@ -1289,8 +1289,8 @@ define(function (require, exports) {
         //
         $gitPanel.find(".git-available").show();
         $gitPanel.find(".git-not-available").hide();
-        CommandManager.get(Constants.CMD_GIT_INIT).setEnabled(false);
-        CommandManager.get(Constants.CMD_GIT_CLONE).setEnabled(false);
+        Utils.enableCommand(Constants.CMD_GIT_INIT, false);
+        Utils.enableCommand(Constants.CMD_GIT_CLONE, false);
         //
         Main.$icon.removeClass("warning");
         gitPanelDisabled = false;
@@ -1305,8 +1305,8 @@ define(function (require, exports) {
         if (gitPanelMode === "not-repo") {
             $gitPanel.find(".git-available").hide();
             $gitPanel.find(".git-not-available").show();
-            CommandManager.get(Constants.CMD_GIT_INIT).setEnabled(true);
-            CommandManager.get(Constants.CMD_GIT_CLONE).setEnabled(true);
+            Utils.enableCommand(Constants.CMD_GIT_INIT, true);
+            Utils.enableCommand(Constants.CMD_GIT_CLONE, true);
         } else {
             Main.$icon.addClass("warning");
             toggle(false);

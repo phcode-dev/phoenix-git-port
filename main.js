@@ -17,11 +17,11 @@ define(function (require, exports, module) {
     const EventEmitter    = require("src/EventEmitter"),
         Events          = require("src/Events"),
         Main            = require("src/Main"),
-        Preferences     = require("src/Preferences");
+        Preferences     = require("src/Preferences"),
+        BracketsEvents     = require("src/BracketsEvents");
 
     // Load extension modules that are not included by core
     var modules = [
-        "src/BracketsEvents",
         "src/GutterManager",
         "src/History",
         "src/NoRepo",
@@ -35,7 +35,11 @@ define(function (require, exports, module) {
     ExtensionUtils.loadStyleSheet(module, "styles/fonts/octicon.less");
 
     AppInit.appReady(function () {
-        Main.init();
+        Main.init().then((enabled)=>{
+            if(!enabled) {
+                BracketsEvents.disableAll();
+            }
+        });
     });
 
     // export API's for other extensions

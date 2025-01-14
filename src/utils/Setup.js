@@ -2,27 +2,29 @@ define(function (require, exports) {
     "use strict";
 
     // Brackets modules
-    var _ = brackets.getModule("thirdparty/lodash");
+    const _ = brackets.getModule("thirdparty/lodash");
 
     // Local modules
-    var Cli         = require("src/Cli"),
+    const Cli         = require("src/Cli"),
         Git         = require("src/git/Git"),
         Preferences = require("src/Preferences");
 
     // Module variables
-    var standardGitPathsWin = [
+    let standardGitPathsWin = [
         "C:\\Program Files (x86)\\Git\\cmd\\git.exe",
         "C:\\Program Files\\Git\\cmd\\git.exe"
     ];
 
-    var standardGitPathsNonWin = [
+    let standardGitPathsNonWin = [
         "/usr/local/git/bin/git",
         "/usr/local/bin/git",
         "/usr/bin/git"
     ];
 
+    let extensionActivated = false;
+
     // Implementation
-    function findGit() {
+    function getGitVersion() {
         return new Promise(function (resolve, reject) {
 
             // TODO: do this in two steps - first check user config and then check all
@@ -85,7 +87,36 @@ define(function (require, exports) {
         });
     }
 
+    function isExtensionActivated() {
+        return extensionActivated;
+    }
+
+    /**
+     * Initializes the Git extension by checking for the Git executable and returns true if active.
+     *
+     * @async
+     * @function init
+     * @returns {Promise<boolean>}
+     *   A promise that resolves to a boolean indicating whether the extension was activated (`true`)
+     *   or deactivated (`false`) due to a missing or inaccessible Git executable.
+     * });
+     */
+    function init() {
+        return new Promise((resolve) =>{
+            getGitVersion().then(function (_version) {
+                extensionActivated = true;
+                resolve(extensionActivated);
+            }).catch(function (err) {
+                extensionActivated = false;
+                console.warn("Failed to launch Git executable. Deactivating Git extension. Is git installed?", err);
+                resolve(extensionActivated);
+            });
+        });
+    }
+
     // Public API
-    exports.findGit = findGit;
+    exports.init = init;
+    exports.isExtensionActivated = isExtensionActivated;
+    exports.getGitVersion = getGitVersion;
 
 });

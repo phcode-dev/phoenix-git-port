@@ -19,6 +19,7 @@ define(function (require, exports) {
         EventEmitter            = require("src/EventEmitter"),
         ErrorHandler            = require("src/ErrorHandler"),
         Panel                   = require("src/Panel"),
+        Setup                         = require("src/utils/Setup"),
         Preferences             = require("src/Preferences"),
         ProgressDialog          = require("src/dialogs/Progress"),
         Strings                 = require("strings"),
@@ -497,7 +498,11 @@ define(function (require, exports) {
             $gitBranchName.click();
             return false;
         });
-        refresh();
+        if(Setup.isExtensionActivated()){
+            refresh();
+            return;
+        }
+        $("#git-branch-dropdown-toggle").addClass("forced-inVisible");
     }
 
     EventEmitter.on(Events.BRACKETS_FILE_CHANGED, function (file) {

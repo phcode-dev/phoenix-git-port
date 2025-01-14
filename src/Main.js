@@ -29,7 +29,7 @@ define(function (require, exports) {
     const CMD_ADD_TO_IGNORE      = "git.addToIgnore",
         CMD_REMOVE_FROM_IGNORE = "git.removeFromIgnore",
         $icon                  = $(`<a id='git-toolbar-icon' title="${Strings.STATUSBAR_SHOW_GIT}" href='#'></a>`)
-                                    .addClass("loading")
+                                    .addClass("forced-hidden")
                                     .prependTo($(".bottom-buttons"));
 
     let gitEnabled = false;
@@ -184,6 +184,60 @@ define(function (require, exports) {
             Strings.RESET_SOFT_TITLE, Strings.RESET_SOFT_MESSAGE);
     }
 
+    /**
+     * Disables all Git-related commands that were registered in `initGitMenu`.
+     * After calling this function, none of these menu items will be clickable.
+     */
+    function disableAllMenus() {
+        // Collect all command IDs that were registered in initGitMenu
+        const commandsToDisable = [
+            // File menu items
+            Constants.CMD_GIT_INIT,
+            Constants.CMD_GIT_CLONE,
+            Constants.CMD_GIT_TOGGLE_PANEL,
+            Constants.CMD_GIT_REFRESH,
+            Constants.CMD_GIT_GOTO_NEXT_CHANGE,
+            Constants.CMD_GIT_GOTO_PREVIOUS_CHANGE,
+            Constants.CMD_GIT_CLOSE_UNMODIFIED,
+            Constants.CMD_GIT_AUTHORS_OF_SELECTION,
+            Constants.CMD_GIT_AUTHORS_OF_FILE,
+            Constants.CMD_GIT_COMMIT_CURRENT,
+            Constants.CMD_GIT_COMMIT_ALL,
+            Constants.CMD_GIT_FETCH,
+            Constants.CMD_GIT_PULL,
+            Constants.CMD_GIT_PUSH,
+            Constants.CMD_GIT_GERRIT_PUSH_REF,
+            Constants.CMD_GIT_CHANGE_USERNAME,
+            Constants.CMD_GIT_CHANGE_EMAIL,
+            Constants.CMD_GIT_SETTINGS_COMMAND_ID,
+
+            // Project tree/working files commands
+            CMD_ADD_TO_IGNORE,
+            CMD_REMOVE_FROM_IGNORE,
+            // Panel context menu commands (with "2" suffix)
+            CMD_ADD_TO_IGNORE + "2",
+            CMD_REMOVE_FROM_IGNORE + "2",
+
+            // History context menu commands
+            Constants.CMD_GIT_CHECKOUT,
+            Constants.CMD_GIT_TAG,
+            Constants.CMD_GIT_RESET_HARD,
+            Constants.CMD_GIT_RESET_MIXED,
+            Constants.CMD_GIT_RESET_SOFT,
+
+            // "More options" context menu commands
+            Constants.CMD_GIT_DISCARD_ALL_CHANGES,
+            Constants.CMD_GIT_UNDO_LAST_COMMIT,
+            Constants.CMD_GIT_TOGGLE_UNTRACKED
+        ];
+
+        // Disable each command
+        commandsToDisable.forEach((cmdId) => {
+            Utils.enableCommand(cmdId, false);
+        });
+    }
+
+
     function initGitMenu() {
         // Register command and add it to the menu.
         const fileMenu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
@@ -263,19 +317,19 @@ define(function (require, exports) {
         optionsCmenu.addMenuItem(Constants.CMD_GIT_CHANGE_EMAIL);
         optionsCmenu.addMenuDivider();
         optionsCmenu.addMenuItem(Constants.CMD_GIT_SETTINGS_COMMAND_ID);
+
+        if(!Setup.isExtensionActivated()){
+            disableAllMenus();
+        }
     }
 
     function init() {
-        $icon.removeClass("loading");
         CommandManager.register(Strings.GIT_SETTINGS, Constants.CMD_GIT_SETTINGS_COMMAND_ID, SettingsDialog.show);
         // Try to get Git version, if succeeds then Git works
-        Setup.findGit().then(function (_version) {
-
+        return Setup.init().then(function (enabled) {
             initUi();
             initGitMenu();
-
-        }).catch(function (err) {
-            console.error("Failed to launch Git executable. Is git installed?", err);
+            return enabled;
         });
     }
 
@@ -306,33 +360,26 @@ define(function (require, exports) {
         _toggleMenuEntriesState = bool;
     }
 
-    function _enableCommand(commandID, enabled) {
-        const command = CommandManager.get(commandID);
-        if(!command){
-            return;
-        }
-        command.setEnabled(enabled);
-    }
-
     function _enableAllCommands(enabled) {
-        _enableCommand(Constants.CMD_GIT_REFRESH, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_REFRESH, enabled);
 
-        _enableCommand(Constants.CMD_GIT_GOTO_NEXT_CHANGE, enabled);
-        _enableCommand(Constants.CMD_GIT_GOTO_PREVIOUS_CHANGE, enabled);
-        _enableCommand(Constants.CMD_GIT_CLOSE_UNMODIFIED, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_GOTO_NEXT_CHANGE, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_GOTO_PREVIOUS_CHANGE, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_CLOSE_UNMODIFIED, enabled);
 
-        _enableCommand(Constants.CMD_GIT_AUTHORS_OF_SELECTION, enabled);
-        _enableCommand(Constants.CMD_GIT_AUTHORS_OF_FILE, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_AUTHORS_OF_SELECTION, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_AUTHORS_OF_FILE, enabled);
 
-        _enableCommand(Constants.CMD_GIT_COMMIT_CURRENT, enabled);
-        _enableCommand(Constants.CMD_GIT_COMMIT_ALL, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_COMMIT_CURRENT, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_COMMIT_ALL, enabled);
 
-        _enableCommand(Constants.CMD_GIT_FETCH, enabled);
-        _enableCommand(Constants.CMD_GIT_PULL, enabled);
-        _enableCommand(Constants.CMD_GIT_PUSH, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_FETCH, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_PULL, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_PUSH, enabled);
 
-        _enableCommand(Constants.CMD_GIT_DISCARD_ALL_CHANGES, enabled);
-        _enableCommand(Constants.CMD_GIT_UNDO_LAST_COMMIT, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_DISCARD_ALL_CHANGES, enabled);
+        Utils.enableCommand(Constants.CMD_GIT_UNDO_LAST_COMMIT, enabled);
+        toggleMenuEntries(enabled);
         if(enabled){
             $icon.removeClass("forced-hidden");
         } else if(!$("#git-panel").is(":visible")){

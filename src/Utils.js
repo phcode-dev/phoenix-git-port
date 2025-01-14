@@ -2,7 +2,7 @@ define(function (require, exports, module) {
     "use strict";
 
     // Brackets modules
-    var _               = brackets.getModule("thirdparty/lodash"),
+    const _               = brackets.getModule("thirdparty/lodash"),
         CommandManager  = brackets.getModule("command/CommandManager"),
         Commands        = brackets.getModule("command/Commands"),
         Dialogs         = brackets.getModule("widgets/Dialogs"),
@@ -14,15 +14,17 @@ define(function (require, exports, module) {
         ProjectManager  = brackets.getModule("project/ProjectManager");
 
     // Local modules
-    var ErrorHandler    = require("src/ErrorHandler"),
+    const ErrorHandler    = require("src/ErrorHandler"),
         Events          = require("src/Events"),
         EventEmitter    = require("src/EventEmitter"),
         Git             = require("src/git/Git"),
         Preferences     = require("src/Preferences"),
+        Setup           = require("src/utils/Setup"),
+        Constants       = require("src/Constants"),
         Strings         = require("strings");
 
     // Module variables
-    var formatDiffTemplate      = require("text!templates/format-diff.html"),
+    const formatDiffTemplate      = require("text!templates/format-diff.html"),
         questionDialogTemplate  = require("text!templates/git-question-dialog.html"),
         outputDialogTemplate    = require("text!templates/git-output.html"),
         writeTestResults        = {},
@@ -572,6 +574,16 @@ define(function (require, exports, module) {
         stripWhitespaceFromFile(path);
     });
 
+    function enableCommand(commandID, enabled) {
+        const command = CommandManager.get(commandID);
+        if(!command){
+            return;
+        }
+        enabled = commandID === Constants.CMD_GIT_SETTINGS_COMMAND_ID ?
+            true : enabled && Setup.isExtensionActivated();
+        command.setEnabled(enabled);
+    }
+
     // Public API
     exports.formatDiff                  = formatDiff;
     exports.getProjectRoot              = getProjectRoot;
@@ -591,5 +603,6 @@ define(function (require, exports, module) {
     exports.reloadDoc                   = reloadDoc;
     exports.stripWhitespaceFromFiles    = stripWhitespaceFromFiles;
     exports.openEditorForFile           = openEditorForFile;
+    exports.enableCommand               = enableCommand;
 
 });

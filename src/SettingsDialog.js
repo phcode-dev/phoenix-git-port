@@ -7,6 +7,7 @@ define(function (require, exports) {
         Preferences             = require("./Preferences"),
         Strings                 = require("../strings"),
         Git                     = require("./git/Git"),
+        Setup                   = require("src/utils/Setup"),
         settingsDialogTemplate  = require("text!templates/git-settings-dialog.html");
 
     var dialog,
@@ -94,7 +95,10 @@ define(function (require, exports) {
     }
 
     exports.show = function () {
-        var compiledTemplate = Mustache.render(settingsDialogTemplate, Strings);
+        const compiledTemplate = Mustache.render(settingsDialogTemplate, {
+            Strings,
+            gitNotFound: !Setup.isExtensionActivated()
+        });
 
         dialog = Dialogs.showModalDialogUsingTemplate(compiledTemplate);
         $dialog = dialog.getElement();

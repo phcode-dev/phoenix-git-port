@@ -5,7 +5,6 @@ define(function (require, exports) {
     "use strict";
 
     const DocumentManager = brackets.getModule("document/DocumentManager"),
-        Menus           = brackets.getModule("command/Menus"),
         Commands        = brackets.getModule("command/Commands"),
         CommandManager  = brackets.getModule("command/CommandManager"),
         MainViewManager = brackets.getModule("view/MainViewManager");
@@ -15,9 +14,10 @@ define(function (require, exports) {
         Git           = require("src/git/Git"),
         Preferences   = require("src/Preferences"),
         Constants     = require("src/Constants"),
+        Utils         = require("src/Utils"),
         Strings       = require("strings");
 
-    let closeUnmodifiedCmd, gitEnabled = false;
+    let closeUnmodifiedCmd;
 
     function handleCloseNotModified() {
         Git.status().then(function (modifiedFiles) {
@@ -47,27 +47,18 @@ define(function (require, exports) {
         });
     }
 
-    function updateEnabledState() {
-        if(!closeUnmodifiedCmd){
-            return;
-        }
-        closeUnmodifiedCmd.setEnabled(gitEnabled);
-    }
-
     function init() {
         closeUnmodifiedCmd       = CommandManager.register(Strings.CMD_CLOSE_UNMODIFIED,
             Constants.CMD_GIT_CLOSE_UNMODIFIED, handleCloseNotModified);
-        updateEnabledState();
+        Utils.enableCommand(Constants.CMD_GIT_CLOSE_UNMODIFIED, false);
     }
 
     EventEmitter.on(Events.GIT_ENABLED, function () {
-        gitEnabled = true;
-        updateEnabledState();
+        Utils.enableCommand(Constants.CMD_GIT_CLOSE_UNMODIFIED, true);
     });
 
     EventEmitter.on(Events.GIT_DISABLED, function () {
-        gitEnabled = false;
-        updateEnabledState();
+        Utils.enableCommand(Constants.CMD_GIT_CLOSE_UNMODIFIED, false);
     });
 
     // Public API
