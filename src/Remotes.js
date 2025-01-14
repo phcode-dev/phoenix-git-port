@@ -127,7 +127,7 @@ define(function (require) {
                 clearRemotePicker();
             }
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Getting remotes failed!");
+            ErrorHandler.showError(err, Strings.ERROR_GETTING_REMOTES);
         });
     }
 
@@ -145,7 +145,7 @@ define(function (require) {
             })
             .catch(function (err) {
                 if (!ErrorHandler.equals(err, Strings.USER_ABORTED)) {
-                    ErrorHandler.showError(err, "Remote creation failed");
+                    ErrorHandler.showError(err, Strings.ERROR_REMOTE_CREATION);
                 }
             });
     }
@@ -187,7 +187,9 @@ define(function (require) {
     }
 
     function pushToRemote(remote) {
-        if (!remote) { return ErrorHandler.showError("No remote has been selected for push!"); }
+        if (!remote) {
+            return ErrorHandler.showError(StringUtils.format(Strings.ERROR_NO_REMOTE_SELECTED, "push"));
+        }
 
         var pushConfig = {
             remote: remote
@@ -240,7 +242,7 @@ define(function (require) {
                             });
                         })
                         .catch(function (err) {
-                            ErrorHandler.showError(err, "Pushing to remote failed");
+                            ErrorHandler.showError(err, Strings.ERROR_PUSHING_REMOTE);
                         });
                 });
                 // restore original url if desired
@@ -256,12 +258,14 @@ define(function (require) {
             })
             .catch(function (err) {
                 // when dialog is cancelled, there's no error
-                if (err) { ErrorHandler.showError(err, "Pushing operation failed"); }
+                if (err) { ErrorHandler.showError(err, Strings.ERROR_PUSHING_OPERATION); }
             });
     }
 
     function pullFromRemote(remote) {
-        if (!remote) { return ErrorHandler.showError("No remote has been selected for pull!"); }
+        if (!remote) {
+            return ErrorHandler.showError(StringUtils.format(Strings.ERROR_NO_REMOTE_SELECTED, "pull"));
+        }
 
         var pullConfig = {
             remote: remote
@@ -317,7 +321,7 @@ define(function (require) {
                             });
                         })
                         .catch(function (err) {
-                            ErrorHandler.showError(err, "Pulling from remote failed");
+                            ErrorHandler.showError(err, Strings.ERROR_PULLING_REMOTE);
                         });
                 });
                 // restore original url if desired
@@ -333,7 +337,7 @@ define(function (require) {
             })
             .catch(function (err) {
                 // when dialog is cancelled, there's no error
-                if (err) { ErrorHandler.showError(err, "Pulling operation failed"); }
+                if (err) { ErrorHandler.showError(err, Strings.ERROR_PULLING_OPERATION); }
             });
     }
 

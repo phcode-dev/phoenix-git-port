@@ -258,5 +258,12 @@ define({
     ERROR_DISCARD_CHANGES_FAILED:        "Discard changes to a file failed",
     ERROR_COULD_NOT_RESOLVE_FILE:        "Could not resolve file",
     ERROR_MERGE_ABORT_FAILED:            "Merge abort failed",
-    ERROR_MODIFIED_DIALOG_FILES:        "The files you were going to commit were modified while commit dialog was displayed. Aborting the commit as the result would be different then what was shown in the dialog."
+    ERROR_MODIFIED_DIALOG_FILES:        "The files you were going to commit were modified while commit dialog was displayed. Aborting the commit as the result would be different then what was shown in the dialog.",
+    ERROR_GETTING_REMOTES:              "Getting remotes failed!",
+    ERROR_REMOTE_CREATION:              "Remote creation failed",
+    ERROR_PUSHING_REMOTE:               "Pushing to remote failed",
+    ERROR_PULLING_REMOTE:               "Pulling from remote failed",
+    ERROR_PULLING_OPERATION:            "Pulling operation failed",
+    ERROR_PUSHING_OPERATION:            "Pushing operation failed",
+    ERROR_NO_REMOTE_SELECTED:           "No remote has been selected for {0}!"
 });
