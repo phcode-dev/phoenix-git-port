@@ -81,7 +81,7 @@ define(function (require, exports) {
 
             gitignoreEntry.write(lines.join("\n"), function (err) {
                 if (err) {
-                    return ErrorHandler.showError(err, "Failed modifying .gitignore");
+                    return ErrorHandler.showError(err, Strings.ERROR_MODIFY_GITIGNORE);
                 }
                 Panel.refresh();
             });
@@ -143,7 +143,7 @@ define(function (require, exports) {
             Git.setTagName(tagname, commitHash).then(function () {
                 EventEmitter.emit(Events.REFRESH_HISTORY);
             }).catch(function (err) {
-                ErrorHandler.showError(err, "Create tag failed");
+                ErrorHandler.showError(err, Strings.ERROR_CREATE_TAG);
             });
         });
     }
