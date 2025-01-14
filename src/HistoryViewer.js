@@ -59,7 +59,7 @@ define(function (require, exports) {
                 $a.addClass("active loaded");
                 setExpandState();
             }).catch(function (err) {
-                ErrorHandler.showError(err, "Failed to get diff");
+                ErrorHandler.showError(err, Strings.ERROR_GET_DIFF_FILE_COMMIT);
             });
         } else {
             // If this diff was previously loaded just open it
@@ -193,7 +193,7 @@ define(function (require, exports) {
                 return renderFiles(list);
             }
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Failed to load list of diff files");
+            ErrorHandler.showError(err, Strings.ERROR_GET_DIFF_FILES);
         }).finally(function () {
             $viewer.removeClass("spinner large spin");
         });

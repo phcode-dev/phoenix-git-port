@@ -239,5 +239,7 @@ define({
     ERROR_REFRESH_GUTTER:               "Refreshing gutter failed!",
     ERROR_GET_HISTORY:                  "Failed to get history",
     ERROR_GET_MORE_HISTORY:             "Failed to load more history rows",
-    ERROR_GET_CURRENT_BRANCH:           "Failed to get current branch name"
+    ERROR_GET_CURRENT_BRANCH:           "Failed to get current branch name",
+    ERROR_GET_DIFF_FILE_COMMIT:         "Failed to get diff",
+    ERROR_GET_DIFF_FILES:               "Failed to load list of diff files"
 });
