@@ -1,3 +1,5 @@
+## status: Archived as this is merged into pheonix code source directly
+
 # Phoenix-Git [![build status](https://travis-ci.org/zaggino/brackets-git.svg?branch=master)](https://travis-ci.org/zaggino/brackets-git)
 
 This is a temporary repository created to port the brackets-git extension into Phoenix Code. It serves as a tracking
