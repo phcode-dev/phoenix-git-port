@@ -13,7 +13,8 @@ define(function (require, exports) {
         Events          = require("src/Events"),
         EventEmitter    = require("src/EventEmitter"),
         Git             = require("src/git/Git"),
-        Preferences     = require("./Preferences");
+        Preferences     = require("./Preferences"),
+        Strings         = require("nls/strings");
 
     var gitAvailable = false,
         gutterName = "brackets-git-gutter",
@@ -288,7 +289,7 @@ define(function (require, exports) {
                 if (ErrorHandler.contains(err, "No such file or directory")) {
                     return;
                 }
-                ErrorHandler.showError(err, "Refreshing gutter failed!");
+                ErrorHandler.showError(err, Strings.ERROR_REFRESH_GUTTER);
             });
 
         });

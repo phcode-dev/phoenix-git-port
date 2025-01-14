@@ -235,5 +235,8 @@ define({
     ERROR_MERGE_FAILED:                "Merge failed",
     ERROR_BRANCH_DELETE_FORCED:         "Forced branch deletion failed",
     ERROR_FETCH_REMOTE_INFO:           "Fetching remote information failed",
-    ERROR_CREATE_BRANCH:               "Creating new branch failed"
+    ERROR_CREATE_BRANCH:               "Creating new branch failed",
+    ERROR_REFRESH_GUTTER:               "Refreshing gutter failed!",
+    ERROR_GET_HISTORY:                  "Failed to get history",
+    ERROR_GET_MORE_HISTORY:             "Failed to load more history rows"
 });

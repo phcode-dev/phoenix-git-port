@@ -120,7 +120,7 @@ define(function (require) {
                     .attr("x-initial-commit", "true");
             });
         }).catch(function (err) {
-            ErrorHandler.showError(err, "Failed to get history");
+            ErrorHandler.showError(err, Strings.ERROR_GET_HISTORY);
         });
     }
 
@@ -161,7 +161,7 @@ define(function (require) {
                         $historyList.children("tbody").append(commitsHtml);
                     })
                     .catch(function (err) {
-                        ErrorHandler.showError(err, "Failed to load more history rows");
+                        ErrorHandler.showError(err, Strings.ERROR_GET_MORE_HISTORY);
                     });
                 })
                 .catch(function (err) {
